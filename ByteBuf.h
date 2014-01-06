@@ -33,6 +33,7 @@ public:
     int GetInt(int index);
     long GetLong(int index);
     float GetFloat(int index);
+
     ByteBuf* SetBoolean(int index, bool value);
     ByteBuf* SetByte(int index, char value);
     ByteBuf* SetShort(int index, short value);
@@ -46,6 +47,7 @@ public:
     int ReadInt();
     long ReadLong();
     float ReadFloat();
+    wchar_t* ReadUTF8();
     ByteBuf* SkipBytes(int length);
     ByteBuf* WriteBoolean(bool value);
     ByteBuf* WriteByte(char value);
@@ -54,14 +56,15 @@ public:
     ByteBuf* WriteLong(long value);
     ByteBuf* WriteFloat(float value);
     ByteBuf* WriteBytes(ByteBuf* in);
+    ByteBuf* WriteUTF8(wchar_t* value);
     ByteBuf* Copy();
 private:
     char* data; //数据
     int len; //长度，不可扩展长度
-    int readerIndex;//读指针
-    int writerIndex;//写指针
-    int markReader;//读指针标记
-    int markWriter;//写指针标记
+    int readerIndex; //读指针
+    int writerIndex; //写指针
+    int markReader; //读指针标记
+    int markWriter; //写指针标记
 };
 
 #endif	/* BYTEBUF_H */

@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include <wchar.h>
 #include "ByteBuf.h"
 
 ByteBuf::ByteBuf(int len)
@@ -474,6 +474,74 @@ ByteBuf* ByteBuf::WriteBytes(ByteBuf* in)
     return this;
 }
 
+wchar_t* ByteBuf::ReadUTF8()
+{
+    short len = ReadShort(); // 字节数
+    wchar_t* charBuff = new wchar_t[len]; //>=字符数量
+    memset(charBuff, 0, len * sizeof (wchar_t));
+    int d = 0;
+    while (ReadableBytes())
+    {
+        unsigned char c = ReadByte();
+        if ((c & 0x80) == 0)
+        {
+            charBuff[d++] += c;
+        } else if ((c & 0xE0) == 0xC0) ///< 110x-xxxx 10xx-xxxx
+        {
+            wchar_t& wideChar = charBuff[d++];
+            wideChar = (c & 0x3F) << 6;
+            wideChar |= (ReadByte() & 0x3F);
+        } else if ((c & 0xF0) == 0xE0) ///< 1110-xxxx 10xx-xxxx 10xx-xxxx
+        {
+            wchar_t& wideChar = charBuff[d++];
+            wideChar = (c & 0x1F) << 12;
+            wideChar |= (ReadByte() & 0x3F) << 6;
+            wideChar |= (ReadByte() & 0x3F);
+        } else if ((c & 0xF8) == 0xF0) ///< 1111-0xxx 10xx-xxxx 10xx-xxxx 10xx-xxxx 
+        {
+            wchar_t& wideChar = charBuff[d++];
+            wideChar = (c & 0x0F) << 18;
+            wideChar = (ReadByte() & 0x3F) << 12;
+            wideChar |= (ReadByte() & 0x3F) << 6;
+            wideChar |= (ReadByte() & 0x3F);
+        } else
+        {
+            wchar_t& wideChar = charBuff[d++]; ///< 1111-10xx 10xx-xxxx 10xx-xxxx 10xx-xxxx 10xx-xxxx 
+            wideChar = (c & 0x07) << 24;
+            wideChar = (ReadByte() & 0x3F) << 18;
+            wideChar = (ReadByte() & 0x3F) << 12;
+            wideChar |= ((ReadByte() & 0x3F) << 6);
+            wideChar |= (ReadByte() & 0x3F);
+        }
+    }
+    charBuff[d] = '\0';
+    return charBuff;
+}
+
+ByteBuf* ByteBuf::WriteUTF8(wchar_t* value)
+{
+    int len = wcslen(value);
+    for (int i = 0; i < len; i++)
+    {
+        wchar_t wc = value[i];
+        char cs[2] = {wc & 0xff, wc >> 8};
+        if (wc <= 0x7f)
+        { // ASCII  0x00 ~ 0x7f
+            WriteByte(cs[0]);
+        } else if (wc <= 0x7ff)
+        { // 0x080 ~ 0x7ff
+            WriteByte(0xC0 | ((wc >> 6) & 0x1F));
+            WriteByte(0x80 | ((wc >> 0) & 0x3F));
+        } else
+        { // 0x0800 ~ 0xFFFF
+            WriteByte(0xE0 | ((wc >> 12) & 0x0F));
+            WriteByte(0x80 | ((wc >> 6) & 0x3F));
+            WriteByte(0x80 | ((wc >> 0) & 0x3F));
+        }
+    }
+    return this;
+}
+
 int ByteBuf::WriterIndex()
 {
     return this->writerIndex;
@@ -487,3 +555,4 @@ ByteBuf* ByteBuf::WriterIndex(int writerIndex)
     }
     return this;
 }
+

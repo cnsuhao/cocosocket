@@ -85,6 +85,7 @@ static void* Recv(void*)
         {
             ByteBuf* bb = new ByteBuf(size);
             bb->SetBytes(0, buf, size);
+            bb->WriterIndex(size);
             while (true)
             {
                 ByteBuf* frame = Socket::GetInstance()->GetProtocal()->TranslateFrame(bb);
@@ -101,14 +102,14 @@ static void* Recv(void*)
             break;
         }
     }
-    Socket::GetInstance()->GetListerner()->OnClose(Socket::GetInstance());
+    Socket::GetInstance()->GetListerner()->OnClose(Socket::GetInstance(), true);
 }
 
 /**
  * 连接服务器
  * @return 
  */
-void Socket::Connect(char* ip, int port)
+void Socket::Connect(const char* ip, int port)
 {
     this->ip = ip;
     this->port = port;
@@ -135,6 +136,9 @@ void Socket::Connect(char* ip, int port)
                 this->pthread_recv_id = id;
             }
         }
+    } else
+    {
+        this->listerner->OnClose(this, true);
     }
 }
 

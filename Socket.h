@@ -14,7 +14,7 @@ class SocketListerner;
 
 class Socket {
 public:
-    void Connect(char* ip, int port);
+    void Connect(const char* ip, int port);
     int Send(char* content, int len);
     void SetListerner(SocketListerner* listerner);
     void SetProtocal(Protocal* p);
@@ -27,7 +27,7 @@ private:
     Socket();
     virtual ~Socket();
     static Socket* instance;
-    char* ip;
+    const char* ip;
     int port;
     int sockfd;
     pthread_t pthread_recv_id;

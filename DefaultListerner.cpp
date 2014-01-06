@@ -20,12 +20,12 @@ DefaultListerner::~DefaultListerner()
 {
 }
 
-void DefaultListerner::OnClose(Socket* so)
+void DefaultListerner::OnClose(Socket* so,bool fromRemote)
 {
     printf("连接关闭");
 }
 
-void DefaultListerner::OnError(Socket* so, char* e)
+void DefaultListerner::OnError(Socket* so, const char* e)
 {
     printf("连接错误");
 }
@@ -43,6 +43,7 @@ void DefaultListerner::OnIdle(Socket* so)
 void DefaultListerner::OnMessage(Socket* so, ByteBuf* frame)
 {
     printf("有数据到来%d", frame->Capacity());
+    std::cout<<frame->ReadUTF8();
 }
 
 void DefaultListerner::OnOpen(Socket* so)

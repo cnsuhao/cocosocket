@@ -14,8 +14,8 @@ class DefaultListerner : public SocketListerner {
 public:
     DefaultListerner();
     virtual ~DefaultListerner();
-    void OnClose(Socket* so);
-    void OnError(Socket* so, char* e);
+    void OnClose(Socket* so,bool fromRemote);
+    void OnError(Socket* so, const char* e);
     void OnIdle(Socket* so);
     void OnMessage(Socket* so, ByteBuf* frame);
     void OnOpen(Socket* so);

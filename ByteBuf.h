@@ -64,7 +64,6 @@ public:
     ByteBuf* WriteUTF8(wchar_t* value);
     const ByteBuf* Copy();
     char* GetRaw();
-    void setMarkers(int r, int w, int mr, int mw);
 private:
     char* data; //数据
     int len; //长度，可扩展长度

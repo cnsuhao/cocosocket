@@ -76,19 +76,19 @@ void Socket::SetProtocal(Protocal* p)
  */
 static void* Recv(void*)
 {
-    char buf[1024];
+    ByteBuf* buf = new ByteBuf(1024);
+    int size = 0;
     int sockid = Socket::GetInstance()->GetSocketId();
     while (true)
     {
-        int size = recv(sockid, buf, 1024, 0);
+        size = recv(sockid, buf->GetRaw(), 1024, 0);
         if (size > 0)
         {
-            ByteBuf* bb = new ByteBuf(size);
-            bb->SetBytes(0, buf, size);
-            bb->WriterIndex(size);
+            buf->ReaderIndex(0);
+            buf->WriterIndex(size);
             while (true)
             {
-                ByteBuf* frame = Socket::GetInstance()->GetProtocal()->TranslateFrame(bb);
+                ByteBuf* frame = Socket::GetInstance()->GetProtocal()->TranslateFrame(buf);
                 if (frame != NULL)
                 {
                     Socket::GetInstance()->GetListerner()->OnMessage(Socket::GetInstance(), frame);
@@ -102,6 +102,7 @@ static void* Recv(void*)
             break;
         }
     }
+    delete buf;
     Socket::GetInstance()->GetListerner()->OnClose(Socket::GetInstance(), true);
 }
 

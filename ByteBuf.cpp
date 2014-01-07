@@ -60,17 +60,11 @@ const ByteBuf* ByteBuf::Copy()
 {
     ByteBuf* item = new ByteBuf(this->len);
     memcpy(item->data, this->data, len);
-    item->setMarkers(this->readerIndex, this->writerIndex, this->markReader, this->markWriter);
-    // item->setMarkers(0, 0, 0, 0);
+    item->readerIndex = this->readerIndex;
+    item->writerIndex = this->writerIndex;
+    item->markReader = this->markReader;
+    item->markWriter = this->markWriter;
     return item;
-}
-
-void ByteBuf::setMarkers(int r, int w, int mr, int mw)
-{
-    this->readerIndex = r;
-    this->writerIndex = w;
-    this->markReader = mr;
-    this->markWriter = mw;
 }
 
 bool ByteBuf::GetBoolean(int index)

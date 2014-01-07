@@ -24,7 +24,6 @@ int main(int argc, char** argv)
     //    cout << sizeof (wchar_t) << endl;
     //    wcout << c << endl;
 
-
     Socket* s = Socket::GetInstance();
     s->SetListerner(new DefaultListerner()); //需要定制一个listerner，这里的是一个测试用的默认的listerner
     s->SetProtocal(new LVProtocal());
@@ -32,6 +31,6 @@ int main(int argc, char** argv)
     s->Connect("192.168.10.150", 3333);
     pthread_join(s->GetRecvThreadId(), NULL);
     cout << "失败" << endl;
-
+    delete s;
 }
 

@@ -24,6 +24,8 @@ Socket::~Socket()
 {
     delete this->ip;
     delete this->listerner;
+    delete this->protocal;
+    instance = NULL;
 }
 Socket* Socket::instance = new Socket();
 
@@ -32,6 +34,8 @@ Socket* Socket::instance = new Socket();
  */
 Socket* Socket::GetInstance()
 {
+    if (instance == NULL)
+        instance = new Socket();
     return instance;
 }
 

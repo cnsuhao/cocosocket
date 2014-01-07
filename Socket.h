@@ -14,6 +14,7 @@ class SocketListerner;
 
 class Socket {
 public:
+    virtual ~Socket();
     void Connect(const char* ip, int port);
     int Send(ByteBuf* frame);
     void SetListerner(SocketListerner* listerner);
@@ -25,7 +26,6 @@ public:
     static Socket* GetInstance();
 private:
     Socket();
-    virtual ~Socket();
     static Socket* instance;
     const char* ip;
     int port;

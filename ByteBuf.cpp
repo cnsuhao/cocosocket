@@ -32,19 +32,22 @@ int ByteBuf::Capacity()
 
 ByteBuf* ByteBuf::Capacity(int nc)
 {
-    char* old = this->data;
-    this->data = (char*) malloc(nc);
-    memcpy(this->data, old, nc>this->len ? this->len : nc);
-    free(old);
-    this->len = nc;
-    this->readerIndex = 0;
-    this->writerIndex = 0;
-    this->markReader = 0;
-    this->markWriter = 0;
+    if (nc > len)
+    {
+        char* old = this->data;
+        this->data = (char*) malloc(nc);
+        memcpy(this->data, old, this->len);
+        free(old);
+        this->len = nc;
+    }
     return this;
 }
 
-ByteBuf* ByteBuf::Clear()
+/**
+ * 清除掉所有标记
+ * @return 
+ */
+const ByteBuf* ByteBuf::Clear()
 {
     this->readerIndex = 0;
     this->writerIndex = 0;
@@ -53,11 +56,21 @@ ByteBuf* ByteBuf::Clear()
     return this;
 }
 
-ByteBuf* ByteBuf::Copy()
+const ByteBuf* ByteBuf::Copy()
 {
     ByteBuf* item = new ByteBuf(this->len);
     memcpy(item->data, this->data, len);
+    item->setMarkers(this->readerIndex, this->writerIndex, this->markReader, this->markWriter);
+    // item->setMarkers(0, 0, 0, 0);
     return item;
+}
+
+void ByteBuf::setMarkers(int r, int w, int mr, int mw)
+{
+    this->readerIndex = r;
+    this->writerIndex = w;
+    this->markReader = mr;
+    this->markWriter = mw;
 }
 
 bool ByteBuf::GetBoolean(int index)
@@ -84,8 +97,8 @@ float ByteBuf::GetFloat(int index)
     {
 
         int ret = data[index] << 24;
-        ret |= data[index + 1] << 16;
-        ret |= data[index + 2] << 8;
+        ret |= (data[index + 1] << 16);
+        ret |= (data[index + 2] << 8);
         ret |= data[index + 3];
 
         union
@@ -104,8 +117,8 @@ int ByteBuf::GetInt(int index)
     if (index + 3 < this->len)
     {
         int ret = data[index] << 24;
-        ret |= data[index + 1] << 16;
-        ret |= data[index + 2] << 8;
+        ret |= (data[index + 1] << 16);
+        ret |= (data[index + 2] << 8);
         ret |= data[index + 3];
         return ret;
     }
@@ -387,76 +400,64 @@ int ByteBuf::WritableBytes()
 
 ByteBuf* ByteBuf::WriteBoolean(bool value)
 {
-    if (this->writerIndex < len)
-    {
-        this->data[writerIndex++] = (char) value;
-    }
+    this->Capacity(writerIndex + 1);
+    this->data[writerIndex++] = (char) value;
     return this;
 }
 
 ByteBuf* ByteBuf::WriteByte(char value)
 {
-    if (this->writerIndex < len)
-    {
-        this->data[writerIndex++] = value;
-    }
+    this->Capacity(writerIndex + 1);
+    this->data[writerIndex++] = value;
     return this;
 }
 
 ByteBuf* ByteBuf::WriteFloat(float value)
 {
-    if (writerIndex + 4 <= len)
-    {
+    this->Capacity(writerIndex + 4);
 
-        union
-        {
-            float f;
-            int i;
-        } u;
-        u.f = value;
-        data[writerIndex++] = (u.i >> 24) & 0xff;
-        data[writerIndex++] = (u.i >> 16) & 0xff;
-        data[writerIndex++] = (u.i >> 8) & 0xff;
-        data[writerIndex++] = u.i & 0xff;
-    }
+    union
+    {
+        float f;
+        int i;
+    } u;
+    u.f = value;
+    data[writerIndex++] = (u.i >> 24) & 0xff;
+    data[writerIndex++] = (u.i >> 16) & 0xff;
+    data[writerIndex++] = (u.i >> 8) & 0xff;
+    data[writerIndex++] = u.i & 0xff;
     return this;
 }
 
 ByteBuf* ByteBuf::WriteInt(int value)
 {
-    if (writerIndex + 4 <= len)
-    {
-        data[writerIndex++] = (value >> 24) & 0xff;
-        data[writerIndex++] = (value >> 16) & 0xff;
-        data[writerIndex++] = (value >> 8) & 0xff;
-        data[writerIndex++] = value & 0xff;
-    }
+    this->Capacity(writerIndex + 4);
+    data[writerIndex++] = (value >> 24) & 0xff;
+    data[writerIndex++] = (value >> 16) & 0xff;
+    data[writerIndex++] = (value >> 8) & 0xff;
+    data[writerIndex++] = value & 0xff;
     return this;
 }
 
 ByteBuf* ByteBuf::WriteLong(long value)
 {
-    if (writerIndex + 8 <= len)
-    {
-        data[writerIndex++] = (value >> 56) & 0xff;
-        data[writerIndex++] = (value >> 48) & 0xff;
-        data[writerIndex++] = (value >> 40) & 0xff;
-        data[writerIndex++] = (value >> 32) & 0xff;
-        data[writerIndex++] = (value >> 24) & 0xff;
-        data[writerIndex++] = (value >> 16) & 0xff;
-        data[writerIndex++] = (value >> 8) & 0xff;
-        data[writerIndex++] = value & 0xff;
-    }
+    this->Capacity(writerIndex + 8);
+    data[writerIndex++] = (value >> 56) & 0xff;
+    data[writerIndex++] = (value >> 48) & 0xff;
+    data[writerIndex++] = (value >> 40) & 0xff;
+    data[writerIndex++] = (value >> 32) & 0xff;
+    data[writerIndex++] = (value >> 24) & 0xff;
+    data[writerIndex++] = (value >> 16) & 0xff;
+    data[writerIndex++] = (value >> 8) & 0xff;
+    data[writerIndex++] = value & 0xff;
     return this;
 }
 
 ByteBuf* ByteBuf::WriteShort(short value)
 {
-    if (writerIndex + 2 <= len)
-    {
-        data[writerIndex++] = (value >> 8) & 0xff;
-        data[writerIndex++] = value & 0xff;
-    }
+    this->Capacity(writerIndex + 2);
+    data[writerIndex++] = (value >> 8) & 0xff;
+    data[writerIndex++] = value & 0xff;
     return this;
 }
 
@@ -521,6 +522,9 @@ wchar_t* ByteBuf::ReadUTF8()
 ByteBuf* ByteBuf::WriteUTF8(wchar_t* value)
 {
     int len = wcslen(value);
+    int old = this->writerIndex;
+    WriteShort(0);
+    int d = 0;
     for (int i = 0; i < len; i++)
     {
         wchar_t wc = value[i];
@@ -528,17 +532,23 @@ ByteBuf* ByteBuf::WriteUTF8(wchar_t* value)
         if (wc <= 0x7f)
         { // ASCII  0x00 ~ 0x7f
             WriteByte(cs[0]);
+            d++;
         } else if (wc <= 0x7ff)
         { // 0x080 ~ 0x7ff
             WriteByte(0xC0 | ((wc >> 6) & 0x1F));
             WriteByte(0x80 | ((wc >> 0) & 0x3F));
+            d += 2;
         } else
         { // 0x0800 ~ 0xFFFF
             WriteByte(0xE0 | ((wc >> 12) & 0x0F));
             WriteByte(0x80 | ((wc >> 6) & 0x3F));
             WriteByte(0x80 | ((wc >> 0) & 0x3F));
+            d += 3;
         }
     }
+    this->writerIndex = old;
+    WriteShort(d);
+    this->writerIndex += d;
     return this;
 }
 
@@ -554,5 +564,10 @@ ByteBuf* ByteBuf::WriterIndex(int writerIndex)
         this->writerIndex = writerIndex;
     }
     return this;
+}
+
+char* ByteBuf::GetRaw()
+{
+    return this->data;
 }
 

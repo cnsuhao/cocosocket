@@ -4,7 +4,7 @@
  * 
  * Created on 2013年12月30日, 下午3:13
  */
-#include<stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
@@ -143,20 +143,23 @@ void Socket::Connect(const char* ip, int port)
 }
 
 /**
- * 发送消息给服务器
- * @param content
+ * 发送内容
+ * @param frame
  * @return 
  */
-int Socket::Send(char* content, int len)
+int Socket::Send(ByteBuf* frame)
 {
+    char* content = frame->GetRaw();
     int bytes;
     int count = 0;
+    int len = frame->ReadableBytes();
     while (count < len)
     {
-        bytes = send(this->sockfd, content + count, len - count, 0);
+        bytes = send(this->sockfd, content + count + frame->ReaderIndex(), len - count, 0);
         if (bytes == -1 || bytes == 0)
             return -1;
         count += bytes;
+        frame->ReaderIndex(frame->ReaderIndex() + bytes);
     }
     return count;
 }

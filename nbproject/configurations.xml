@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles" displayName="头文件" projectFiles="true">
       <itemPath>ByteBuf.h</itemPath>
       <itemPath>DefaultListerner.h</itemPath>
+      <itemPath>Frame.h</itemPath>
       <itemPath>LVProtocal.h</itemPath>
       <itemPath>Protocal.h</itemPath>
       <itemPath>Socket.h</itemPath>
@@ -12,6 +13,7 @@
     <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
       <itemPath>ByteBuf.cpp</itemPath>
       <itemPath>DefaultListerner.cpp</itemPath>
+      <itemPath>Frame.cpp</itemPath>
       <itemPath>LVProtocal.cpp</itemPath>
       <itemPath>Protocal.cpp</itemPath>
       <itemPath>Socket.cpp</itemPath>
@@ -49,6 +51,10 @@
       <item path="DefaultListerner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="DefaultListerner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Frame.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Frame.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="LVProtocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -96,6 +102,10 @@
       <item path="DefaultListerner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="DefaultListerner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Frame.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Frame.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="LVProtocal.cpp" ex="false" tool="1" flavor2="0">
       </item>

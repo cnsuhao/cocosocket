@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ByteBuf.o \
 	${OBJECTDIR}/DefaultListerner.o \
+	${OBJECTDIR}/Frame.o \
 	${OBJECTDIR}/LVProtocal.o \
 	${OBJECTDIR}/Protocal.o \
 	${OBJECTDIR}/Socket.o \
@@ -77,6 +78,11 @@ ${OBJECTDIR}/DefaultListerner.o: DefaultListerner.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/DefaultListerner.o DefaultListerner.cpp
+
+${OBJECTDIR}/Frame.o: Frame.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Frame.o Frame.cpp
 
 ${OBJECTDIR}/LVProtocal.o: LVProtocal.cpp 
 	${MKDIR} -p ${OBJECTDIR}

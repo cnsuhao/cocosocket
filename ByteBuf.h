@@ -13,6 +13,11 @@ public:
     ByteBuf(int len);
     virtual ~ByteBuf();
     int Capacity();
+    /**
+     * 扩展容量
+     * @param newCapacity
+     * @return 
+     */
     ByteBuf* Capacity(int newCapacity);
     int ReaderIndex();
     ByteBuf* ReaderIndex(int readerIndex);
@@ -22,7 +27,7 @@ public:
     int ReadableBytes();
     int WritableBytes();
     int MaxWritableBytes();
-    ByteBuf* Clear();
+    const ByteBuf* Clear();
     ByteBuf* MarkReaderIndex();
     ByteBuf* ResetReaderIndex();
     ByteBuf* MarkWriterIndex();
@@ -57,14 +62,17 @@ public:
     ByteBuf* WriteFloat(float value);
     ByteBuf* WriteBytes(ByteBuf* in);
     ByteBuf* WriteUTF8(wchar_t* value);
-    ByteBuf* Copy();
+    const ByteBuf* Copy();
+    char* GetRaw();
+    void setMarkers(int r, int w, int mr, int mw);
 private:
     char* data; //数据
-    int len; //长度，不可扩展长度
+    int len; //长度，可扩展长度
     int readerIndex; //读指针
     int writerIndex; //写指针
     int markReader; //读指针标记
     int markWriter; //写指针标记
+
 };
 
 #endif	/* BYTEBUF_H */

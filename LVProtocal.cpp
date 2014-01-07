@@ -32,7 +32,8 @@ ByteBuf* LVProtocal::TranslateFrame(ByteBuf* in)
             case 1:
                 l = in->ReadByte();
                 len = ((h << 8)&0x0000ff00) | (l);
-                frame = new ByteBuf(len);
+                frame = new ByteBuf(len + 2);
+                frame->WriteShort(len);
                 status = 2;
                 break;
             case 2:

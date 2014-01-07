@@ -15,7 +15,7 @@ class SocketListerner;
 class Socket {
 public:
     void Connect(const char* ip, int port);
-    int Send(char* content, int len);
+    int Send(ByteBuf* frame);
     void SetListerner(SocketListerner* listerner);
     void SetProtocal(Protocal* p);
     Protocal* GetProtocal();

@@ -20,9 +20,9 @@ private:
     int status;
     int h;
     int l;
-    int len;
+    short len;
     ByteBuf* frame;
-    
+
 };
 
 #endif	/* LVPROTOCAL_H */

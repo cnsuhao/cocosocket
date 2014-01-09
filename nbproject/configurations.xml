@@ -6,19 +6,24 @@
       <itemPath>DefaultListerner.h</itemPath>
       <itemPath>Frame.h</itemPath>
       <itemPath>LVProtocal.h</itemPath>
+      <itemPath>MemoryPool.h</itemPath>
       <itemPath>Protocal.h</itemPath>
       <itemPath>Socket.h</itemPath>
       <itemPath>SocketListerner.h</itemPath>
+      <itemPath>Test.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
       <itemPath>ByteBuf.cpp</itemPath>
       <itemPath>DefaultListerner.cpp</itemPath>
       <itemPath>Frame.cpp</itemPath>
       <itemPath>LVProtocal.cpp</itemPath>
+      <itemPath>MemoryPool.cpp</itemPath>
       <itemPath>Protocal.cpp</itemPath>
       <itemPath>Socket.cpp</itemPath>
       <itemPath>SocketListerner.cpp</itemPath>
+      <itemPath>Test.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>memorypoolconfig.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles" displayName="资源文件" projectFiles="true">
     </logicalFolder>
@@ -60,6 +65,10 @@
       </item>
       <item path="LVProtocal.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="MemoryPool.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MemoryPool.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Protocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
@@ -72,7 +81,13 @@
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Test.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Test.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="memorypoolconfig.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -111,6 +126,10 @@
       </item>
       <item path="LVProtocal.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="MemoryPool.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MemoryPool.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Protocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
@@ -123,7 +142,13 @@
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Test.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Test.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="memorypoolconfig.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -39,10 +39,13 @@ OBJECTFILES= \
 	${OBJECTDIR}/DefaultListerner.o \
 	${OBJECTDIR}/Frame.o \
 	${OBJECTDIR}/LVProtocal.o \
+	${OBJECTDIR}/MemoryPool.o \
 	${OBJECTDIR}/Protocal.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/Test.o \
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/memorypoolconfig.o
 
 
 # C Compiler Flags
@@ -89,6 +92,11 @@ ${OBJECTDIR}/LVProtocal.o: LVProtocal.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LVProtocal.o LVProtocal.cpp
 
+${OBJECTDIR}/MemoryPool.o: MemoryPool.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MemoryPool.o MemoryPool.cpp
+
 ${OBJECTDIR}/Protocal.o: Protocal.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -104,10 +112,20 @@ ${OBJECTDIR}/SocketListerner.o: SocketListerner.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SocketListerner.o SocketListerner.cpp
 
+${OBJECTDIR}/Test.o: Test.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Test.o Test.cpp
+
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/memorypoolconfig.o: memorypoolconfig.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/memorypoolconfig.o memorypoolconfig.cpp
 
 # Subprojects
 .build-subprojects:

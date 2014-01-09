@@ -58,7 +58,7 @@ const ByteBuf* ByteBuf::Clear()
 
 const ByteBuf* ByteBuf::Copy()
 {
-    ByteBuf* item = new ByteBuf(this->len);
+    ByteBuf* item = new ByteBuf(len);
     memcpy(item->data, this->data, len);
     item->readerIndex = this->readerIndex;
     item->writerIndex = this->writerIndex;

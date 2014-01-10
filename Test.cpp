@@ -14,7 +14,7 @@ void Test::Show()
 {
     printf("%d\n", a);
     printf("%f\n", b);
-    printf("%c\n", c);
+    printf("%d\n", c);
     printf("%f\n", d);
-    printf("%s\n", e);
+    //printf("%s\n", e);
 }

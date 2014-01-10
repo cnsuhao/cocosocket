@@ -2,15 +2,21 @@
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles" displayName="头文件" projectFiles="true">
+      <itemPath>AutoMutex.h</itemPath>
       <itemPath>ByteBuf.h</itemPath>
       <itemPath>DefaultListerner.h</itemPath>
       <itemPath>Frame.h</itemPath>
       <itemPath>LVProtocal.h</itemPath>
       <itemPath>MemoryPool.h</itemPath>
+      <itemPath>Mutex.h</itemPath>
       <itemPath>Protocal.h</itemPath>
       <itemPath>Socket.h</itemPath>
       <itemPath>SocketListerner.h</itemPath>
+      <itemPath>Task.h</itemPath>
       <itemPath>Test.h</itemPath>
+      <itemPath>Thread.h</itemPath>
+      <itemPath>ThreadPool.h</itemPath>
+      <itemPath>WorkThread.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
       <itemPath>ByteBuf.cpp</itemPath>
@@ -18,10 +24,15 @@
       <itemPath>Frame.cpp</itemPath>
       <itemPath>LVProtocal.cpp</itemPath>
       <itemPath>MemoryPool.cpp</itemPath>
+      <itemPath>Mutex.cpp</itemPath>
       <itemPath>Protocal.cpp</itemPath>
       <itemPath>Socket.cpp</itemPath>
       <itemPath>SocketListerner.cpp</itemPath>
       <itemPath>Test.cpp</itemPath>
+      <itemPath>Thread.cpp</itemPath>
+      <itemPath>ThreadPool.cpp</itemPath>
+      <itemPath>ThreadPoolTest.cpp</itemPath>
+      <itemPath>WorkThread.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>memorypoolconfig.cpp</itemPath>
     </logicalFolder>
@@ -49,6 +60,8 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <item path="AutoMutex.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ByteBuf.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ByteBuf.h" ex="false" tool="3" flavor2="0">
@@ -69,6 +82,10 @@
       </item>
       <item path="MemoryPool.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Mutex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Mutex.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Protocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
@@ -81,9 +98,25 @@
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Task.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Test.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Test.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Thread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Thread.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ThreadPool.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ThreadPool.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ThreadPoolTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="WorkThread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="WorkThread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -110,6 +143,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="AutoMutex.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ByteBuf.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ByteBuf.h" ex="false" tool="3" flavor2="0">
@@ -130,6 +165,10 @@
       </item>
       <item path="MemoryPool.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Mutex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Mutex.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Protocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
@@ -142,9 +181,25 @@
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Task.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Test.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Test.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Thread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Thread.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ThreadPool.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ThreadPool.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ThreadPoolTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="WorkThread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="WorkThread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

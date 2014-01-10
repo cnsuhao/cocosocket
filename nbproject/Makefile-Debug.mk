@@ -40,10 +40,15 @@ OBJECTFILES= \
 	${OBJECTDIR}/Frame.o \
 	${OBJECTDIR}/LVProtocal.o \
 	${OBJECTDIR}/MemoryPool.o \
+	${OBJECTDIR}/Mutex.o \
 	${OBJECTDIR}/Protocal.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
 	${OBJECTDIR}/Test.o \
+	${OBJECTDIR}/Thread.o \
+	${OBJECTDIR}/ThreadPool.o \
+	${OBJECTDIR}/ThreadPoolTest.o \
+	${OBJECTDIR}/WorkThread.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/memorypoolconfig.o
 
@@ -97,6 +102,11 @@ ${OBJECTDIR}/MemoryPool.o: MemoryPool.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MemoryPool.o MemoryPool.cpp
 
+${OBJECTDIR}/Mutex.o: Mutex.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Mutex.o Mutex.cpp
+
 ${OBJECTDIR}/Protocal.o: Protocal.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -116,6 +126,26 @@ ${OBJECTDIR}/Test.o: Test.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Test.o Test.cpp
+
+${OBJECTDIR}/Thread.o: Thread.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Thread.o Thread.cpp
+
+${OBJECTDIR}/ThreadPool.o: ThreadPool.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ThreadPool.o ThreadPool.cpp
+
+${OBJECTDIR}/ThreadPoolTest.o: ThreadPoolTest.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ThreadPoolTest.o ThreadPoolTest.cpp
+
+${OBJECTDIR}/WorkThread.o: WorkThread.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/WorkThread.o WorkThread.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

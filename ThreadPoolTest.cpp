@@ -22,16 +22,16 @@ public:
     }
 };
 
-int main()
-{
-    ThreadPool cThreadPool(128, 1);
-    TestTask cTest;
-    cThreadPool.postTask(&cTest);
-    while (true)
-    {
-        cout << "Current AliveCount = " << cThreadPool.getAliveCount() << endl;
-        cThreadPool.postTask(&cTest);
-        cout << "Add one task." << endl;
-    }
-}
+//int main()
+//{
+//    ThreadPool cThreadPool(128, 1);
+//    TestTask cTest;
+//    cThreadPool.postTask(&cTest);
+//    while (true)
+//    {
+//        cout << "Current AliveCount = " << cThreadPool.getAliveCount() << endl;
+//        cThreadPool.postTask(&cTest);
+//        cout << "Add one task." << endl;
+//    }
+//}
 

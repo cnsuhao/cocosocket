@@ -50,7 +50,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/ThreadPoolTest.o \
 	${OBJECTDIR}/WorkThread.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/memorypoolconfig.o
+	${OBJECTDIR}/memorypoolconfig.o \
+	${OBJECTDIR}/synflood.o \
+	${OBJECTDIR}/synflood1.o
 
 
 # C Compiler Flags
@@ -156,6 +158,16 @@ ${OBJECTDIR}/memorypoolconfig.o: memorypoolconfig.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/memorypoolconfig.o memorypoolconfig.cpp
+
+${OBJECTDIR}/synflood.o: synflood.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/synflood.o synflood.c
+
+${OBJECTDIR}/synflood1.o: synflood1.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/synflood1.o synflood1.c
 
 # Subprojects
 .build-subprojects:

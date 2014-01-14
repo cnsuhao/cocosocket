@@ -17,7 +17,6 @@ ThreadPool::ThreadPool(int nPoolSize, int nInitializeCount)
     {
         return;
     }
-
     memset(m_pThreads, 0, sizeof (WorkThread *) * nPoolSize);
     for (int i = 0; i < m_nInitializeCount; ++i)
     {
@@ -26,7 +25,7 @@ ThreadPool::ThreadPool(int nPoolSize, int nInitializeCount)
         {
             break;
         }
-        if (m_pThreads[i]->initialize() != CThread::IDLE)
+        if (m_pThreads[i]->initialize() != Thread::IDLE)
         {
             break;
         }
@@ -61,7 +60,7 @@ bool ThreadPool::postTask(Task * pTask)
     AutoMutex cAutoMutex(&m_cMutex);
     for (int i = 0; i < m_nAliveCount; ++i)
     {
-        if (m_pThreads[i]->getStatus() == CThread::IDLE)
+        if (m_pThreads[i]->getStatus() == Thread::IDLE)
         {
             m_pThreads[i]->setTask(pTask);
             m_pThreads[i]->run();
@@ -75,7 +74,7 @@ bool ThreadPool::postTask(Task * pTask)
         m_pThreads[m_nAliveCount] = new WorkThread(m_nAliveCount + 1);
         if (m_pThreads[m_nAliveCount] != NULL)
         {
-            if (m_pThreads[m_nAliveCount]->initialize() == CThread::IDLE)
+            if (m_pThreads[m_nAliveCount]->initialize() == Thread::IDLE)
             {
                 m_pThreads[m_nAliveCount]->setTask(pTask);
                 m_pThreads[m_nAliveCount]->run();

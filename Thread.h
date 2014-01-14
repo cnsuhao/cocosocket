@@ -1,27 +1,14 @@
-/**
- *	Author: ACb0y
- *	FileName: Thread.h
- *	CreateTime: 2013年2月13日12:24:02
- *	Version: 1.0
- */
-
-#ifndef __THREAD_LRL_20130213_HEADER__
-#define __THREAD_LRL_20130213_HEADER__
-
+#ifndef THREAD_H
+#define THREAD_H
 #include <pthread.h>
 #include <sched.h>
 
-///定义线程启动函数指针
 typedef void * (* pFuncThreadStart)(void *);
 
-/*
-    对POSIX线程操作的C++封装
- */
-class CThread {
-    ///属性
+class Thread {
 public:
 
-    enum EThreadState {
+    enum ThreadState {
         ERR_ALREADERY_INITIALIZED = -6,
         ERR_AT_CREATE_THREAD = -5,
         ERR_AT_CREATE_SEM = -4,
@@ -32,23 +19,25 @@ public:
         RUNNING = 1,
         QUITED = 9
     };
-protected:
-    ///nothing.
 private:
     pthread_t m_nThreadId;
-
-    ///构造函数&&虚构函数
-public:
-    CThread();
-    virtual ~CThread();
-protected:
-    ///nothing.
-private:
-    ///nothing.
-
-    ///服务
-public:
     int create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetached = false, bool bSetScope = false);
+    ///创建线程并将线程挂起
+    ///调用成功返回IDLE
+    int initialize();
+    ///通知并等待线程退出
+    void finish();
+    static void * doRun(void * pContext);
+protected:
+    int m_nNo;
+    int m_nStatus;
+    sem_t* m_pSem;
+    bool m_bNeedQuit;
+    bool m_bAutoFinish;
+    virtual void run();
+public:
+    Thread();
+    virtual ~Thread();
     int detach();
     int join(void ** pRetValue = NULL);
     void exit(void * pRetValue = NULL);
@@ -56,48 +45,59 @@ public:
     void reset();
     bool isCurrent();
     pthread_t getThreadId();
-protected:
-    ///nothing.
-private:
-    ///nothing.
+    int getNo();
+    int getStatus();
+    ///设置线程执行一次后自动退出
+    void setAutoFinish();
+    int start();
 };
 
-inline pthread_t CThread::getThreadId() {
+inline pthread_t Thread::getThreadId() {
     return m_nThreadId;
 }
 
-inline int CThread::detach() {
+inline int Thread::detach() {
     return pthread_detach(m_nThreadId);
 }
 
-inline int CThread::join(void ** pRetValue) {
+inline int Thread::join(void ** pRetValue) {
     return pthread_join(m_nThreadId, pRetValue);
 }
 
-inline void CThread::exit(void * pRetValue) {
+inline void Thread::exit(void * pRetValue) {
     if (isCurrent()) {
         pthread_exit(pRetValue);
     }
 }
 
-inline bool CThread::isCurrent() {
+inline bool Thread::isCurrent() {
     if (pthread_equal(m_nThreadId, pthread_self()) != 0) {
-        return true; ///表明是同一线程
+        return true;
     } else {
         return false;
     }
 }
 
-inline void CThread::yield() {
+inline void Thread::yield() {
     sched_yield();
 }
 
-inline void CThread::reset() {
+inline void Thread::reset() {
     join();
     m_nThreadId = NULL;
 }
 
+inline int Thread::getNo() {
+    return m_nNo;
+}
 
+inline int Thread::getStatus() {
+    return m_nStatus;
+}
+
+inline void Thread::setAutoFinish() {
+    m_bAutoFinish = true;
+}
 #endif
 
 

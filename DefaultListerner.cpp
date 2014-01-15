@@ -58,7 +58,7 @@ void DefaultListerner::OnOpen(Socket* so)
     cout << "连接建立" << endl;
     Frame* f = new Frame(100);
     f->PutString(L"你好");
-    f->end();
+    f->End();
     so->Send(f->GetData());
     delete f;
 }

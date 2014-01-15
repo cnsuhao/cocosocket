@@ -1,5 +1,6 @@
 #include <iostream>
 #include "ThreadPool.h"
+#include "Thread.h"
 using namespace std;
 
 ThreadPool::ThreadPool(int poolsize, int initsize)
@@ -35,15 +36,15 @@ ThreadPool::~ThreadPool()
     delete [] pool;
 }
 
-bool ThreadPool::offer(Task * pTask)
+bool ThreadPool::Offer(Task * pTask)
 {
     bool result = false;
     AutoMutex AutoMutex(&lock);
     for (int i = 0; i < alive; ++i)
     {
-        if (pool[i]->getStatus() == Thread::IDLE)
+        if (pool[i]->GetStatus() == Thread::IDLE)
         {
-            pool[i]->setTask(pTask);
+            pool[i]->AddTask(pTask);
             result = true;
             break;
         }
@@ -51,14 +52,17 @@ bool ThreadPool::offer(Task * pTask)
     if (!result && alive < poolSize)
     {
         pool[alive] = new WorkThread();
-        pool[alive]->setTask(pTask);
+        pool[alive]->AddTask(pTask);
         ++alive;
         result = true;
     }
     return result;
 }
 
-void ThreadPool::shutdown()
+/**
+ * 停止线程池，调用之后不能再往线程池里放task，否则
+ */
+void ThreadPool::Shutdown()
 {
     if (NULL == pool)
     {
@@ -70,6 +74,8 @@ void ThreadPool::shutdown()
         {
             continue;
         }
+        pool[i]->SetStatus(Thread::QUITED);
+        pool[i]->Join();
         delete pool[i];
         pool[i] = NULL;
     }

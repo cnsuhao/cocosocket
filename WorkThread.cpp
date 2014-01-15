@@ -10,7 +10,7 @@ WorkThread::~WorkThread()
     delete task;
 }
 
-void WorkThread::run()
+void WorkThread::Run()
 {
     while (this->status != QUITED)
     {

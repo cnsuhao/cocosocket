@@ -2,12 +2,12 @@
 
 Thread::Thread() : threadId(NULL), status(UNINITIALIZED), sem(NULL)
 {
-    this->initialize();
+    this->Init();
 }
 
 Thread::~Thread()
 {
-    finish();
+    End();
 }
 
 /**
@@ -18,7 +18,7 @@ Thread::~Thread()
  * @param bSetScope
  * @return 
  */
-int Thread::create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetached, bool bSetScope)
+int Thread::Create(pFuncThreadStart fun, void * context, bool d, bool bSetScope)
 {
     pthread_attr_t sThread_attr;
     int nStatus;
@@ -27,7 +27,7 @@ int Thread::create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetach
     {
         return -1;
     }
-    if (bDetached)
+    if (d)
     {
         nStatus = pthread_attr_setdetachstate(&sThread_attr, PTHREAD_CREATE_DETACHED);
         if (nStatus != 0)
@@ -45,7 +45,7 @@ int Thread::create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetach
             return -1;
         }
     }
-    nStatus = pthread_create(&threadId, &sThread_attr, pFuncStartRoutine, pArg);
+    nStatus = pthread_create(&threadId, &sThread_attr, fun, context);
     pthread_attr_destroy(&sThread_attr);
     return nStatus;
 }
@@ -54,14 +54,14 @@ int Thread::create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetach
  * 初始化
  * @return 
  */
-int Thread::initialize()
+int Thread::Init()
 {
     sem = new sem_t;
     if (sem_init(sem, 0, 0) < 0)
     {
         return ERR_AT_CREATE_SEM;
     }
-    if (create(&doRun, (void *) this) < 0)
+    if (Create(&DoRun, (void *) this) < 0)
     {
         return ERR_AT_CREATE_THREAD;
     }
@@ -69,13 +69,13 @@ int Thread::initialize()
     return status;
 }
 
-void * Thread::doRun(void* context)
+void * Thread::DoRun(void* context)
 {
     Thread * thread = (Thread *) context;
     sem_wait(thread->sem);
     if (RUNNING == thread->status)
     {
-        thread->run();
+        thread->Run();
     }
     thread->status = QUITED;
     return (void *) 0;
@@ -85,7 +85,7 @@ void * Thread::doRun(void* context)
  *  启动线程
  * @return 
  */
-int Thread::start()
+int Thread::Start()
 {
     if (status != IDLE)
     {
@@ -99,15 +99,12 @@ int Thread::start()
 /**
  * 结束
  */
-void Thread::finish()
+void Thread::End()
 {
-    if (status != UNINITIALIZED && status != QUITED)
-    {
-        sem_post(sem);
-        sem_destroy(sem);
-        delete sem;
-        sem = NULL;
-    }
+    sem_post(sem);
+    sem_destroy(sem);
+    delete sem;
+    sem = NULL;
 }
 
 

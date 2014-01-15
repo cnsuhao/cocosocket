@@ -25,7 +25,6 @@
       <itemPath>LVProtocal.cpp</itemPath>
       <itemPath>MemoryPool.cpp</itemPath>
       <itemPath>Mutex.cpp</itemPath>
-      <itemPath>Protocal.cpp</itemPath>
       <itemPath>Socket.cpp</itemPath>
       <itemPath>SocketListerner.cpp</itemPath>
       <itemPath>Test.cpp</itemPath>
@@ -86,8 +85,6 @@
       <item path="Mutex.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Mutex.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Protocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -171,8 +168,6 @@
       <item path="Mutex.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Mutex.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Protocal.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
       </item>

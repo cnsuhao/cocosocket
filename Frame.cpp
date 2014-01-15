@@ -73,7 +73,7 @@ const Frame* Frame::PutString(wchar_t* s)
     return this;
 }
 
-const Frame* Frame::duplicate()
+const Frame* Frame::Duplicate()
 {
     Frame* f = new Frame(this->payload->Capacity());
     this->payload->MarkReaderIndex();
@@ -81,12 +81,12 @@ const Frame* Frame::duplicate()
     this->payload->ResetReaderIndex();
     if (e)
     {
-        f->end();
+        f->End();
     }
     return f;
 }
 
-void Frame::end()
+void Frame::End()
 {
     ByteBuf* bb = payload;
     int reader = bb->ReaderIndex();
@@ -98,16 +98,16 @@ void Frame::end()
     this->e = true;
 }
 
-bool Frame::isEnd()
+bool Frame::IsEnd()
 {
     return e;
 }
 
-void Frame::setEnd(bool e)
+void Frame::SetEnd(bool e)
 {
     if (e)
     {
-        this->end();
+        this->End();
     } else
     {
         this->e = e;

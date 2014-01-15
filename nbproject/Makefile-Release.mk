@@ -41,7 +41,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/LVProtocal.o \
 	${OBJECTDIR}/MemoryPool.o \
 	${OBJECTDIR}/Mutex.o \
-	${OBJECTDIR}/Protocal.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
 	${OBJECTDIR}/Test.o \
@@ -107,11 +106,6 @@ ${OBJECTDIR}/Mutex.o: Mutex.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Mutex.o Mutex.cpp
-
-${OBJECTDIR}/Protocal.o: Protocal.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Protocal.o Protocal.cpp
 
 ${OBJECTDIR}/Socket.o: Socket.cpp 
 	${MKDIR} -p ${OBJECTDIR}

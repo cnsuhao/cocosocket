@@ -24,22 +24,22 @@ public:
     ThreadPool(int ps = 128, int ic = 0);
     ~ThreadPool();
 public:
-    bool offer(Task* pTask);
-    int getPoolSize();
-    int getInitializeCount();
-    int getAliveCount();
-    void shutdown();
+    bool Offer(Task* pTask);
+    int GetPoolSize();
+    int GetInitializeCount();
+    int GetAliveCount();
+    void Shutdown();
 };
 
-inline int ThreadPool::getPoolSize() {
+inline int ThreadPool::GetPoolSize() {
     return poolSize;
 }
 
-inline int ThreadPool::getInitializeCount() {
+inline int ThreadPool::GetInitializeCount() {
     return initsize;
 }
 
-inline int ThreadPool::getAliveCount() {
+inline int ThreadPool::GetAliveCount() {
     return alive;
 }
 #endif

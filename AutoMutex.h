@@ -6,13 +6,15 @@ class AutoMutex {
 private:
     Mutex* mutext;
 public:
+
     AutoMutex(Mutex * pMutex) {
         mutext = pMutex;
-        mutext->lock();
+        mutext->Lock();
     }
 
     ~AutoMutex() {
-        mutext->unlock();
+        mutext->Unlock();
+        delete mutext;
     }
 };
 #endif

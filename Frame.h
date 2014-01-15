@@ -21,10 +21,10 @@ public:
     const Frame* PutLong(long s);
     const Frame* PutFloat(float s);
     const Frame* PutString(wchar_t* s);
-    void end();
-    bool isEnd();
-    void setEnd(bool e);
-    const Frame* duplicate();
+    void End();
+    bool IsEnd();
+    void SetEnd(bool e);
+    const Frame* Duplicate();
 private:
     ByteBuf* payload; //原始数据
     bool e; //是否封包

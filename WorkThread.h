@@ -7,18 +7,23 @@
 
 class WorkThread : public Thread {
 protected:
-    void run();
+    void Run();
 public:
     WorkThread();
     ~WorkThread();
-    void setTask(Task * pTask);
+    void AddTask(Task * pt);
+    void SetStatus(int s);
 private:
     Task* task;
 };
 
-inline void WorkThread::setTask(Task * t) {
+inline void WorkThread::AddTask(Task * t) {
     task = t;
     sem_post(this->sem);
+}
+
+inline void WorkThread::SetStatus(int s) {
+    status = s;
 }
 #endif
 

@@ -22,46 +22,46 @@ public:
     };
 private:
     pthread_t threadId;
-    int create(pFuncThreadStart pFuncStartRoutine, void * context, bool bDetached = false, bool bSetScope = false);
-    int initialize();
-    void finish();
-    static void * doRun(void * pContext);
+    int Create(pFuncThreadStart pFuncStartRoutine, void * context, bool bDetached = false, bool bSetScope = false);
+    int Init();
+    void End();
+    static void * DoRun(void * pContext);
 protected:
     int status;
     sem_t* sem;
-    virtual void run() = 0;
+    virtual void Run() = 0;
 public:
     Thread();
     virtual ~Thread();
-    int detach();
-    int join(void ** pRetValue = NULL);
-    void exit(void * pRetValue = NULL);
-    void yield();
-    bool isCurrent();
-    pthread_t getThreadId();
-    int getStatus();
-    int start();
+    int Detach();
+    int Join(void ** pRetValue = NULL);
+    void Exit(void * pRetValue = NULL);
+    void Yield();
+    bool IsCurrent();
+    pthread_t GetThreadId();
+    int GetStatus();
+    int Start();
 };
 
-inline pthread_t Thread::getThreadId() {
+inline pthread_t Thread::GetThreadId() {
     return threadId;
 }
 
-inline int Thread::detach() {
+inline int Thread::Detach() {
     return pthread_detach(threadId);
 }
 
-inline int Thread::join(void ** pRetValue) {
+inline int Thread::Join(void ** pRetValue) {
     return pthread_join(threadId, pRetValue);
 }
 
-inline void Thread::exit(void * pRetValue) {
-    if (isCurrent()) {
+inline void Thread::Exit(void * pRetValue) {
+    if (IsCurrent()) {
         pthread_exit(pRetValue);
     }
 }
 
-inline bool Thread::isCurrent() {
+inline bool Thread::IsCurrent() {
     if (pthread_equal(threadId, pthread_self()) != 0) {
         return true;
     } else {
@@ -69,11 +69,11 @@ inline bool Thread::isCurrent() {
     }
 }
 
-inline void Thread::yield() {
+inline void Thread::Yield() {
     sched_yield();
 }
 
-inline int Thread::getStatus() {
+inline int Thread::GetStatus() {
     return status;
 }
 #endif

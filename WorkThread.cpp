@@ -17,7 +17,7 @@ void WorkThread::Run()
         if (task != NULL)
         {
             status = RUNNING;
-            this->task->run();
+            this->task->Run();
             delete task;
             task = NULL;
         } else

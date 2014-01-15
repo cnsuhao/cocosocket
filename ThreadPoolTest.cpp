@@ -8,7 +8,7 @@ class TestTask : public Task
 {
 public:
 
-    void run()
+    void Run()
     {
         int nCount = 0;
         while (true)

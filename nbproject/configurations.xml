@@ -27,6 +27,7 @@
       <itemPath>Mutex.cpp</itemPath>
       <itemPath>Socket.cpp</itemPath>
       <itemPath>SocketListerner.cpp</itemPath>
+      <itemPath>Task.cpp</itemPath>
       <itemPath>Test.cpp</itemPath>
       <itemPath>Thread.cpp</itemPath>
       <itemPath>ThreadPool.cpp</itemPath>
@@ -95,6 +96,8 @@
       <item path="SocketListerner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Task.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Task.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -178,6 +181,8 @@
       <item path="SocketListerner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Task.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Task.h" ex="false" tool="3" flavor2="0">
       </item>

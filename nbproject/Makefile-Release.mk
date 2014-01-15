@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Mutex.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
+	${OBJECTDIR}/Task.o \
 	${OBJECTDIR}/Test.o \
 	${OBJECTDIR}/Thread.o \
 	${OBJECTDIR}/ThreadPool.o \
@@ -116,6 +117,11 @@ ${OBJECTDIR}/SocketListerner.o: SocketListerner.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SocketListerner.o SocketListerner.cpp
+
+${OBJECTDIR}/Task.o: Task.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Task.o Task.cpp
 
 ${OBJECTDIR}/Test.o: Test.cpp 
 	${MKDIR} -p ${OBJECTDIR}

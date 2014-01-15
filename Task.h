@@ -12,6 +12,6 @@ class Task {
 public:
     Task();
     virtual ~Task();
-    virtual void run() = 0;
+    virtual void Run() = 0;
 };
 #endif	/* TASK_H */

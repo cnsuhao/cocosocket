@@ -9,7 +9,7 @@
 #define	SOCKETLISTERNER_H
 #include "Socket.h"
 #include "ByteBuf.h"
-#include  "Thread.h"
+#include "Thread.h"
 
 class SocketListerner : public Thread {
 public:

@@ -25,18 +25,6 @@ Socket::~Socket()
     delete this->ip;
     delete this->listerner;
     delete this->protocal;
-    instance = NULL;
-}
-Socket* Socket::instance = new Socket();
-
-/**
- *返回唯一实例
- */
-Socket* Socket::GetInstance()
-{
-    if (instance == NULL)
-        instance = new Socket();
-    return instance;
 }
 
 /**
@@ -45,7 +33,7 @@ Socket* Socket::GetInstance()
  */
 int Socket::GetSocketId()
 {
-    return this->sockfd;
+    return this->sockid;
 }
 
 /**
@@ -55,14 +43,6 @@ int Socket::GetSocketId()
 SocketListerner* Socket::GetListerner()
 {
     return this->listerner;
-}
-
-/**
- * 接收线程的id
- */
-pthread_t Socket::GetRecvThreadId()
-{
-    return this->pthread_recv_id;
 }
 
 Protocal* Socket::GetProtocal()
@@ -76,41 +56,6 @@ void Socket::SetProtocal(Protocal* p)
 }
 
 /**
- * 接收消息
- */
-static void* Recv(void*)
-{
-    ByteBuf* buf = new ByteBuf(1024);
-    int size = 0;
-    int sockid = Socket::GetInstance()->GetSocketId();
-    while (true)
-    {
-        size = recv(sockid, buf->GetRaw(), 1024, 0);
-        if (size > 0)
-        {
-            buf->ReaderIndex(0);
-            buf->WriterIndex(size);
-            while (true)
-            {
-                ByteBuf* frame = Socket::GetInstance()->GetProtocal()->TranslateFrame(buf);
-                if (frame != NULL)
-                {
-                    Socket::GetInstance()->GetListerner()->OnMessage(Socket::GetInstance(), frame);
-                } else
-                {
-                    break;
-                }
-            }
-        } else
-        {
-            break;
-        }
-    }
-    delete buf;
-    Socket::GetInstance()->GetListerner()->OnClose(Socket::GetInstance(), true);
-}
-
-/**
  * 连接服务器
  * @return 
  */
@@ -121,25 +66,15 @@ void Socket::Connect(const char* ip, int port)
     struct hostent* p;
     struct sockaddr_in addr;
     p = gethostbyname(this->ip);
-    if ((this->sockfd = socket(AF_INET, SOCK_STREAM, 0)) != -1)
+    if ((this->sockid = socket(AF_INET, SOCK_STREAM, 0)) != -1)
     {
         addr.sin_family = AF_INET;
         addr.sin_port = htons(this->port);
         addr.sin_addr = *((struct in_addr *) p->h_addr);
         bzero(&(addr.sin_zero), 8);
-        if (connect(sockfd, (struct sockaddr *) &addr, sizeof (struct sockaddr)) != -1)
+        if (connect(sockid, (struct sockaddr *) &addr, sizeof (struct sockaddr)) != -1)
         {
             this->listerner->OnOpen(this);
-            //启动一个接收线程接收消息
-            pthread_t id;
-            int ret = pthread_create(&id, NULL, Recv, NULL);
-            if (ret != 0)
-            {
-                this->listerner->OnError(this, "无法创建消息接收线程");
-            } else
-            {
-                this->pthread_recv_id = id;
-            }
         }
     } else
     {
@@ -160,7 +95,7 @@ int Socket::Send(ByteBuf* frame)
     int len = frame->ReadableBytes();
     while (count < len)
     {
-        bytes = send(this->sockfd, content + count + frame->ReaderIndex(), len - count, 0);
+        bytes = send(this->sockid, content + count + frame->ReaderIndex(), len - count, 0);
         if (bytes == -1 || bytes == 0)
             return -1;
         count += bytes;
@@ -176,6 +111,7 @@ int Socket::Send(ByteBuf* frame)
 void Socket::SetListerner(SocketListerner* listerner)
 {
     this->listerner = listerner;
+    this->listerner->SetContext(this);
 }
 
 

@@ -9,12 +9,13 @@
 #define	DEFAULTLISTERNER_H
 #include "ByteBuf.h"
 #include "SocketListerner.h"
+#include "Socket.h"
 
 class DefaultListerner : public SocketListerner {
 public:
     DefaultListerner();
     virtual ~DefaultListerner();
-    void OnClose(Socket* so,bool fromRemote);
+    void OnClose(Socket* so, bool fromRemote);
     void OnError(Socket* so, const char* e);
     void OnIdle(Socket* so);
     void OnMessage(Socket* so, ByteBuf* frame);

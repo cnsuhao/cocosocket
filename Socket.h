@@ -9,11 +9,10 @@
 #define	SOCKET_H
 #include "SocketListerner.h"
 #include "Protocal.h"
-#include <pthread.h>
-class SocketListerner;
 
 class Socket {
 public:
+    Socket();
     virtual ~Socket();
     void Connect(const char* ip, int port);
     int Send(ByteBuf* frame);
@@ -22,15 +21,10 @@ public:
     Protocal* GetProtocal();
     int GetSocketId();
     SocketListerner* GetListerner();
-    pthread_t GetRecvThreadId();
-    static Socket* GetInstance();
 private:
-    Socket();
-    static Socket* instance;
     const char* ip;
     int port;
-    int sockfd;
-    pthread_t pthread_recv_id;
+    int sockid;
     SocketListerner* listerner;
     Protocal* protocal;
 };

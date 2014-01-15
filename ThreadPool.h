@@ -1,6 +1,6 @@
 
-#ifndef __THREAD_LRL_20130214_HEADER__
-#define __THREAD_LRL_20130214_HEADER__
+#ifndef THREADPOOL_H
+#define THREADPOOL_H
 
 #include <string.h>
 #include "WorkThread.h"
@@ -8,45 +8,39 @@
 #include "AutoMutex.h"
 
 class ThreadPool {
-    ///属性
-public:
-    ///nothing.
-protected:
-    ///nothing.
 private:
     ///线程池大小
-    int m_nPoolSize;
+    int poolSize;
     ///线程池初始处于挂起状态的线程数
-    int m_nInitializeCount;
+    int initsize;
     ///活动中的线程数
-    int m_nAliveCount;
+    int alive;
     ///线程数组
-    WorkThread** m_pThreads;
+    WorkThread** pool;
     ///保护线程数组的互斥量
-    Mutex m_cMutex;
+    Mutex lock;
     ///构造函数&& 析构函数
 public:
-    ThreadPool(int nPoolSize = 128, int nInitializeCount = 0);
+    ThreadPool(int ps = 128, int ic = 0);
     ~ThreadPool();
 public:
-    bool postTask(Task* pTask);
+    bool offer(Task* pTask);
     int getPoolSize();
     int getInitializeCount();
     int getAliveCount();
-    void waitAliveFinish();
+    void shutdown();
 };
 
 inline int ThreadPool::getPoolSize() {
-    return m_nPoolSize;
+    return poolSize;
 }
 
 inline int ThreadPool::getInitializeCount() {
-    return m_nInitializeCount;
+    return initsize;
 }
 
 inline int ThreadPool::getAliveCount() {
-    return m_nAliveCount;
+    return alive;
 }
-
 #endif
 

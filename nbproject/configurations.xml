@@ -36,8 +36,6 @@
       <itemPath>main.cpp</itemPath>
       <itemPath>memorypoolconfig.cpp</itemPath>
       <itemPath>synflood.c</itemPath>
-      <itemPath>synflood1.c</itemPath>
-      <itemPath>synflood2.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles" displayName="资源文件" projectFiles="true">
     </logicalFolder>
@@ -127,10 +125,6 @@
       </item>
       <item path="synflood.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="synflood1.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="synflood2.c" ex="false" tool="0" flavor2="0">
-      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -215,10 +209,6 @@
       <item path="memorypoolconfig.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="synflood.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="synflood1.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="synflood2.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -1,16 +1,29 @@
 #include "WorkThread.h"
 #include "errno.h"
 
-WorkThread::WorkThread(int nNo) : m_pTask(NULL)
+WorkThread::WorkThread() : task(NULL)
 {
 }
 
 WorkThread::~WorkThread()
 {
-
+    delete task;
 }
 
 void WorkThread::run()
 {
-    this->m_pTask->run();
+    while (this->status != QUITED)
+    {
+        if (task != NULL)
+        {
+            status = RUNNING;
+            this->task->run();
+            delete task;
+            task = NULL;
+        } else
+        {
+            this->status = IDLE;
+            sem_wait(this->sem); //等待添加新的task
+        }
+    }
 }

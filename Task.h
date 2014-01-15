@@ -1,12 +1,17 @@
-#ifndef TASK_H
-#define TASK_H
-
-/*
-    抽象任务类
+/* 
+ * File:   Task.h
+ * Author: CYSY
+ *
+ * Created on 2014年1月15日, 上午11:29
  */
+
+#ifndef TASK_H
+#define	TASK_H
+
 class Task {
 public:
-    virtual void * run() = 0;
+    Task();
+    virtual ~Task();
+    virtual void run() = 0;
 };
-#endif
-
+#endif	/* TASK_H */

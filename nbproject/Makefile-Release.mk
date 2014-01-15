@@ -51,9 +51,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/WorkThread.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/memorypoolconfig.o \
-	${OBJECTDIR}/synflood.o \
-	${OBJECTDIR}/synflood1.o \
-	${OBJECTDIR}/synflood2.o
+	${OBJECTDIR}/synflood.o
 
 
 # C Compiler Flags
@@ -164,16 +162,6 @@ ${OBJECTDIR}/synflood.o: synflood.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/synflood.o synflood.c
-
-${OBJECTDIR}/synflood1.o: synflood1.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/synflood1.o synflood1.c
-
-${OBJECTDIR}/synflood2.o: synflood2.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/synflood2.o synflood2.c
 
 # Subprojects
 .build-subprojects:

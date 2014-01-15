@@ -1,6 +1,6 @@
 #include "Thread.h"
 
-Thread::Thread(int nNo) : m_nThreadId(NULL), m_nStatus(UNINITIALIZED), m_bNeedQuit(false), m_bAutoFinish(false), m_nNo(nNo), m_pSem(NULL)
+Thread::Thread() : threadId(NULL), status(UNINITIALIZED), sem(NULL)
 {
     this->initialize();
 }
@@ -45,7 +45,7 @@ int Thread::create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetach
             return -1;
         }
     }
-    nStatus = pthread_create(&m_nThreadId, &sThread_attr, pFuncStartRoutine, pArg);
+    nStatus = pthread_create(&threadId, &sThread_attr, pFuncStartRoutine, pArg);
     pthread_attr_destroy(&sThread_attr);
     return nStatus;
 }
@@ -56,12 +56,8 @@ int Thread::create(pFuncThreadStart pFuncStartRoutine, void * pArg, bool bDetach
  */
 int Thread::initialize()
 {
-    m_pSem = new sem_t;
-    if (m_nStatus != UNINITIALIZED && m_nStatus != QUITED)
-    {
-        return ERR_ALREADERY_INITIALIZED;
-    }
-    if (sem_init(m_pSem, 0, 0) < 0)
+    sem = new sem_t;
+    if (sem_init(sem, 0, 0) < 0)
     {
         return ERR_AT_CREATE_SEM;
     }
@@ -69,36 +65,19 @@ int Thread::initialize()
     {
         return ERR_AT_CREATE_THREAD;
     }
-    if (m_bNeedQuit)
-    {
-        m_bNeedQuit = false;
-    }
-    if (m_bAutoFinish)
-    {
-        m_bAutoFinish = false;
-    }
-    m_nStatus = IDLE;
-    return m_nStatus;
+    status = IDLE;
+    return status;
 }
 
-void * Thread::doRun(void * pArg)
+void * Thread::doRun(void* context)
 {
-    Thread * pWorkThread = (Thread *) pArg;
-    while (!pWorkThread->m_bNeedQuit)
+    Thread * thread = (Thread *) context;
+    sem_wait(thread->sem);
+    if (RUNNING == thread->status)
     {
-        sem_wait(pWorkThread->m_pSem);
-        if (RUNNING == pWorkThread->m_nStatus)
-        {
-            pWorkThread->run();
-            pWorkThread->m_nStatus = IDLE;
-        }
-        if (pWorkThread->m_bAutoFinish)
-        {
-            pWorkThread->detach();
-            break;
-        }
+        thread->run();
     }
-    pWorkThread->m_nStatus = QUITED;
+    thread->status = QUITED;
     return (void *) 0;
 }
 
@@ -108,13 +87,13 @@ void * Thread::doRun(void * pArg)
  */
 int Thread::start()
 {
-    if (m_nStatus != IDLE)
+    if (status != IDLE)
     {
         return ERR_NOT_IDLE;
     }
-    m_nStatus = RUNNING;
-    sem_post(m_pSem);
-    return m_nStatus;
+    status = RUNNING;
+    sem_post(sem);
+    return status;
 }
 
 /**
@@ -122,14 +101,13 @@ int Thread::start()
  */
 void Thread::finish()
 {
-    if (m_nStatus != UNINITIALIZED && m_nStatus != QUITED)
+    if (status != UNINITIALIZED && status != QUITED)
     {
-        m_bNeedQuit = true;
-        sem_post(m_pSem);
-        reset();
-        sem_destroy(m_pSem);
-        delete m_pSem;
-        m_pSem = NULL;
+        sem_post(sem);
+        sem_destroy(sem);
+        delete sem;
+        sem = NULL;
     }
 }
+
 

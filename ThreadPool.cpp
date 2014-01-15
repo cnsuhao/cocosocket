@@ -1,112 +1,78 @@
-/**
- *	Author: ACb0y
- *	FileName: ThreadPool.cpp
- *	CreateTime: 2013年2月14日16:57:49
- *	Version: 1.0
- */
-
 #include <iostream>
 #include "ThreadPool.h"
 using namespace std;
 
-ThreadPool::ThreadPool(int nPoolSize, int nInitializeCount)
-: m_nPoolSize(nPoolSize), m_nInitializeCount(nInitializeCount), m_nAliveCount(0), m_pThreads(NULL)
+ThreadPool::ThreadPool(int poolsize, int initsize)
+: poolSize(poolsize), initsize(initsize), alive(0), pool(NULL)
 {
-    m_pThreads = new WorkThread * [nPoolSize];
-    if (NULL == m_pThreads)
+    pool = new WorkThread* [poolsize];
+    if (NULL == pool)
     {
         return;
     }
-    memset(m_pThreads, 0, sizeof (WorkThread *) * nPoolSize);
-    for (int i = 0; i < m_nInitializeCount; ++i)
+    memset(pool, 0, sizeof (WorkThread*) * poolsize);
+    for (int i = 0; i < initsize; ++i)
     {
-        m_pThreads[i] = new WorkThread(i + 1);
-        if (NULL == m_pThreads)
-        {
-            break;
-        }
-        if (m_pThreads[i]->initialize() != Thread::IDLE)
-        {
-            break;
-        }
-        ++m_nAliveCount;
+        pool[i] = new WorkThread();
+        ++alive;
     }
 }
 
 ThreadPool::~ThreadPool()
 {
-    if (NULL == m_pThreads)
+    if (NULL == pool)
     {
         return;
     }
-
-    for (int i = 0; i < m_nAliveCount; ++i)
+    for (int i = 0; i < alive; ++i)
     {
-        if (NULL == m_pThreads[i])
+        if (NULL == pool[i])
         {
             continue;
         }
-        m_pThreads[i]->finish();
-        delete m_pThreads[i];
-        m_pThreads[i] = NULL;
+        delete pool[i];
     }
-    delete [] m_pThreads;
-    m_pThreads = NULL;
+    delete [] pool;
 }
 
-bool ThreadPool::postTask(Task * pTask)
+bool ThreadPool::offer(Task * pTask)
 {
-    bool bPostSuccess = false;
-    AutoMutex cAutoMutex(&m_cMutex);
-    for (int i = 0; i < m_nAliveCount; ++i)
+    bool result = false;
+    AutoMutex AutoMutex(&lock);
+    for (int i = 0; i < alive; ++i)
     {
-        if (m_pThreads[i]->getStatus() == Thread::IDLE)
+        if (pool[i]->getStatus() == Thread::IDLE)
         {
-            m_pThreads[i]->setTask(pTask);
-            m_pThreads[i]->run();
-            bPostSuccess = true;
+            pool[i]->setTask(pTask);
+            result = true;
             break;
         }
     }
-
-    if (!bPostSuccess && m_nAliveCount < m_nPoolSize)
+    if (!result && alive < poolSize)
     {
-        m_pThreads[m_nAliveCount] = new WorkThread(m_nAliveCount + 1);
-        if (m_pThreads[m_nAliveCount] != NULL)
-        {
-            if (m_pThreads[m_nAliveCount]->initialize() == Thread::IDLE)
-            {
-                m_pThreads[m_nAliveCount]->setTask(pTask);
-                m_pThreads[m_nAliveCount]->run();
-                ++m_nAliveCount;
-                bPostSuccess = true;
-            }
-        }
+        pool[alive] = new WorkThread();
+        pool[alive]->setTask(pTask);
+        ++alive;
+        result = true;
     }
-
-    return bPostSuccess;
+    return result;
 }
 
-void ThreadPool::waitAliveFinish()
+void ThreadPool::shutdown()
 {
-    if (NULL == m_pThreads)
+    if (NULL == pool)
     {
         return;
     }
-
-    ///依次调用所有的活动线程，等待运行结束
-    for (int i = 0; i < m_nAliveCount; ++i)
+    for (int i = 0; i < alive; ++i)
     {
-        if (NULL == m_pThreads[i])
+        if (NULL == pool[i])
         {
             continue;
         }
-        m_pThreads[i]->finish();
-        delete m_pThreads[i];
-        m_pThreads[i] = NULL;
+        delete pool[i];
+        pool[i] = NULL;
     }
-
-    delete [] m_pThreads;
-    m_nAliveCount = 0;
+    delete [] pool;
+    alive = 0;
 }
-

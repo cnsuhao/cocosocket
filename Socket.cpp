@@ -16,6 +16,7 @@
 #include "Socket.h"
 #include "ByteBuf.h"
 #include "SocketListerner.h"
+#include "Protocal.h"
 
 Socket::Socket()
 {

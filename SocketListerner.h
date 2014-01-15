@@ -26,6 +26,5 @@ public:
 private:
     Socket* context;
 };
-
 #endif	/* SOCKETLISTERNER_H */
 

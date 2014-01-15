@@ -20,6 +20,7 @@ public:
     void OnIdle(Socket* so);
     void OnMessage(Socket* so, ByteBuf* frame);
     void OnOpen(Socket* so);
+
 private:
 
 };

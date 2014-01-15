@@ -6,6 +6,10 @@
  */
 
 #include "SocketListerner.h"
+#include "sys/socket.h"
+#include "Socket.h"
+#include "ByteBuf.h"
+#include "Protocal.h"
 
 SocketListerner::SocketListerner()
 {

@@ -2,9 +2,10 @@
 #include "ThreadPool.h"
 #include <pthread.h>
 #include <sched.h>
+#include <unistd.h>
 using namespace std;
 
-class TestTask : public Task
+class TestTask : public Thread
 {
 public:
 
@@ -22,16 +23,18 @@ public:
     }
 };
 
-//int main()
-//{
-//    ThreadPool cThreadPool(128, 1);
-//    TestTask cTest;
-//    cThreadPool.postTask(&cTest);
-//    while (true)
-//    {
-//        cout << "Current AliveCount = " << cThreadPool.getAliveCount() << endl;
-//        cThreadPool.postTask(&cTest);
-//        cout << "Add one task." << endl;
-//    }
-//}
+int main()
+{
+    ThreadPool* cThreadPool = new ThreadPool(5, 1);
+    TestTask* cTest = new TestTask;
+    cThreadPool->Offer(cTest);
+    while (true)
+    {
+        cout << "Current AliveCount = " << cThreadPool->GetAliveCount() << endl;
+        cTest = new TestTask;
+        cThreadPool->Offer(cTest);
+        cout << "Add one task." << endl;
+        sleep(1);
+    }
+}
 

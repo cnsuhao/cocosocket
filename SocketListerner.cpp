@@ -22,6 +22,7 @@ SocketListerner::~SocketListerner()
 void SocketListerner::SetContext(Socket* context)
 {
     this->context = context;
+    this->Start();
 }
 
 void SocketListerner::Run()

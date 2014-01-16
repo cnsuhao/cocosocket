@@ -124,7 +124,7 @@ int spoof(char* serverip, int serverport, int times) {
     return 1;
 }
 
-int main(int argc, char * argv[]) {
-    spoof("1.168.10.151", 8888, 10000);
-    return 0;
-}
+//int main(int argc, char * argv[]) {
+//    spoof("1.168.10.151", 8888, 10000);
+//    return 0;
+//}

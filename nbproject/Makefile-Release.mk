@@ -39,11 +39,10 @@ OBJECTFILES= \
 	${OBJECTDIR}/DefaultListerner.o \
 	${OBJECTDIR}/Frame.o \
 	${OBJECTDIR}/LVProtocal.o \
+	${OBJECTDIR}/Lock.o \
 	${OBJECTDIR}/MemoryPool.o \
-	${OBJECTDIR}/Mutex.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
-	${OBJECTDIR}/Task.o \
 	${OBJECTDIR}/Test.o \
 	${OBJECTDIR}/Thread.o \
 	${OBJECTDIR}/ThreadPool.o \
@@ -98,15 +97,15 @@ ${OBJECTDIR}/LVProtocal.o: LVProtocal.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LVProtocal.o LVProtocal.cpp
 
+${OBJECTDIR}/Lock.o: Lock.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lock.o Lock.cpp
+
 ${OBJECTDIR}/MemoryPool.o: MemoryPool.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MemoryPool.o MemoryPool.cpp
-
-${OBJECTDIR}/Mutex.o: Mutex.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Mutex.o Mutex.cpp
 
 ${OBJECTDIR}/Socket.o: Socket.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -117,11 +116,6 @@ ${OBJECTDIR}/SocketListerner.o: SocketListerner.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SocketListerner.o SocketListerner.cpp
-
-${OBJECTDIR}/Task.o: Task.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Task.o Task.cpp
 
 ${OBJECTDIR}/Test.o: Test.cpp 
 	${MKDIR} -p ${OBJECTDIR}

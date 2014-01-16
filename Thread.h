@@ -4,7 +4,7 @@
 #include <sched.h>
 #include <semaphore.h>
 
-typedef void * (* pFuncThreadStart)(void *);
+typedef void * (* func)(void *);
 
 class Thread {
 public:
@@ -22,17 +22,17 @@ public:
     };
 private:
     pthread_t threadId;
-    int Create(pFuncThreadStart pFuncStartRoutine, void * context, bool bDetached = false, bool bSetScope = false);
-    int Init();
+    int Create(func pFuncStartRoutine, void * context, bool bDetached = false, bool bSetScope = false);
     void End();
+    int Init();
     static void * DoRun(void * pContext);
 protected:
     int status;
     sem_t* sem;
-    virtual void Run() = 0;
 public:
     Thread();
     virtual ~Thread();
+    virtual void Run() = 0;
     int Detach();
     int Join(void ** pRetValue = NULL);
     void Exit(void * pRetValue = NULL);

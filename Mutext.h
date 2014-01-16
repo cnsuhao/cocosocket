@@ -2,18 +2,18 @@
 #define MUTEX_H
 #include <pthread.h>
 
-class Mutex {
+class Mutext {
 private:
     pthread_mutex_t mutext;
 public:
-    Mutex(int sh = PTHREAD_PROCESS_PRIVATE, int type = PTHREAD_MUTEX_NORMAL);
-    ~Mutex();
+    Mutext(int sh = PTHREAD_PROCESS_PRIVATE, int type = PTHREAD_MUTEX_NORMAL);
+    ~Mutext();
 private:
 
-    Mutex(const Mutex & cMutex) {
+    Mutext(const Mutext & cMutex) {
     }
 
-    Mutex & operator =(const Mutex & cMutex) {
+    Mutext & operator =(const Mutext & cMutex) {
         return *this;
     }
 
@@ -23,15 +23,15 @@ public:
     int Trylock();
 };
 
-inline int Mutex::Lock() {
+inline int Mutext::Lock() {
     return pthread_mutex_lock(&mutext);
 }
 
-inline int Mutex::Unlock() {
+inline int Mutext::Unlock() {
     return pthread_mutex_unlock(&mutext);
 }
 
-inline int Mutex::Trylock() {
+inline int Mutext::Trylock() {
     return pthread_mutex_trylock(&mutext);
 }
 

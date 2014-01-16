@@ -3,7 +3,6 @@
 
 #include <semaphore.h>
 #include "Thread.h"
-#include "Task.h"
 
 class WorkThread : public Thread {
 protected:
@@ -11,13 +10,13 @@ protected:
 public:
     WorkThread();
     ~WorkThread();
-    void AddTask(Task * pt);
+    void AddTask(Thread * pt);
     void SetStatus(int s);
 private:
-    Task* task;
+    Thread* task;
 };
 
-inline void WorkThread::AddTask(Task * t) {
+inline void WorkThread::AddTask(Thread * t) {
     task = t;
     sem_post(this->sem);
 }

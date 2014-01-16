@@ -2,7 +2,6 @@
 
 Thread::Thread() : threadId(NULL), status(UNINITIALIZED), sem(NULL)
 {
-    this->Init();
 }
 
 Thread::~Thread()
@@ -18,7 +17,7 @@ Thread::~Thread()
  * @param bSetScope
  * @return 
  */
-int Thread::Create(pFuncThreadStart fun, void * context, bool d, bool bSetScope)
+int Thread::Create(func fun, void * context, bool d, bool bSetScope)
 {
     pthread_attr_t sThread_attr;
     int nStatus;
@@ -87,12 +86,12 @@ void * Thread::DoRun(void* context)
  */
 int Thread::Start()
 {
-    if (status != IDLE)
+    if (status == UNINITIALIZED)
     {
-        return ERR_NOT_IDLE;
+        this->Init();
+        status = RUNNING;
+        sem_post(sem);
     }
-    status = RUNNING;
-    sem_post(sem);
     return status;
 }
 

@@ -2,17 +2,16 @@
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles" displayName="头文件" projectFiles="true">
-      <itemPath>AutoMutex.h</itemPath>
+      <itemPath>AutoLock.h</itemPath>
       <itemPath>ByteBuf.h</itemPath>
       <itemPath>DefaultListerner.h</itemPath>
       <itemPath>Frame.h</itemPath>
       <itemPath>LVProtocal.h</itemPath>
       <itemPath>MemoryPool.h</itemPath>
-      <itemPath>Mutex.h</itemPath>
+      <itemPath>Mutext.h</itemPath>
       <itemPath>Protocal.h</itemPath>
       <itemPath>Socket.h</itemPath>
       <itemPath>SocketListerner.h</itemPath>
-      <itemPath>Task.h</itemPath>
       <itemPath>Test.h</itemPath>
       <itemPath>Thread.h</itemPath>
       <itemPath>ThreadPool.h</itemPath>
@@ -23,11 +22,10 @@
       <itemPath>DefaultListerner.cpp</itemPath>
       <itemPath>Frame.cpp</itemPath>
       <itemPath>LVProtocal.cpp</itemPath>
+      <itemPath>Lock.cpp</itemPath>
       <itemPath>MemoryPool.cpp</itemPath>
-      <itemPath>Mutex.cpp</itemPath>
       <itemPath>Socket.cpp</itemPath>
       <itemPath>SocketListerner.cpp</itemPath>
-      <itemPath>Task.cpp</itemPath>
       <itemPath>Test.cpp</itemPath>
       <itemPath>Thread.cpp</itemPath>
       <itemPath>ThreadPool.cpp</itemPath>
@@ -61,7 +59,7 @@
       </toolsSet>
       <compileType>
       </compileType>
-      <item path="AutoMutex.h" ex="false" tool="3" flavor2="0">
+      <item path="AutoLock.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ByteBuf.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -79,13 +77,13 @@
       </item>
       <item path="LVProtocal.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Lock.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="MemoryPool.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MemoryPool.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Mutex.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Mutex.h" ex="false" tool="3" flavor2="0">
+      <item path="Mutext.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -96,10 +94,6 @@
       <item path="SocketListerner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Task.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Task.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Test.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -146,7 +140,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="AutoMutex.h" ex="false" tool="3" flavor2="0">
+      <item path="AutoLock.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ByteBuf.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -164,13 +158,13 @@
       </item>
       <item path="LVProtocal.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Lock.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="MemoryPool.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MemoryPool.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Mutex.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Mutex.h" ex="false" tool="3" flavor2="0">
+      <item path="Mutext.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Protocal.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -181,10 +175,6 @@
       <item path="SocketListerner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketListerner.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Task.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Task.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Test.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -3,6 +3,7 @@
 
 WorkThread::WorkThread() : task(NULL)
 {
+    this->Start();
 }
 
 WorkThread::~WorkThread()

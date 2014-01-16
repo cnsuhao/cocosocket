@@ -1,6 +1,6 @@
-#include "Mutex.h"
+#include "Mutext.h"
 
-Mutex::Mutex(int nShared, int nType)
+Mutext::Mutext(int nShared, int nType)
 {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
@@ -10,7 +10,7 @@ Mutex::Mutex(int nShared, int nType)
     pthread_mutexattr_destroy(&attr);
 }
 
-Mutex::~Mutex()
+Mutext::~Mutext()
 {
     pthread_mutex_destroy(&mutext);
 }

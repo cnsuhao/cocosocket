@@ -6,6 +6,7 @@ using namespace std;
 ThreadPool::ThreadPool(int poolsize, int initsize)
 : poolSize(poolsize), initsize(initsize), alive(0), pool(NULL)
 {
+    this->lock = new Mutext;
     pool = new WorkThread* [poolsize];
     if (NULL == pool)
     {
@@ -36,10 +37,10 @@ ThreadPool::~ThreadPool()
     delete [] pool;
 }
 
-bool ThreadPool::Offer(Task * pTask)
+bool ThreadPool::Offer(Thread * pTask)
 {
     bool result = false;
-    AutoMutex AutoMutex(&lock);
+    lock->Lock();
     for (int i = 0; i < alive; ++i)
     {
         if (pool[i]->GetStatus() == Thread::IDLE)
@@ -56,6 +57,7 @@ bool ThreadPool::Offer(Task * pTask)
         ++alive;
         result = true;
     }
+    lock->Unlock();
     return result;
 }
 

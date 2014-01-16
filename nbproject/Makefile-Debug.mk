@@ -39,8 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/DefaultListerner.o \
 	${OBJECTDIR}/Frame.o \
 	${OBJECTDIR}/LVProtocal.o \
-	${OBJECTDIR}/Lock.o \
 	${OBJECTDIR}/MemoryPool.o \
+	${OBJECTDIR}/Mutext.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
 	${OBJECTDIR}/Test.o \
@@ -97,15 +97,15 @@ ${OBJECTDIR}/LVProtocal.o: LVProtocal.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LVProtocal.o LVProtocal.cpp
 
-${OBJECTDIR}/Lock.o: Lock.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Lock.o Lock.cpp
-
 ${OBJECTDIR}/MemoryPool.o: MemoryPool.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MemoryPool.o MemoryPool.cpp
+
+${OBJECTDIR}/Mutext.o: Mutext.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Mutext.o Mutext.cpp
 
 ${OBJECTDIR}/Socket.o: Socket.cpp 
 	${MKDIR} -p ${OBJECTDIR}

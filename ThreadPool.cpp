@@ -35,6 +35,7 @@ ThreadPool::~ThreadPool()
         delete pool[i];
     }
     delete [] pool;
+    delete lock;
 }
 
 bool ThreadPool::Offer(Thread * pTask)

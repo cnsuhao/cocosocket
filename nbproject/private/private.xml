@@ -6,16 +6,6 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/working/project/socket/Task.h</file>
-            <file>file:/D:/working/project/socket/Socket.h</file>
-            <file>file:/D:/working/project/socket/SocketListerner.cpp</file>
-            <file>file:/D:/working/project/socket/DefaultListerner.h</file>
-            <file>file:/D:/working/project/socket/SocketListerner.h</file>
-            <file>file:/D:/working/project/socket/Thread.h</file>
-            <file>file:/D:/working/project/socket/Socket.cpp</file>
-            <file>file:/D:/working/project/socket/DefaultListerner.cpp</file>
-            <file>file:/D:/working/project/socket/synflood.c</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -12,11 +12,13 @@
 LVProtocal::LVProtocal()
 {
     this->status = 0;
+
     frame = NULL;
 }
 
 LVProtocal::~LVProtocal()
 {
+    delete frame;
 }
 
 ByteBuf* LVProtocal::TranslateFrame(ByteBuf* in)

@@ -6,6 +6,11 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/working/project/socket/WorkThread.h</file>
+            <file>file:/D:/working/project/socket/LVProtocal.cpp</file>
+            <file>file:/D:/working/project/socket/ThreadPoolTest.cpp</file>
+            <file>file:/D:/working/project/socket/LVProtocal.h</file>
+        </group>
     </open-files>
 </project-private>

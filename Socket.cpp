@@ -8,10 +8,17 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
+#ifdef WIN32
+#pragma comment(lib, "wsock32")
+#pragma comment(lib,"ws2_32.lib")
+#include <winsock2.h>
+#else
 #include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#endif
 #include <pthread.h>
 #include "Socket.h"
 #include "ByteBuf.h"
@@ -82,6 +89,24 @@ void Socket::Connect(const char* ip, int port)
     {
         this->listerner->OnClose(this, true);
     }
+}
+
+/**
+ * 关闭
+ */
+int Socket::Close()
+{
+    if (sockid == -1)
+    {
+        return -1;
+    }
+#ifdef WIN32
+    shutdown(sockid, SD_SEND);
+    return (closesocket(sockid));
+#else
+    shutdown(sockid, SHUT_RDWR);
+    return (close(sockid));
+#endif
 }
 
 /**

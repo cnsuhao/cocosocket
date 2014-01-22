@@ -35,6 +35,7 @@ public:
     Socket();
     virtual ~Socket();
     void Connect(const char* ip, int port);
+    int Close();
     int Send(ByteBuf* frame);
     void SetListerner(SocketListerner* listerner);
     void SetProtocal(Protocal* p);

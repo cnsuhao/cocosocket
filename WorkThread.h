@@ -3,6 +3,8 @@
 
 #include <semaphore.h>
 #include "Thread.h"
+#include "Queue.h"
+#include "BlockingQueue.h"
 
 class WorkThread : public Thread {
 protected:
@@ -10,14 +12,15 @@ protected:
 public:
     WorkThread();
     ~WorkThread();
-    void AddTask(Thread * pt);
+    void AddTask(Thread* pt);
     void SetStatus(int s);
+    int TaskCount();
 private:
-    Thread* task;
+    Queue* q;
 };
 
-inline void WorkThread::AddTask(Thread * t) {
-    task = t;
+inline void WorkThread::AddTask(Thread* t) {
+    q->Offer(t);
     sem_post(this->sem);
 }
 

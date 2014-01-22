@@ -1,30 +1,37 @@
 #include "WorkThread.h"
 #include "errno.h"
+#include "BlockingQueue.h"
 
-WorkThread::WorkThread() : task(NULL)
+WorkThread::WorkThread()
 {
+    this->q = new BlockingQueue();
     this->Start();
 }
 
 WorkThread::~WorkThread()
 {
-    delete task;
+    delete q;
 }
 
 void WorkThread::Run()
 {
     while (this->status != QUITED)
     {
+        Thread* task = (Thread*) q->Poll();
         if (task != NULL)
         {
             status = RUNNING;
-            this->task->Run();
+            task->Run();
             delete task;
-            task = NULL;
         } else
         {
             this->status = IDLE;
             sem_wait(this->sem); //等待添加新的task
         }
     }
+}
+
+int WorkThread::TaskCount()
+{
+    return q->Size();
 }

@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/BlockingQueue.o \
 	${OBJECTDIR}/ByteBuf.o \
 	${OBJECTDIR}/DefaultListerner.o \
 	${OBJECTDIR}/Frame.o \
@@ -76,6 +77,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/socket.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/socket ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/BlockingQueue.o: BlockingQueue.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/BlockingQueue.o BlockingQueue.cpp
 
 ${OBJECTDIR}/ByteBuf.o: ByteBuf.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -8,11 +8,6 @@ ThreadPool::ThreadPool(int poolsize, int initsize)
 {
     this->lock = new Mutext;
     pool = new WorkThread* [poolsize];
-    if (NULL == pool)
-    {
-        return;
-    }
-    memset(pool, 0, sizeof (WorkThread*) * poolsize);
     for (int i = 0; i < initsize; ++i)
     {
         pool[i] = new WorkThread();
@@ -38,25 +33,35 @@ ThreadPool::~ThreadPool()
     delete lock;
 }
 
-bool ThreadPool::Offer(Thread * pTask)
+bool ThreadPool::Offer(Thread * task)
 {
     bool result = false;
     lock->Lock();
+    WorkThread* g = NULL;
     for (int i = 0; i < alive; ++i)
     {
         if (pool[i]->GetStatus() == Thread::IDLE)
         {
-            pool[i]->AddTask(pTask);
+            pool[i]->AddTask(task);
             result = true;
             break;
+        } else if (g == NULL)
+        {
+            g = pool[i];
+        } else if (g->TaskCount() > pool[i]->TaskCount())
+        {
+            g = pool[i];
         }
     }
     if (!result && alive < poolSize)
     {
         pool[alive] = new WorkThread();
-        pool[alive]->AddTask(pTask);
-        ++alive;
+        pool[alive]->AddTask(task);
+        alive++;
         result = true;
+    } else if (g != NULL)
+    {
+        g->AddTask(task);
     }
     lock->Unlock();
     return result;

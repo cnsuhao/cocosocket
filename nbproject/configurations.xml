@@ -20,7 +20,6 @@
       <itemPath>WorkThread.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
-      <itemPath>BlockingQueue.cpp</itemPath>
       <itemPath>ByteBuf.cpp</itemPath>
       <itemPath>DefaultListerner.cpp</itemPath>
       <itemPath>Frame.cpp</itemPath>
@@ -63,8 +62,6 @@
       <compileType>
       </compileType>
       <item path="AutoLock.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="BlockingQueue.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BlockingQueue.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -150,8 +147,6 @@
         </asmTool>
       </compileType>
       <item path="AutoLock.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="BlockingQueue.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BlockingQueue.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -8,11 +8,6 @@
 #ifndef QUEUE_H
 #define	QUEUE_H
 
-typedef struct Node {
-    void* data;
-    Node* next;
-} Node;
-
 template <class T>
 class Queue {
 public:

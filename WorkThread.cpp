@@ -5,7 +5,7 @@
 
 WorkThread::WorkThread()
 {
-    this->q = new BlockingQueue<Thread>();
+    this->q = new BlockingQueue<Thread>;
     this->Start();
 }
 

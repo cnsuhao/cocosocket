@@ -1,10 +1,11 @@
 #include "WorkThread.h"
 #include "errno.h"
 #include "BlockingQueue.h"
+#include "Thread.h"
 
 WorkThread::WorkThread()
 {
-    this->q = new BlockingQueue();
+    this->q = new BlockingQueue<Thread>();
     this->Start();
 }
 

@@ -16,7 +16,7 @@ public:
     void SetStatus(int s);
     int TaskCount();
 private:
-    Queue* q;
+    Queue<Thread>* q;
 };
 
 inline void WorkThread::AddTask(Thread* t) {

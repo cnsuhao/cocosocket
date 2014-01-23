@@ -13,6 +13,7 @@ typedef struct Node {
     Node* next;
 } Node;
 
+template <class T>
 class Queue {
 public:
 
@@ -21,9 +22,9 @@ public:
 
     virtual ~Queue() {
     };
-    virtual bool Offer(void* e) = 0;
-    virtual void* Poll() = 0;
-    virtual void* Peek() = 0;
+    virtual bool Offer(T* e) = 0;
+    virtual T* Poll() = 0;
+    virtual T* Peek() = 0;
     virtual int Size() = 0;
 };
 

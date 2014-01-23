@@ -12,12 +12,14 @@
 #include "Mutext.h"
 #include "Queue.h"
 
-BlockingQueue::BlockingQueue() : head(NULL), tail(NULL), size(0), lock(NULL)
+template <class T>
+BlockingQueue<T>::BlockingQueue() : head(NULL), tail(NULL), size(0), lock(NULL)
 {
     lock = new Mutext();
 }
 
-BlockingQueue::~BlockingQueue()
+template <class T>
+BlockingQueue<T>::~BlockingQueue()
 {
     delete this->lock;
     Node* p = head;
@@ -30,7 +32,8 @@ BlockingQueue::~BlockingQueue()
     }
 }
 
-bool BlockingQueue::Offer(void* e)
+template <class T>
+bool BlockingQueue<T>::Offer(T* e)
 {
     AutoLock l(lock);
     Node* p = (Node*) malloc(sizeof (Node));
@@ -49,22 +52,24 @@ bool BlockingQueue::Offer(void* e)
     return true;
 }
 
-void* BlockingQueue::Peek()
+template <class T>
+T* BlockingQueue<T>::Peek()
 {
     AutoLock l(lock);
     if (head != NULL)
     {
-        return head->data;
+        return (T*) (head->data);
     }
     return NULL;
 }
 
-void* BlockingQueue::Poll()
+template <class T>
+T* BlockingQueue<T>::Poll()
 {
     AutoLock l(lock);
     if (head != NULL)
     {
-        void* t = head->data;
+        T* t = (T*) (head->data);
         Node* oh = head;
         head = head->next;
         if (head == NULL)
@@ -75,10 +80,11 @@ void* BlockingQueue::Poll()
         size--;
         return t;
     }
-    return NULL;
+    return (T*) (NULL);
 }
 
-int BlockingQueue::Size()
+template <class T>
+int BlockingQueue<T>::Size()
 {
     AutoLock l(lock);
     return size;

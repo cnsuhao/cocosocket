@@ -7,6 +7,7 @@
 
 #include "Frame.h"
 #include "ByteBuf.h"
+#include "AutoLock.h"
 
 Frame::~Frame()
 {
@@ -113,4 +114,5 @@ void Frame::SetEnd(bool e)
         this->e = e;
     }
 }
+
 

@@ -24,6 +24,7 @@
 #include "ByteBuf.h"
 #include "SocketListerner.h"
 #include "Protocal.h"
+#include "Frame.h"
 
 Socket::Socket()
 {
@@ -84,11 +85,13 @@ void Socket::Connect(const char* ip, int port)
         if (connect(sockid, (struct sockaddr *) &addr, sizeof (struct sockaddr)) != -1)
         {
             this->listerner->OnOpen(this);
+            this->listerner->Start();
         }
     } else
     {
         this->listerner->OnClose(this, true);
     }
+    free(p);
 }
 
 /**
@@ -129,6 +132,20 @@ int Socket::Send(ByteBuf* frame)
         frame->ReaderIndex(frame->ReaderIndex() + bytes);
     }
     return count;
+}
+
+/**
+ * 发送一帧
+ * @param frame
+ * @return 
+ */
+int Socket::Send(Frame* frame)
+{
+    if (frame->IsEnd())
+    {
+        return this->Send(frame->GetData());
+    }
+    return 0;
 }
 
 /**

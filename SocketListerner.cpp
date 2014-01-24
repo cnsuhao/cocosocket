@@ -22,7 +22,6 @@ SocketListerner::~SocketListerner()
 void SocketListerner::SetContext(Socket* context)
 {
     this->context = context;
-    this->Start();
 }
 
 void SocketListerner::Run()
@@ -43,6 +42,7 @@ void SocketListerner::Run()
                 if (frame != NULL)
                 {
                     this->OnMessage(context, frame);
+                    delete frame;
                 } else
                 {
                     break;

@@ -14,7 +14,6 @@
             <file>file:/D:/working/project/socket/Queue.h</file>
             <file>file:/D:/working/project/socket/Thread.h</file>
             <file>file:/D:/working/project/socket/BlockingQueue.h</file>
-            <file>file:/D:/working/project/socket/BlockingQueue.cpp</file>
             <file>file:/D:/working/project/socket/Mutext.h</file>
             <file>file:/D:/working/project/socket/Mutext.cpp</file>
             <file>file:/D:/working/project/socket/WorkThread.cpp</file>
@@ -34,6 +33,7 @@
             <file>file:/D:/working/project/socket/SocketListerner.h</file>
             <file>file:/D:/working/project/socket/Test.h</file>
             <file>file:/D:/working/project/socket/main.cpp</file>
+            <file>file:/D:/working/project/socket/Thread.cpp</file>
         </group>
     </open-files>
 </project-private>

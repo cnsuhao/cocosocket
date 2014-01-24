@@ -44,13 +44,17 @@ void DefaultListerner::OnIdle(Socket* so)
  */
 void DefaultListerner::OnMessage(Socket* so, ByteBuf* frame)
 {
-    cout << frame->Capacity() << endl;
-    frame->ReaderIndex(2);
-    setlocale(LC_ALL, "Chinese-simplified");
-    wcout << frame->ReadUTF8() << endl;
+    // cout << frame->Capacity() << endl;
+    // frame->ReaderIndex(2);
+    //    setlocale(LC_ALL, "Chinese-simplified");
+    //  wcout << frame->ReadUTF8() << endl;
+    //   wcout << frame->ReadUTF8() << endl;
     frame->ReaderIndex(0);
-    so->Send(frame);
-    delete frame;
+    if (so->Send(frame) >= frame->Capacity())
+    {
+        cout << "ok" << endl;
+    }
+
 }
 
 void DefaultListerner::OnOpen(Socket* so)
@@ -58,8 +62,9 @@ void DefaultListerner::OnOpen(Socket* so)
     cout << "连接建立" << endl;
     Frame* f = new Frame(100);
     f->PutString(L"你好");
+    f->PutString(L"你不好");
     f->End();
-    so->Send(f->GetData());
+    so->Send(f);
     delete f;
 }
 

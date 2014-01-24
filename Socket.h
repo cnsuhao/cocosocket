@@ -11,6 +11,7 @@
 #include "Protocal.h"
 #include "ByteBuf.h"
 #include "Thread.h"
+#include "Frame.h"
 
 class Socket;
 
@@ -24,7 +25,7 @@ public:
     virtual void OnOpen(Socket* so) = 0;
     virtual void OnError(Socket* so, const char* e) = 0;
     void SetContext(Socket* context);
-    void Run();
+    virtual void Run();
 
 private:
     Socket* context;
@@ -37,6 +38,7 @@ public:
     void Connect(const char* ip, int port);
     int Close();
     int Send(ByteBuf* frame);
+    int Send(Frame* frame);
     void SetListerner(SocketListerner* listerner);
     void SetProtocal(Protocal* p);
     Protocal* GetProtocal();

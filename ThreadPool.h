@@ -13,10 +13,10 @@ private:
     WorkThread** pool;
     Mutext* lock;
 public:
-    ThreadPool(int ps = 128, int ic = 0);
+    ThreadPool(int ps = 1, int ic = 1);
     ~ThreadPool();
 public:
-    bool Offer(Thread* pTask);
+    bool Offer(Thread* task);
     int GetPoolSize();
     int GetInitializeCount();
     int GetAliveCount();

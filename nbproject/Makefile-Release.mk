@@ -46,7 +46,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/Test.o \
 	${OBJECTDIR}/Thread.o \
 	${OBJECTDIR}/ThreadPool.o \
-	${OBJECTDIR}/ThreadPoolTest.o \
 	${OBJECTDIR}/WorkThread.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/memorypoolconfig.o \
@@ -131,11 +130,6 @@ ${OBJECTDIR}/ThreadPool.o: ThreadPool.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ThreadPool.o ThreadPool.cpp
-
-${OBJECTDIR}/ThreadPoolTest.o: ThreadPoolTest.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ThreadPoolTest.o ThreadPoolTest.cpp
 
 ${OBJECTDIR}/WorkThread.o: WorkThread.cpp 
 	${MKDIR} -p ${OBJECTDIR}

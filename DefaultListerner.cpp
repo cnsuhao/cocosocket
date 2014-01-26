@@ -44,17 +44,22 @@ void DefaultListerner::OnIdle(Socket* so)
  */
 void DefaultListerner::OnMessage(Socket* so, ByteBuf* frame)
 {
+    int r = frame->ReadableBytes();
     // cout << frame->Capacity() << endl;
-    // frame->ReaderIndex(2);
-    //    setlocale(LC_ALL, "Chinese-simplified");
-    //  wcout << frame->ReadUTF8() << endl;
-    //   wcout << frame->ReadUTF8() << endl;
-    frame->ReaderIndex(0);
-    if (so->Send(frame) >= frame->Capacity())
+    frame->ReaderIndex(2);
+    // setlocale(LC_ALL, "Chinese-simplified");
+    wchar_t* u1 = frame->ReadUTF8();
+    wchar_t* u2 = frame->ReadUTF8();
+    delete frame;
+    Frame* s = new Frame(r);
+    s->PutString(u1);
+    s->PutString(u2);
+    s->End();
+    if (so->Send(s) >= s->GetData()->Capacity())
     {
         cout << "ok" << endl;
     }
-
+    delete s;
 }
 
 void DefaultListerner::OnOpen(Socket* so)

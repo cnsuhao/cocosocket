@@ -90,10 +90,10 @@ float ByteBuf::GetFloat(int index)
     if (index + 3 < this->len)
     {
 
-        int ret = data[index] << 24;
-        ret |= (data[index + 1] << 16);
-        ret |= (data[index + 2] << 8);
-        ret |= data[index + 3];
+        int ret = ((int) data[index]) << 24;
+        ret |= ((int) data[index + 1]) << 16;
+        ret |= ((int) data[index + 2]) << 8;
+        ret |= ((int) data[index + 3]);
 
         union
         {
@@ -110,10 +110,10 @@ int ByteBuf::GetInt(int index)
 {
     if (index + 3 < this->len)
     {
-        int ret = data[index] << 24;
-        ret |= (data[index + 1] << 16);
-        ret |= (data[index + 2] << 8);
-        ret |= data[index + 3];
+        int ret = ((int) data[index]) << 24;
+        ret |= ((int) data[index + 1]) << 16;
+        ret |= ((int) data[index + 2]) << 8;
+        ret |= ((int) data[index + 3]);
         return ret;
     }
     return 0;
@@ -128,10 +128,10 @@ long ByteBuf::GetLong(int index)
         ret |= ((long) data[index + 1]) << 48;
         ret |= ((long) data[index + 2]) << 40;
         ret |= ((long) data[index + 3]) << 32;
-        ret |= data[index + 4] << 24;
-        ret |= data[index + 5] << 16;
-        ret |= data[index + 6] << 8;
-        ret |= data[index + 7];
+        ret |= ((long) data[index + 4]) << 24;
+        ret |= ((long) data[index + 5]) << 16;
+        ret |= ((long) data[index + 6]) << 8;
+        ret |= ((long) data[index + 7]);
     }
     return ret;
 }
@@ -189,10 +189,10 @@ float ByteBuf::ReadFloat()
 {
     if (readerIndex + 3 < this->writerIndex)
     {
-        int ret = data[readerIndex++] << 24;
-        ret |= data[readerIndex++] << 16;
-        ret |= data[readerIndex++] << 8;
-        ret |= data[readerIndex++];
+        int ret = ((int) data[readerIndex++]) << 24;
+        ret |= ((int) data[readerIndex++]) << 16;
+        ret |= ((int) data[readerIndex++]) << 8;
+        ret |= ((int) data[readerIndex++]);
 
         union
         {
@@ -209,10 +209,10 @@ int ByteBuf::ReadInt()
 {
     if (readerIndex + 3 < this->writerIndex)
     {
-        int ret = data[readerIndex++] << 24;
-        ret |= data[readerIndex++] << 16;
-        ret |= data[readerIndex++] << 8;
-        ret |= data[readerIndex++];
+        int ret = ((int) data[readerIndex++]) << 24;
+        ret |= ((int) data[readerIndex++]) << 16;
+        ret |= ((int) data[readerIndex++]) << 8;
+        ret |= ((int) data[readerIndex++]);
         return ret;
     }
     return 0;
@@ -227,10 +227,10 @@ long ByteBuf::ReadLong()
         ret |= ((long) data[readerIndex++]) << 48;
         ret |= ((long) data[readerIndex++]) << 40;
         ret |= ((long) data[readerIndex++]) << 32;
-        ret |= data[readerIndex++] << 24;
-        ret |= data[readerIndex++] << 16;
-        ret |= data[readerIndex++] << 8;
-        ret |= data[readerIndex++];
+        ret |= ((long) data[readerIndex++]) << 24;
+        ret |= ((long) data[readerIndex++]) << 16;
+        ret |= ((long) data[readerIndex++]) << 8;
+        ret |= ((long) data[readerIndex++]);
     }
     return ret;
 }
@@ -239,10 +239,10 @@ short ByteBuf::ReadShort()
 {
     if (readerIndex + 1 < writerIndex)
     {
-        short r1 = data[readerIndex++] << 8;
-        short r2 = data[readerIndex++];
-        short ret = r1 | r2;
-        return ret;
+        int h = data[readerIndex++];
+        int l = data[readerIndex++];
+        int len = ((h << 8)&0x0000ff00) | (l);
+        return len;
     }
     return 0;
 }
@@ -475,23 +475,27 @@ wchar_t* ByteBuf::ReadUTF8()
     wchar_t* charBuff = new wchar_t[len]; //>=字符数量
     memset(charBuff, 0, len * sizeof (wchar_t));
     int d = 0;
-    while (ReadableBytes())
+    int byteCounter = 0;
+    while (byteCounter < len)
     {
         unsigned char c = ReadByte();
         if ((c & 0x80) == 0)
         {
-            charBuff[d++] += c;
+            charBuff[d++] = c;
+            byteCounter++;
         } else if ((c & 0xE0) == 0xC0) ///< 110x-xxxx 10xx-xxxx
         {
             wchar_t& wideChar = charBuff[d++];
             wideChar = (c & 0x3F) << 6;
             wideChar |= (ReadByte() & 0x3F);
+            byteCounter += 2;
         } else if ((c & 0xF0) == 0xE0) ///< 1110-xxxx 10xx-xxxx 10xx-xxxx
         {
             wchar_t& wideChar = charBuff[d++];
             wideChar = (c & 0x1F) << 12;
             wideChar |= (ReadByte() & 0x3F) << 6;
             wideChar |= (ReadByte() & 0x3F);
+            byteCounter += 3;
         } else if ((c & 0xF8) == 0xF0) ///< 1111-0xxx 10xx-xxxx 10xx-xxxx 10xx-xxxx 
         {
             wchar_t& wideChar = charBuff[d++];
@@ -499,6 +503,7 @@ wchar_t* ByteBuf::ReadUTF8()
             wideChar = (ReadByte() & 0x3F) << 12;
             wideChar |= (ReadByte() & 0x3F) << 6;
             wideChar |= (ReadByte() & 0x3F);
+            byteCounter += 4;
         } else
         {
             wchar_t& wideChar = charBuff[d++]; ///< 1111-10xx 10xx-xxxx 10xx-xxxx 10xx-xxxx 10xx-xxxx 
@@ -507,6 +512,7 @@ wchar_t* ByteBuf::ReadUTF8()
             wideChar = (ReadByte() & 0x3F) << 12;
             wideChar |= ((ReadByte() & 0x3F) << 6);
             wideChar |= (ReadByte() & 0x3F);
+            byteCounter += 5;
         }
     }
     charBuff[d] = '\0';

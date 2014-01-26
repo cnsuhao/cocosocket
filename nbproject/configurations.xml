@@ -59,6 +59,12 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <commandLine>-lpthread</commandLine>
+        </ccTool>
+        <linkerTool>
+          <commandLine>-lpthread</commandLine>
+        </linkerTool>
       </compileType>
       <item path="AutoLock.h" ex="false" tool="3" flavor2="0">
       </item>

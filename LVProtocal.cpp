@@ -42,8 +42,8 @@ ByteBuf* LVProtocal::TranslateFrame(ByteBuf* in)
                 this->frame->WriteBytes(in);
                 if (frame->WritableBytes() <= 0)
                 {
-                    return frame;
                     status = 0;
+                    return frame;
                 }
                 break;
         }

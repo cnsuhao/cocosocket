@@ -33,15 +33,15 @@ public:
 int main()
 {
     setlocale(LC_ALL, "Chinese-simplified");
-//    wchar_t* c = L"哈哈哈";
-//    cout << sizeof (wchar_t) << endl;
-//    wcout << c << endl;
+    //    wchar_t* c = L"哈哈哈";
+    //    cout << sizeof (wchar_t) << endl;
+    //    wcout << c << endl;
 
     Socket* s = new Socket();
     SocketListerner* sl = new DefaultListerner();
     s->SetListerner(sl); //需要定制一个listerner，这里的是一个测试用的默认的listerner
     s->SetProtocal(new LVProtocal());
-    s->Connect("192.168.10.150", 3333);
+    s->Connect("192.168.1.100", 3333);
     pthread_join(sl->GetThreadId(), NULL);
     s->Close();
     delete s;

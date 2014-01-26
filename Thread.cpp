@@ -1,6 +1,6 @@
 #include "Thread.h"
 
-Thread::Thread() : threadId(NULL), status(UNINITIALIZED), sem(NULL)
+Thread::Thread() : threadId(-1), status(UNINITIALIZED), sem(NULL)
 {
 }
 

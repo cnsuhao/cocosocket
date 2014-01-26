@@ -42,7 +42,6 @@ void SocketListerner::Run()
                 if (frame != NULL)
                 {
                     this->OnMessage(context, frame);
-                    delete frame;
                 } else
                 {
                     break;

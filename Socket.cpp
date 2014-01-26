@@ -91,7 +91,6 @@ void Socket::Connect(const char* ip, int port)
     {
         this->listerner->OnClose(this, true);
     }
-    free(p);
 }
 
 /**
@@ -125,7 +124,7 @@ int Socket::Send(ByteBuf* frame)
     int len = frame->ReadableBytes();
     while (count < len)
     {
-        bytes = send(this->sockid, content + count + frame->ReaderIndex(), len - count, 0);
+        bytes = send(this->sockid, content + count, len - count, 0);
         if (bytes == -1 || bytes == 0)
             return -1;
         count += bytes;

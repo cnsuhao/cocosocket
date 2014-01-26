@@ -32,6 +32,7 @@ public:
 
 int main()
 {
+    cout<<sizeof(float)<<endl;
     setlocale(LC_ALL, "Chinese-simplified");
     //    wchar_t* c = L"哈哈哈";
     //    cout << sizeof (wchar_t) << endl;

@@ -189,10 +189,10 @@ float ByteBuf::ReadFloat()
 {
     if (readerIndex + 3 < this->writerIndex)
     {
-        int ret = ((int) data[readerIndex++]) << 24;
-        ret |= ((int) data[readerIndex++]) << 16;
-        ret |= ((int) data[readerIndex++]) << 8;
-        ret |= ((int) data[readerIndex++]);
+        int ret = ((data[readerIndex++]) << 24)&0xff000000;
+        ret |= (((data[readerIndex++]) << 16)&0x00ff0000);
+        ret |= (((data[readerIndex++]) << 8)&0x0000ff00);
+        ret |= (((data[readerIndex++]))&0x000000ff);
 
         union
         {
@@ -209,10 +209,10 @@ int ByteBuf::ReadInt()
 {
     if (readerIndex + 3 < this->writerIndex)
     {
-        int ret = ((int) data[readerIndex++]) << 24;
-        ret |= ((int) data[readerIndex++]) << 16;
-        ret |= ((int) data[readerIndex++]) << 8;
-        ret |= ((int) data[readerIndex++]);
+        int ret = ((data[readerIndex++]) << 24)&0xff000000;
+        ret |= (((data[readerIndex++]) << 16)&0x00ff0000);
+        ret |= (((data[readerIndex++]) << 8)&0x0000ff00);
+        ret |= (((data[readerIndex++]))&0x000000ff);
         return ret;
     }
     return 0;
@@ -223,14 +223,14 @@ long ByteBuf::ReadLong()
     long ret = 0;
     if (readerIndex + 7 < writerIndex)
     {
-        ret = ((long) data[readerIndex++]) << 56;
-        ret |= ((long) data[readerIndex++]) << 48;
-        ret |= ((long) data[readerIndex++]) << 40;
-        ret |= ((long) data[readerIndex++]) << 32;
-        ret |= ((long) data[readerIndex++]) << 24;
-        ret |= ((long) data[readerIndex++]) << 16;
-        ret |= ((long) data[readerIndex++]) << 8;
-        ret |= ((long) data[readerIndex++]);
+        ret = (((long) data[readerIndex++]) << 56)&0xff00000000000000;
+        ret |= ((((long) data[readerIndex++]) << 48)&0x00ff000000000000);
+        ret |= ((((long) data[readerIndex++]) << 40)&0x0000ff0000000000);
+        ret |= ((((long) data[readerIndex++]) << 32)&0x000000ff00000000);
+        ret |= (((data[readerIndex++]) << 24)&0xff000000);
+        ret |= (((data[readerIndex++]) << 16)&0x00ff0000);
+        ret |= (((data[readerIndex++]) << 8)&0x0000ff00);
+        ret |= (((data[readerIndex++]))&0x000000ff);
     }
     return ret;
 }
@@ -240,7 +240,7 @@ short ByteBuf::ReadShort()
     if (readerIndex + 1 < writerIndex)
     {
         int h = data[readerIndex++];
-        int l = data[readerIndex++];
+        int l = data[readerIndex++]&0x000000ff;
         int len = ((h << 8)&0x0000ff00) | (l);
         return len;
     }

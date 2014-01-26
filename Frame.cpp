@@ -14,7 +14,7 @@ Frame::~Frame()
     delete this->payload;
 }
 
-Frame::Frame(int len)
+Frame::Frame(int len) : e(false)
 {
     this->payload = new ByteBuf(len);
     this->payload->WriteShort(0);

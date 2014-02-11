@@ -20,7 +20,7 @@ Bits::Bits(int size)
 
 Bits::~Bits()
 {
-    delete[] bits;
+    free(bits);
 }
 
 int Bits::getBit(int index)

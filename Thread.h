@@ -36,7 +36,7 @@ public:
     int Detach();
     int Join(void ** pRetValue = NULL);
     void Exit(void * pRetValue = NULL);
-    void Yield();
+    void Abalienate();
     bool IsCurrent();
     pthread_t GetThreadId();
     int GetStatus();
@@ -69,7 +69,7 @@ inline bool Thread::IsCurrent() {
     }
 }
 
-inline void Thread::Yield() {
+inline void Thread::Abalienate() {
     sched_yield();
 }
 

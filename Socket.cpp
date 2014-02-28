@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <unistd.h>
 #ifdef WIN32
 #pragma comment(lib, "wsock32")
 #pragma comment(lib,"ws2_32.lib")
 #include <winsock2.h>
 #else
+#include <unistd.h>
 #include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -81,7 +81,7 @@ void Socket::Connect(const char* ip, int port)
         addr.sin_family = AF_INET;
         addr.sin_port = htons(this->port);
         addr.sin_addr = *((struct in_addr *) p->h_addr);
-        bzero(&(addr.sin_zero), 8);
+		memset(&(addr.sin_zero),0,8);
         if (connect(sockid, (struct sockaddr *) &addr, sizeof (struct sockaddr)) != -1)
         {
             this->listerner->OnOpen(this);
@@ -98,16 +98,18 @@ void Socket::Connect(const char* ip, int port)
  */
 int Socket::Close()
 {
-    if (sockid == -1)
-    {
-        return -1;
-    }
+	if (sockid == -1)
+	{
+		return -1;
+	}
+	int t=sockid;
+	sockid=-1;
 #ifdef WIN32
-    shutdown(sockid, SD_SEND);
-    return (closesocket(sockid));
+	shutdown(t, SD_SEND);
+	return (closesocket(t));
 #else
-    shutdown(sockid, SHUT_RDWR);
-    return (close(sockid));
+	shutdown(t, SHUT_RDWR);
+	return (close(t));
 #endif
 }
 

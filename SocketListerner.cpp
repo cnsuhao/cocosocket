@@ -6,7 +6,17 @@
  */
 
 #include "SocketListerner.h"
-#include "sys/socket.h"
+
+#ifdef WIN32
+#pragma comment(lib, "wsock32")
+#pragma comment(lib,"ws2_32.lib")
+#include <winsock2.h>
+#else
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#endif
 #include "Socket.h"
 #include "ByteBuf.h"
 #include "Protocal.h"

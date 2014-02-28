@@ -102,12 +102,14 @@ int Socket::Close()
     {
         return -1;
     }
+    int t=sockid;
+    sockid=-1;
 #ifdef WIN32
-    shutdown(sockid, SD_SEND);
-    return (closesocket(sockid));
+    shutdown(t, SD_SEND);
+    return (closesocket(t));
 #else
-    shutdown(sockid, SHUT_RDWR);
-    return (close(sockid));
+    shutdown(t, SHUT_RDWR);
+    return (close(t));
 #endif
 }
 
@@ -156,6 +158,3 @@ void Socket::SetListerner(SocketListerner* listerner)
     this->listerner = listerner;
     this->listerner->SetContext(this);
 }
-
-
-

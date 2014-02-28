@@ -158,6 +158,3 @@ void Socket::SetListerner(SocketListerner* listerner)
     this->listerner = listerner;
     this->listerner->SetContext(this);
 }
-
-
-

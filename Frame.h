@@ -20,7 +20,7 @@ public:
     const Frame* PutInt(int s);
     const Frame* PutLong(long s);
     const Frame* PutFloat(float s);
-    const Frame* PutString(wchar_t* s);
+    const Frame* PutString(char* s);
     void End();
     bool IsEnd();
     void SetEnd(bool e);

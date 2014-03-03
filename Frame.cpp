@@ -67,7 +67,7 @@ const Frame* Frame::PutShort(short s)
     return this;
 }
 
-const Frame* Frame::PutString(wchar_t* s)
+const Frame* Frame::PutString(char* s)
 {
     if (!e)
         this->payload->WriteUTF8(s);

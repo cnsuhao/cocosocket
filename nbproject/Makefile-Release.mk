@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU_1-Linux-x86
-CND_DLIB_EXT=so
+CND_PLATFORM=Cygwin_4.x-Windows
+CND_DLIB_EXT=dll
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -39,17 +39,13 @@ OBJECTFILES= \
 	${OBJECTDIR}/DefaultListerner.o \
 	${OBJECTDIR}/Frame.o \
 	${OBJECTDIR}/LVProtocal.o \
-	${OBJECTDIR}/MemoryPool.o \
 	${OBJECTDIR}/Mutext.o \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketListerner.o \
-	${OBJECTDIR}/Test.o \
 	${OBJECTDIR}/Thread.o \
 	${OBJECTDIR}/ThreadPool.o \
 	${OBJECTDIR}/WorkThread.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/memorypoolconfig.o \
-	${OBJECTDIR}/synflood.o
+	${OBJECTDIR}/main.o
 
 
 # C Compiler Flags
@@ -70,11 +66,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/socket
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cocossocket.exe
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/socket: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cocossocket.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/socket ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cocossocket ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/ByteBuf.o: ByteBuf.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -96,11 +92,6 @@ ${OBJECTDIR}/LVProtocal.o: LVProtocal.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LVProtocal.o LVProtocal.cpp
 
-${OBJECTDIR}/MemoryPool.o: MemoryPool.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MemoryPool.o MemoryPool.cpp
-
 ${OBJECTDIR}/Mutext.o: Mutext.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -115,11 +106,6 @@ ${OBJECTDIR}/SocketListerner.o: SocketListerner.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SocketListerner.o SocketListerner.cpp
-
-${OBJECTDIR}/Test.o: Test.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Test.o Test.cpp
 
 ${OBJECTDIR}/Thread.o: Thread.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -141,23 +127,13 @@ ${OBJECTDIR}/main.o: main.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/memorypoolconfig.o: memorypoolconfig.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/memorypoolconfig.o memorypoolconfig.cpp
-
-${OBJECTDIR}/synflood.o: synflood.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/synflood.o synflood.c
-
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/socket
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cocossocket.exe
 
 # Subprojects
 .clean-subprojects:

@@ -53,7 +53,7 @@ public:
     int ReadInt();
     long ReadLong();
     float ReadFloat();
-    wchar_t* ReadUTF8();
+    char* ReadUTF8();
     ByteBuf* SkipBytes(int length);
     ByteBuf* WriteBoolean(bool value);
     ByteBuf* WriteByte(char value);
@@ -62,9 +62,11 @@ public:
     ByteBuf* WriteLong(long value);
     ByteBuf* WriteFloat(float value);
     ByteBuf* WriteBytes(ByteBuf* in);
-    ByteBuf* WriteUTF8(wchar_t* value);
+    ByteBuf* WriteUTF8(char* value);
     const ByteBuf* Copy();
     char* GetRaw();
+    static wchar_t* UTF82Unicode(char* utf8);
+    static char* Unicode2UTF8(wchar_t* uni);
 private:
     char* data; //数据
     int len; //长度，可扩展长度

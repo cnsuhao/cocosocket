@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * File:   Socket.h
  * Author: beykery
  *
@@ -35,7 +35,7 @@ class Socket {
 public:
     Socket();
     virtual ~Socket();
-    void Connect(const char* ip, int port);
+    void Connect(const char* ip, unsigned short port);
     int Close();
     int Send(ByteBuf* frame);
     int Send(Frame* frame);
@@ -46,8 +46,8 @@ public:
     SocketListerner* GetListerner();
 private:
     const char* ip;
-    int port;
-    int sockid;
+    unsigned short port;
+    unsigned sockid;
     SocketListerner* listerner;
     Protocal* protocal;
 };

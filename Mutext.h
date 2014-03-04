@@ -1,4 +1,4 @@
-#ifndef MUTEX_H
+﻿#ifndef MUTEX_H
 #define MUTEX_H
 #include <pthread.h>
 

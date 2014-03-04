@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * File:   Bits.h
  * Author: CYSY
  *

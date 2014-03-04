@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * File:   Socket.cpp
  * Author: beykery
  * 
@@ -69,27 +69,28 @@ void Socket::SetProtocal(Protocal* p)
  * 连接服务器
  * @return 
  */
-void Socket::Connect(const char* ip, int port)
+void Socket::Connect(const char* ip, unsigned short port)
 {
     this->ip = ip;
     this->port = port;
-    struct hostent* p;
-    struct sockaddr_in addr;
-    p = gethostbyname(this->ip);
-    if ((this->sockid = socket(AF_INET, SOCK_STREAM, 0)) != -1)
+    if ((this->sockid = socket(AF_INET, SOCK_STREAM, 0)) != INVALID_SOCKET)
     {
+		struct sockaddr_in addr;
         addr.sin_family = AF_INET;
         addr.sin_port = htons(this->port);
-        addr.sin_addr = *((struct in_addr *) p->h_addr);
-		memset(&(addr.sin_zero),0,8);
-        if (connect(sockid, (struct sockaddr *) &addr, sizeof (struct sockaddr)) != -1)
+        addr.sin_addr.s_addr = inet_addr(ip);
+        if (connect(sockid, (struct sockaddr *) &addr, sizeof (addr)) != SOCKET_ERROR)
         {
             this->listerner->OnOpen(this);
             this->listerner->Start();
-        }
-    } else
+        }else
+		{
+			 this->listerner->OnClose(this, false);
+		}
+    }
+	else
     {
-        this->listerner->OnClose(this, true);
+       this->listerner->OnClose(this, false);
     }
 }
 

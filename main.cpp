@@ -9,7 +9,11 @@
 #include <sched.h>
 #include <unistd.h>
 #include <stdlib.h>
-
+#ifdef WIN32
+#pragma comment(lib, "wsock32")
+#pragma comment(lib,"ws2_32.lib")
+#include <winsock2.h>
+#endif
 using namespace std;
 
 class TestTask : public Thread
@@ -37,7 +41,11 @@ int main()
     //    wchar_t* c = L"哈哈哈";
     //    cout << sizeof (wchar_t) << endl;
     //    wcout << c << endl;
-
+#ifdef WIN32
+	WSADATA wsaData;
+	WORD version = MAKEWORD(2, 0);
+    WSAStartup(version, &wsaData);
+#endif
     Socket* s = new Socket();
     SocketListerner* sl = new DefaultListerner();
     s->SetListerner(sl); //需要定制一个listerner，这里的是一个测试用的默认的listerner

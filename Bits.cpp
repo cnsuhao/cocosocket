@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * File:   Bits.cpp
  * Author: CYSY
  * 

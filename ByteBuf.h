@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * File:   ByteBuf.h
  * Author: beykery
  *
@@ -9,6 +9,8 @@
 #ifndef BYTEBUF_H
 #define	BYTEBUF_H
 
+
+#include <iostream>
 class ByteBuf {
 public:
     ByteBuf(int len);
@@ -65,8 +67,9 @@ public:
     ByteBuf* WriteUTF8(char* value);
     const ByteBuf* Copy();
     char* GetRaw();
-    static wchar_t* UTF82Unicode(char* utf8);
-    static char* Unicode2UTF8(wchar_t* uni);
+	static int ByteBuf::Convert(const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf, size_t outlen);
+	static std::string ByteBuf::UTF82GB2312(const char *inbuf);
+	static std::string ByteBuf::GB23122UTF8(const char *inbuf);
 private:
     char* data; //数据
     int len; //长度，可扩展长度

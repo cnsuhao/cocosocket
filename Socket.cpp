@@ -26,15 +26,14 @@
 #include "Protocal.h"
 #include "Frame.h"
 
-Socket::Socket()
+Socket::Socket():ip(NULL),listerner(NULL),protocal(NULL)
 {
 }
 
 Socket::~Socket()
 {
-    delete this->ip;
-    delete this->listerner;
     delete this->protocal;
+	delete this->listerner;
 }
 
 /**

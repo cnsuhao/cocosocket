@@ -21,7 +21,7 @@
 #include "ByteBuf.h"
 #include "Protocal.h"
 
-SocketListerner::SocketListerner()
+SocketListerner::SocketListerner():context(NULL)
 {
 }
 

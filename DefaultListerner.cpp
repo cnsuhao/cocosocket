@@ -26,17 +26,17 @@ DefaultListerner::~DefaultListerner()
 
 void DefaultListerner::OnClose(Socket* so, bool fromRemote)
 {
-    cout << "连接关闭" << endl;
+    CCLOG("%s\n","closed");
 }
 
 void DefaultListerner::OnError(Socket* so, const char* e)
 {
-    cout << "连接错误" << endl;
+	CCLOG("%s\n","error connection");
 }
 
 void DefaultListerner::OnIdle(Socket* so)
 {
-    cout << "连接超时" << endl;
+	CCLOG("%s\n","connection idle");
 }
 
 /**
@@ -68,8 +68,8 @@ void DefaultListerner::OnMessage(Socket* so, ByteBuf* frame)
 
 void DefaultListerner::OnOpen(Socket* so)
 {
-    cout << "连接建立" << endl;
-    Frame* f = new Frame(1000);
+    CCLOG("%s","connecting");
+	Frame* f=new Frame(512);
     f->PutFloat(10.1f);
 	char* buff="我去啊a。。。。。";
 	f->PutString((char*)ByteBuf::GB23122UTF8(buff).c_str());

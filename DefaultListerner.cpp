@@ -13,6 +13,7 @@
 #include "ByteBuf.h"
 #include "Frame.h"
 #include "iconv.h"
+#include "cocos2d.h"
 using namespace std;
 
 DefaultListerner::DefaultListerner()
@@ -53,7 +54,7 @@ void DefaultListerner::OnMessage(Socket* so, ByteBuf* frame)
     //    wchar_t* u2 = frame->ReadUTF8();
     float c = frame->ReadFloat();
 	std::string s=frame->ReadUTF8();
-    cout << c << endl;
+    CCLOG("%s\n",s);
     delete frame;
     //    Frame* s = new Frame(r);
     //    s->PutInt(c);

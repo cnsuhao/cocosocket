@@ -106,7 +106,7 @@ int Socket::Close()
 	}
 	int t=sockid;
 	sockid=-1;
-#ifdef WIN32
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	shutdown(t, SD_SEND);
 	return (closesocket(t));
 #else

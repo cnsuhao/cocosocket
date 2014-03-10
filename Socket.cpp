@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#ifdef WIN32
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #pragma comment(lib, "wsock32")
 #pragma comment(lib,"ws2_32.lib")
 #include <winsock2.h>
@@ -18,6 +18,8 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
 #endif
 #include <pthread.h>
 #include "Socket.h"

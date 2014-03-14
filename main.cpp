@@ -51,7 +51,7 @@ int main()
     s->SetListerner(sl); //需要定制一个listerner，这里的是一个测试用的默认的listerner
     s->SetProtocal(new LVProtocal());
     s->Connect("192.168.1.100", 3333);
-    pthread_join(sl->GetThreadId(), NULL);
+    sl->Join();
     s->Close();
     delete s;
 
@@ -67,4 +67,3 @@ int main()
     //        sleep(1);
     //    }
 }
-

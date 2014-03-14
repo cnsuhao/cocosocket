@@ -51,7 +51,7 @@ int main()
     s->SetListerner(sl); //需要定制一个listerner，这里的是一个测试用的默认的listerner
     s->SetProtocal(new LVProtocal());
     s->Connect("192.168.1.100", 3333);
-    sl->Join();
+    sl->Join(NULL);
     s->Close();
     delete s;
 

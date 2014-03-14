@@ -11,41 +11,41 @@ Thread::~Thread()
 
 /**
 * 创建线程
-* @param pFuncStartRoutine
-* @param pArg
-* @param bDetached
-* @param bSetScope
+* @param fun
+* @param context
+* @param detached
+* @param scope
 * @return 
 */
-int Thread::Create(func fun, void * context, bool d, bool bSetScope)
+int Thread::Create(func fun, void * context, bool d, bool scope)
 {
-	pthread_attr_t sThread_attr;
+	pthread_attr_t thread_attr;
 	int nStatus;
-	nStatus = pthread_attr_init(&sThread_attr);
+	nStatus = pthread_attr_init(&thread_attr);
 	if (nStatus != 0)
 	{
 		return -1;
 	}
 	if (d)
 	{
-		nStatus = pthread_attr_setdetachstate(&sThread_attr, PTHREAD_CREATE_DETACHED);
+		nStatus = pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
 		if (nStatus != 0)
 		{
-			pthread_attr_destroy(&sThread_attr);
+			pthread_attr_destroy(&thread_attr);
 			return -1;
 		}
 	}
-	if (bSetScope)
+	if (scope)
 	{
-		nStatus = pthread_attr_setscope(&sThread_attr, PTHREAD_SCOPE_SYSTEM);
+		nStatus = pthread_attr_setscope(&thread_attr, PTHREAD_SCOPE_SYSTEM);
 		if (nStatus != 0)
 		{
-			pthread_attr_destroy(&sThread_attr);
+			pthread_attr_destroy(&thread_attr);
 			return -1;
 		}
 	}
-	nStatus = pthread_create(&threadId, &sThread_attr, fun, context);
-	pthread_attr_destroy(&sThread_attr);
+	nStatus = pthread_create(&threadId, &thread_attr, fun, context);
+	pthread_attr_destroy(&thread_attr);
 	return nStatus;
 }
 

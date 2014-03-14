@@ -25,56 +25,56 @@ ByteBuf* Frame::GetData()
     return this->payload;
 }
 
-const Frame* Frame::PutByte(char c)
+Frame* Frame::PutByte(char c)
 {
     if (!e)
         this->payload->WriteByte(c);
     return this;
 }
 
-const Frame* Frame::PutBytes(ByteBuf* src)
+ Frame* Frame::PutBytes(ByteBuf* src)
 {
     if (!e)
         this->payload->WriteBytes(src);
     return this;
 }
 
-const Frame* Frame::PutFloat(float s)
+ Frame* Frame::PutFloat(float s)
 {
     if (!e)
         this->payload->WriteFloat(s);
     return this;
 }
 
-const Frame* Frame::PutInt(int s)
+ Frame* Frame::PutInt(int s)
 {
     if (!e)
         this->payload->WriteInt(s);
     return this;
 }
 
-const Frame* Frame::PutLong(long s)
+ Frame* Frame::PutLong(long long s)
 {
     if (!e)
         this->payload->WriteLong(s);
     return this;
 }
 
-const Frame* Frame::PutShort(short s)
+ Frame* Frame::PutShort(short s)
 {
     if (!e)
         this->payload->WriteShort(s);
     return this;
 }
 
-const Frame* Frame::PutString(char* s)
+ Frame* Frame::PutString(char* s)
 {
     if (!e)
         this->payload->WriteUTF8(s);
     return this;
 }
 
-const Frame* Frame::Duplicate()
+ Frame* Frame::Duplicate()
 {
     Frame* f = new Frame(this->payload->Capacity());
     this->payload->MarkReaderIndex();

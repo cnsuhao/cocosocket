@@ -120,9 +120,9 @@ int ByteBuf::GetInt(int index)
     return 0;
 }
 
-long ByteBuf::GetLong(int index)
+long long ByteBuf::GetLong(int index)
 {
-    long ret = 0;
+    long long ret = 0;
     if (index + 7 < len)
     {
         ret = ((long) data[index]) << 56;
@@ -219,9 +219,9 @@ int ByteBuf::ReadInt()
     return 0;
 }
 
-long ByteBuf::ReadLong()
+long long ByteBuf::ReadLong()
 {
-    long ret = 0;
+    long long ret = 0;
     if (readerIndex + 7 < writerIndex)
     {
         ret = (((long) data[readerIndex++]) << 56)&0xff00000000000000;
@@ -353,7 +353,7 @@ ByteBuf* ByteBuf::SetInt(int index, int value)
     return this;
 }
 
-ByteBuf* ByteBuf::SetLong(int index, long value)
+ByteBuf* ByteBuf::SetLong(int index, long long value)
 {
     if (index + 8 <= len)
     {
@@ -434,7 +434,7 @@ ByteBuf* ByteBuf::WriteInt(int value)
     return this;
 }
 
-ByteBuf* ByteBuf::WriteLong(long value)
+ByteBuf* ByteBuf::WriteLong(long long value)
 {
     this->Capacity(writerIndex + 8);
     data[writerIndex++] = (value >> 56) & 0xff;

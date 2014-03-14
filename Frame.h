@@ -14,17 +14,17 @@ public:
     Frame(int len);
     virtual ~Frame();
     ByteBuf* GetData();
-    const Frame* PutByte(char c);
-    const Frame* PutBytes(ByteBuf* src);
-    const Frame* PutShort(short s);
-    const Frame* PutInt(int s);
-    const Frame* PutLong(long s);
-    const Frame* PutFloat(float s);
-    const Frame* PutString(char* s);
+    Frame* PutByte(char c);
+    Frame* PutBytes(ByteBuf* src);
+    Frame* PutShort(short s);
+    Frame* PutInt(int s);
+    Frame* PutLong(long long s);
+    Frame* PutFloat(float s);
+    Frame* PutString(char* s);
     void End();
     bool IsEnd();
     void SetEnd(bool e);
-    const Frame* Duplicate();
+    Frame* Duplicate();
 private:
     ByteBuf* payload; //原始数据
     bool e; //是否封包

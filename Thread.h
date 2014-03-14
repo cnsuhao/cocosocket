@@ -22,10 +22,10 @@ public:
     };
 private:
     pthread_t threadId;
-    int Create(func pFuncStartRoutine, void * context, bool bDetached = false, bool bSetScope = false);
+    int Create(func f, void * context, bool detached = false, bool scope = false);
     void End();
     int Init();
-    static void * DoRun(void * pContext);
+    static void * DoRun(void * context);
 protected:
     int status;
     sem_t* sem;
@@ -33,31 +33,41 @@ public:
     Thread();
     virtual ~Thread();
     virtual void Run() = 0;
+	sem_t* Thread::GetSem();
     int Detach();
-    int Join(void ** pRetValue = NULL);
-    void Exit(void * pRetValue = NULL);
+    int Join(void ** retValue = NULL);
+    void Exit(void * retValue = NULL);
     void Abalienate();
     bool IsCurrent();
     pthread_t GetThreadId();
     int GetStatus();
     int Start();
 };
+inline sem_t* Thread::GetSem()
+{
+	return sem;
+}
 
-inline pthread_t Thread::GetThreadId() {
+inline pthread_t Thread::GetThreadId() 
+{
     return threadId;
 }
 
-inline int Thread::Detach() {
+inline int Thread::Detach() 
+{
     return pthread_detach(threadId);
 }
 
-inline int Thread::Join(void ** pRetValue) {
-    return pthread_join(threadId, pRetValue);
+inline int Thread::Join(void ** retValue) 
+{
+    return pthread_join(threadId, retValue);
 }
 
-inline void Thread::Exit(void * pRetValue) {
-    if (IsCurrent()) {
-        pthread_exit(pRetValue);
+inline void Thread::Exit(void * retValue)
+{
+    if (IsCurrent()) 
+	{
+        pthread_exit(retValue);
     }
 }
 

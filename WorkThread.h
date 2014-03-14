@@ -4,7 +4,6 @@
 #include <semaphore.h>
 #include "Thread.h"
 #include "Queue.h"
-#include "BlockingQueue.h"
 
 class WorkThread : public Thread {
 protected:

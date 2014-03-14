@@ -39,21 +39,21 @@ public:
     char GetByte(int index);
     short GetShort(int index);
     int GetInt(int index);
-    long GetLong(int index);
+    long long GetLong(int index);
     float GetFloat(int index);
 
     ByteBuf* SetBoolean(int index, bool value);
     ByteBuf* SetByte(int index, char value);
     ByteBuf* SetShort(int index, short value);
     ByteBuf* SetInt(int index, int value);
-    ByteBuf* SetLong(int index, long value);
+    ByteBuf* SetLong(int index, long long value);
     ByteBuf* SetFloat(int index, float value);
     ByteBuf* SetBytes(int index, char* src, int len);
     bool ReadBool();
     char ReadByte();
     short ReadShort();
     int ReadInt();
-    long ReadLong();
+    long long ReadLong();
     float ReadFloat();
     char* ReadUTF8();
     ByteBuf* SkipBytes(int length);
@@ -61,7 +61,7 @@ public:
     ByteBuf* WriteByte(char value);
     ByteBuf* WriteShort(short value);
     ByteBuf* WriteInt(int value);
-    ByteBuf* WriteLong(long value);
+    ByteBuf* WriteLong(long long value);
     ByteBuf* WriteFloat(float value);
     ByteBuf* WriteBytes(ByteBuf* in);
     ByteBuf* WriteUTF8(char* value);

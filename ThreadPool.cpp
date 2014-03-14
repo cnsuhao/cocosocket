@@ -1,17 +1,17 @@
 ﻿#include <iostream>
 #include "ThreadPool.h"
 #include "Thread.h"
+#include <semaphore.h>
+
 using namespace std;
 
-ThreadPool::ThreadPool(int poolsize, int initsize)
-: poolSize(poolsize), initsize(initsize), alive(0), pool(NULL)
+ThreadPool::ThreadPool(int poolsize)
+: poolSize(poolsize),  pool(NULL)
 {
-    this->lock = new Mutext;
     pool = new WorkThread* [poolsize];
-    for (int i = 0; i < initsize; ++i)
+    for (int i = 0; i < poolsize; ++i)
     {
         pool[i] = new WorkThread();
-        ++alive;
     }
 }
 
@@ -21,7 +21,7 @@ ThreadPool::~ThreadPool()
     {
         return;
     }
-    for (int i = 0; i < alive; ++i)
+    for (int i = 0; i < poolSize; ++i)
     {
         if (NULL == pool[i])
         {
@@ -30,21 +30,18 @@ ThreadPool::~ThreadPool()
         delete pool[i];
     }
     delete [] pool;
-    delete lock;
 }
 
-bool ThreadPool::Offer(Thread * task)
+void ThreadPool::Offer(Thread * task)
 {
     bool result = false;
-    lock->Lock();
     WorkThread* g = NULL;
-    for (int i = 0; i < alive; ++i)
+    for (int i = 0; i < poolSize; ++i)
     {
         if (pool[i]->GetStatus() == Thread::IDLE)
         {
             pool[i]->AddTask(task);
-            result = true;
-            break;
+            return;
         } else if (g == NULL)
         {
             g = pool[i];
@@ -53,18 +50,7 @@ bool ThreadPool::Offer(Thread * task)
             g = pool[i];
         }
     }
-    if (!result && alive < poolSize)
-    {
-        pool[alive] = new WorkThread();
-        pool[alive]->AddTask(task);
-        alive++;
-        result = true;
-    } else if (g != NULL)
-    {
-        g->AddTask(task);
-    }
-    lock->Unlock();
-    return result;
+	g->AddTask(task);
 }
 
 /**
@@ -76,17 +62,17 @@ void ThreadPool::Shutdown()
     {
         return;
     }
-    for (int i = 0; i < alive; ++i)
+    for (int i = 0; i < poolSize; ++i)
     {
         if (NULL == pool[i])
         {
             continue;
         }
         pool[i]->SetStatus(Thread::QUITED);
+		sem_post(pool[i]->GetSem());
         pool[i]->Join();
         delete pool[i];
         pool[i] = NULL;
     }
     delete [] pool;
-    alive = 0;
 }

@@ -69,6 +69,13 @@ cocosocket还拥有关于锁、队列、同步队列、线程池的实现，这些内容有些不是必须的
 5，连接服务器，需要指定服务器ip地址和端口，如果连接成功，则SocketListerner的
 OnOpen函数会被调用，如果失败OnClose将被调用。
 
+##关于cocosocket-server
+
+server部分是一个java程序，其底层依赖于netty，netty是一个真正高性能的通信框架
+，cocosocket-server隐藏了许多netty的复杂性（netty不仅仅用于tcp/ip协议的通信）
+，如果跟cocosocket-client作对比你会发现，他们的api很相似，这在某种程度上简化
+了理解这两者的难度，你可以从server端或client端入手，这将非常有助于理解另一端
+。
 
 ## 结语
 

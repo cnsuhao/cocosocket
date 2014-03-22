@@ -125,13 +125,13 @@ long long ByteBuf::GetLong(int index)
     long long ret = 0;
     if (index + 7 < len)
     {
-        ret = ((long) data[index]) << 56;
-        ret |= ((long) data[index + 1]) << 48;
-        ret |= ((long) data[index + 2]) << 40;
-        ret |= ((long) data[index + 3]) << 32;
-        ret |= ((long) data[index + 4]) << 24;
-        ret |= ((long) data[index + 5]) << 16;
-        ret |= ((long) data[index + 6]) << 8;
+        ret = ((long long) data[index]) << 56;
+        ret |= ((long long) data[index + 1]) << 48;
+        ret |= ((long long) data[index + 2]) << 40;
+        ret |= ((long long) data[index + 3]) << 32;
+        ret |= ((long long) data[index + 4]) << 24;
+        ret |= ((long long) data[index + 5]) << 16;
+        ret |= ((long long) data[index + 6]) << 8;
         ret |= ((long) data[index + 7]);
     }
     return ret;
@@ -224,10 +224,10 @@ long long ByteBuf::ReadLong()
     long long ret = 0;
     if (readerIndex + 7 < writerIndex)
     {
-        ret = (((long) data[readerIndex++]) << 56)&0xff00000000000000;
-        ret |= ((((long) data[readerIndex++]) << 48)&0x00ff000000000000);
-        ret |= ((((long) data[readerIndex++]) << 40)&0x0000ff0000000000);
-        ret |= ((((long) data[readerIndex++]) << 32)&0x000000ff00000000);
+        ret = (((long long) data[readerIndex++]) << 56)&0xff00000000000000;
+        ret |= ((((long long) data[readerIndex++]) << 48)&0x00ff000000000000);
+        ret |= ((((long long) data[readerIndex++]) << 40)&0x0000ff0000000000);
+        ret |= ((((long long) data[readerIndex++]) << 32)&0x000000ff00000000);
         ret |= (((data[readerIndex++]) << 24)&0xff000000);
         ret |= (((data[readerIndex++]) << 16)&0x00ff0000);
         ret |= (((data[readerIndex++]) << 8)&0x0000ff00);

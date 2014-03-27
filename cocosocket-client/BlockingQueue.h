@@ -41,7 +41,7 @@ public:
 
     int Size() {
         AutoLock l(lock);
-        return size;
+        return s;
     };
 private:
     Mutext* lock;

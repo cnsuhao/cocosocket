@@ -8,16 +8,20 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include "cocos2d.h"
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #pragma comment(lib, "wsock32")
 #pragma comment(lib,"ws2_32.lib")
 #include <winsock2.h>
 #else
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
 #endif
@@ -27,6 +31,7 @@
 #include "SocketListerner.h"
 #include "Protocal.h"
 #include "Frame.h"
+
 
 Socket::Socket():ip(NULL),listerner(NULL),protocal(NULL)
 {

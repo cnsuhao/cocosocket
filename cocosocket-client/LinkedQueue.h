@@ -20,7 +20,7 @@ template <class T>
 class LinedQueue : public Queue<T> {
 public:
 
-    LinedQueue() : head(NULL), tail(NULL), size(0) {
+    LinedQueue() : head(NULL), tail(NULL), s(0) {
     };
 
     virtual~LinedQueue() {
@@ -37,14 +37,14 @@ public:
         Node* p = (Node*) malloc(sizeof (Node));
         p->data = e;
         p->next = NULL;
-        if (size <= 0) {
+        if (s <= 0) {
             head = p;
             tail = p;
         } else {
             tail->next = p;
             tail = p;
         }
-        size++;
+        s++;
         return true;
     };
 
@@ -64,19 +64,19 @@ public:
                 tail = NULL;
             }
             free(oh);
-            size--;
+            s--;
             return t;
         }
         return (T*) (NULL);
     };
 
   virtual int Size() {
-        return size;
+        return s;
     };
 protected:
     Node* head;
     Node* tail;
-    int size;
+    int s;
 };
 
 #endif	/* LINKEDQUEUE_H */

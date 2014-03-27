@@ -11,6 +11,7 @@
 #include <iostream>
 #include "ByteBuf.h"
 #include "iconv.h"
+#include "cocos2d.h"
 ByteBuf::ByteBuf(int len)
 {
     this->len = len;

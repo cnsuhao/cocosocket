@@ -7,15 +7,19 @@
 
 #include "SocketListerner.h"
 
-#ifdef WIN32
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #pragma comment(lib, "wsock32")
 #pragma comment(lib,"ws2_32.lib")
 #include <winsock2.h>
 #else
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
 #endif
 #include "Socket.h"
 #include "ByteBuf.h"

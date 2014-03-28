@@ -1,4 +1,13 @@
 ﻿#include "Thread.h"
+#include "cocos2d.h"
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include <string>
+#include <sstream>
+#include <iostream> 
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#endif
 
 Thread::Thread() : status(UNINITIALIZED), sem(NULL)
 {
@@ -55,11 +64,25 @@ int Thread::Create(func fun, void * context, bool d, bool scope)
 */
 int Thread::Init()
 {
+	#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+	static int semIndex=0;
+	std::stringstream ss;
+	ss<<"cocosocket-";
+	ss<<semIndex++;
+	std::string name;
+	ss>>name;
+    sem = sem_open( name.c_str(),O_CREAT,0644,0);
+	if(sem == SEM_FAILED)
+	{
+		return ERR_AT_CREATE_SEM;
+	}
+    #else
 	sem = new sem_t;
 	if (sem_init(sem, 0, 0) < 0)
 	{
 		return ERR_AT_CREATE_SEM;
 	}
+    #endif
 	if (Create(&DoRun, (void *) this) < 0)
 	{
 		return ERR_AT_CREATE_THREAD;
@@ -103,7 +126,11 @@ void Thread::End()
 	if (sem!=NULL)
 	{  
 		sem_post(sem);
-		sem_destroy(sem);
+		#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+		sem_close(sem);
+        #else
+        sem_destroy(sem);
+        #endif
 		delete sem;
 		sem = NULL;
 	}

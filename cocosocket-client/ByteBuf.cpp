@@ -474,8 +474,9 @@ ByteBuf* ByteBuf::WriteBytes(ByteBuf* in)
 char* ByteBuf::ReadUTF8()
 {
     short len = ReadShort(); // 字节数
-    char* charBuff = new char[len]; //
+    char* charBuff = new char[len+1]; //
     memcpy(charBuff, this->data + this->readerIndex, len);
+	charBuff[len]='\0';
     this->readerIndex += len;
     return charBuff;
 }

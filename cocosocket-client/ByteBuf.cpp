@@ -527,7 +527,7 @@ int ByteBuf::Convert(const char *from_charset, const char *to_charset, const cha
 		return -1;
 	}
     iconv_close(cd);
-	return outlen;
+	return 0;
 #endif
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
@@ -541,7 +541,7 @@ int ByteBuf::Convert(const char *from_charset, const char *to_charset, const cha
 		return -1;  
 	}
     iconv_close(cd);
-	return outlen;
+	return 0;
 #endif
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
@@ -558,7 +558,10 @@ std::string ByteBuf::UTF82GB2312(const char *inbuf)
 	if(Convert("utf-8", "gb2312", inbuf, inlen, outbuf, inlen * 2 + 2) == 0)
 	{
 		strRet = outbuf;
-	}
+	}else
+    {
+        strRet = inbuf;
+    }
 	delete [] outbuf;
 	return strRet;
 }
@@ -572,7 +575,10 @@ std::string ByteBuf::GB23122UTF8(const char *inbuf)
 	if(Convert("gb2312", "utf-8", inbuf, inlen, outbuf, inlen * 2 + 2) == 0)
 	{
 		strRet = outbuf;
-	}
+	}else
+    {
+        strRet = inbuf;
+    }
 	delete [] outbuf;
 	return strRet;
 }

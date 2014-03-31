@@ -33,7 +33,7 @@ public:
     Thread();
     virtual ~Thread();
     virtual void Run() = 0;
-	sem_t* Thread::GetSem();
+	sem_t* GetSem();
     int Detach();
     int Join(void ** retValue = NULL);
     void Exit(void * retValue = NULL);

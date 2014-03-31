@@ -6,7 +6,7 @@
  */
 
 #include "SocketListerner.h"
-
+#include "cocos2d.h"
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #pragma comment(lib, "wsock32")
 #pragma comment(lib,"ws2_32.lib")

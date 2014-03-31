@@ -26,22 +26,22 @@ public:
 
     bool Offer(T* e) {
         AutoLock l(lock);
-       return LinedQueue::Offer(e);
+       return LinedQueue<T>::Offer(e);
     };
 
     T* Peek() {
         AutoLock l(lock);
-        return LinedQueue::Peek();
+        return LinedQueue<T>::Peek();
     };
 
     T* Poll() {
         AutoLock l(lock);
-        return LinedQueue::Poll();
+        return LinedQueue<T>::Poll();
     };
 
     int Size() {
         AutoLock l(lock);
-        return s;
+        return this->s;
     };
 private:
     Mutext* lock;

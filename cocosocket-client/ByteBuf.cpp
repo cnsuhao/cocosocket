@@ -513,28 +513,41 @@ char* ByteBuf::GetRaw()
 
 int ByteBuf::Convert(const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf, size_t outlen)
 {
-	iconv_t iconvH;
-    iconvH = iconv_open(to_charset, from_charset);
-    if( !iconvH ) return NULL;
-    memset(outbuf, 0, outlen);
- #if(CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
+	iconv_t cd = iconv_open(to_charset,from_charset);
+	if(cd==0)
+		return -1;
+	memset(outbuf,0,outlen);
     const char *temp = inbuf;
-    const char **pin = &temp;
-    char **pout = &outbuf;
-    if( !iconv(iconvH, pin, &inlen, pout, &outlen) )
-    {
-        iconv_close(iconvH);
-        return NULL;
-    }
-#else
-    if( !iconv(iconvH, &inbuf, &inlen, &outbuf, &outlen) )
-    {
-        iconv_close(iconvH);
-        return NULL;
-    }
+	const char **pin = &temp;
+	char **pout = &outbuf;
+	if(!iconv(cd,pin,&inlen,pout,&outlen))
+	{
+		iconv_close(cd);
+		return -1;
+	}
+    iconv_close(cd);
+	return outlen;
 #endif
-    iconv_close(iconvH);
-    return NULL;
+
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    iconv_t cd = iconv_open(to_charset,from_charset);
+	if(cd==0)
+		return -1;
+	memset(outbuf,0,outlen);
+	if(!iconv(cd, &inbuf, &inlen, &outbuf, &outlen))  
+	{  
+		iconv_close(cd);  
+		return -1;  
+	}
+    iconv_close(cd);
+	return outlen;
+#endif
+
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    return inlen;
+#endif
+
 }
 
 std::string ByteBuf::UTF82GB2312(const char *inbuf)

@@ -53,8 +53,8 @@ void DefaultListerner::OnMessage(Socket* so, ByteBuf* frame)
     //    wchar_t* u1 = frame->ReadUTF8();
     //    wchar_t* u2 = frame->ReadUTF8();
     float c = frame->ReadFloat();
-	std::string s=frame->ReadUTF8();
-    CCLOG("%s\n",s);
+	std::string ss=frame->ReadUTF8();
+    CCLOG("%s\n",ss.c_str());
     delete frame;
     //    Frame* s = new Frame(r);
     //    s->PutInt(c);

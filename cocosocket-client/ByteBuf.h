@@ -67,9 +67,7 @@ public:
     ByteBuf* WriteUTF8(char* value);
     const ByteBuf* Copy();
     char* GetRaw();
-	static int Convert(const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf, size_t outlen);
-	static std::string UTF82GB2312(const char *inbuf);
-	static std::string GB23122UTF8(const char *inbuf);
+	static int ByteBuf::Convert(std::string& str, const char* to, const char* from);
 private:
     char* data; //数据
     int len; //长度，可扩展长度

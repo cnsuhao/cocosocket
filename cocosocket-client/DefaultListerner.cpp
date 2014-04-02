@@ -71,8 +71,9 @@ void DefaultListerner::OnOpen(Socket* so)
     CCLOG("%s","connecting");
 	Frame* f=new Frame(512);
     f->PutFloat(10.1f);
-	char* buff="我去啊a。。。。。";
-	f->PutString((char*)ByteBuf::GB23122UTF8(buff).c_str());
+	std::string buff="我去啊a。。。。。";
+	ByteBuf::Convert(buff,"utf-8","gbk");
+	f->PutString((char*)buff.c_str());
 	//f->PutString(s);
     f->End();
     so->Send(f);

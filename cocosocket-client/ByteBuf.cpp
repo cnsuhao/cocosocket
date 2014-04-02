@@ -511,74 +511,51 @@ char* ByteBuf::GetRaw()
 }
 
 
-int ByteBuf::Convert(const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf, size_t outlen)
+int ByteBuf::Convert(std::string& str, const char* to, const char* from)
 {
-#if(CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
-	iconv_t cd = iconv_open(to_charset,from_charset);
-	if(cd==0)
-		return -1;
-	memset(outbuf,0,outlen);
-    const char *temp = inbuf;
-	const char **pin = &temp;
-	char **pout = &outbuf;
-	if(!iconv(cd,pin,&inlen,pout,&outlen))
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	iconv_t iconvH;
+	iconvH = iconv_open(to, from);
+	if (iconvH == 0)
 	{
-		iconv_close(cd);
 		return -1;
 	}
-    iconv_close(cd);
+	const char* strChar = str.c_str();
+	const char** pin = &strChar;
+	size_t strLength = str.length();
+	char* outbuf = (char*) malloc(strLength*4);
+	char* pBuff = outbuf;
+	memset( outbuf, 0, strLength*4);
+	size_t outLength = strLength*4;
+	if (-1 == iconv(iconvH, pin, &strLength, &outbuf, &outLength))
+	{
+		iconv_close(iconvH);
+		return -1;
+	}
+	str = pBuff;
+	iconv_close(iconvH);
 	return 0;
 #endif
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    iconv_t cd = iconv_open(to_charset,from_charset);
+	iconv_t cd = iconv_open(to,from);
 	if(cd==0)
 		return -1;
+	char* inbuf=str.c_str();
+	size_t inlen = str.length();
+	char* outbuf=(char*) malloc(inlen*4);
+	size_t outlen = inlen*4;
 	memset(outbuf,0,outlen);
 	if(!iconv(cd, &inbuf, &inlen, &outbuf, &outlen))  
 	{  
 		iconv_close(cd);  
 		return -1;  
 	}
-    iconv_close(cd);
+	iconv_close(cd);
 	return 0;
 #endif
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    return inlen;
+	return 0;
 #endif
-
-}
-
-std::string ByteBuf::UTF82GB2312(const char *inbuf)
-{
-	size_t inlen = strlen(inbuf);
-	char * outbuf = new char[inlen * 2 + 2];
-	std::string strRet;
-	if(Convert("utf-8", "gb2312", inbuf, inlen, outbuf, inlen * 2 + 2) == 0)
-	{
-		strRet = outbuf;
-	}else
-    {
-        strRet = inbuf;
-    }
-	delete [] outbuf;
-	return strRet;
-}
-
-
-std::string ByteBuf::GB23122UTF8(const char *inbuf)
-{
-	size_t inlen = strlen(inbuf);
-	char * outbuf = new char[inlen * 2 + 2];
-	std::string strRet;
-	if(Convert("gb2312", "utf-8", inbuf, inlen, outbuf, inlen * 2 + 2) == 0)
-	{
-		strRet = outbuf;
-	}else
-    {
-        strRet = inbuf;
-    }
-	delete [] outbuf;
-	return strRet;
 }

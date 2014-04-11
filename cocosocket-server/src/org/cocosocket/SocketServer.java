@@ -142,6 +142,7 @@ public abstract class SocketServer extends SocketListener
             channel(c).
             option(ChannelOption.TCP_NODELAY, true).
             option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 0).
+            option(ChannelOption.SO_LINGER, 0).
             option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT).
             childHandler(new ChannelInitializer<SocketChannel>()
                 {

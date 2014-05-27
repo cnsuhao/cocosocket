@@ -1,9 +1,7 @@
 /**
  * nsocket，基于netty实现
- *//**
- * nsocket，基于netty实现
  */
-package org.cocosocket;
+package org.ngame.socket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
@@ -19,17 +17,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import org.cocosocket.framing.Framedata;
-import org.cocosocket.protocal.Protocal;
+import org.ngame.socket.framing.Framedata;
+import org.ngame.socket.protocal.Protocal;
 
 /**
  *
  * @author beykery
  */
-public final class CocoSocket extends ChannelInboundHandlerAdapter
+public final class NSocket extends ChannelInboundHandlerAdapter
 {
 
-    private static final Logger LOG = Logger.getLogger(CocoSocket.class.getName());
+    private static final Logger LOG = Logger.getLogger(NSocket.class.getName());
     private SocketListener listener;
     private final SocketChannel channel;
     private boolean closeReason;//是否为服务器主动关闭
@@ -46,7 +44,7 @@ public final class CocoSocket extends ChannelInboundHandlerAdapter
      * @param ch
      * @param protocal
      */
-    public CocoSocket(SocketListener l, SocketChannel ch, Protocal protocal)
+    public NSocket(SocketListener l, SocketChannel ch, Protocal protocal)
     {
         channel = ch;
         this.listener = l;

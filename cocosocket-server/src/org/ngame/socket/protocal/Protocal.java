@@ -24,7 +24,8 @@ public abstract class Protocal
 	{
 		try
 		{
-			order = "BIG_ENDIAN".equals(System.getProperty("byte.order")) ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
+			String o = System.getProperty("byte.order");
+			order = (o == null || "BIG_ENDIAN".equals(o)) ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
 		} catch (Exception e)
 		{
 		}

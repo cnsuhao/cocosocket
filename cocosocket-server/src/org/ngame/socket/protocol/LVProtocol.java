@@ -1,4 +1,4 @@
-package org.ngame.socket.protocal;
+package org.ngame.socket.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -14,10 +14,10 @@ import org.ngame.socket.exeptions.LimitExedeedException;
  *
  * @author beykery
  */
-public class LVProtocal extends Protocal
+public class LVProtocol extends Protocol
 {
 
-	private static final Logger LOG = Logger.getLogger(LVProtocal.class.getName());
+	private static final Logger LOG = Logger.getLogger(LVProtocol.class.getName());
 	private ByteBuf incompleteframe;//尚未完成的帧
 	private byte h, l;//高低字节用来记录长度
 	private byte status;//当前状态
@@ -30,7 +30,7 @@ public class LVProtocal extends Protocal
 	{
 		try
 		{
-			maxFrameSize = Integer.parseInt(System.getProperty("game.socket.protocal.maxFrameSize"));
+			maxFrameSize = Integer.parseInt(System.getProperty("game.socket.protocol.maxFrameSize"));
 		} catch (Exception e)
 		{
 			LOG.log(Level.WARNING, "socket帧长度设置错误，将使用默认值");
@@ -40,7 +40,7 @@ public class LVProtocal extends Protocal
 	/**
 	 * 构造
 	 */
-	public LVProtocal()
+	public LVProtocol()
 	{
 	}
 
@@ -57,7 +57,7 @@ public class LVProtocal extends Protocal
 					break;
 				case STATUS_L:
 					l = readBuffer.readByte();
-					final int blen = Protocal.order == ByteOrder.BIG_ENDIAN ? (0x0000ff00 & (h << 8)) | (0x000000ff & l) : (0x0000ff00 & (l << 8)) | (0x000000ff & h);
+					final int blen = Protocol.order == ByteOrder.BIG_ENDIAN ? (0x0000ff00 & (h << 8)) | (0x000000ff & l) : (0x0000ff00 & (l << 8)) | (0x000000ff & h);
 					if (context != null)
 					{
 						if (blen <= 0 || blen > maxFrameSize)
@@ -66,7 +66,7 @@ public class LVProtocal extends Protocal
 						}
 					}
 					incompleteframe = PooledByteBufAllocator.DEFAULT.buffer(blen + 16 + 2);
-					incompleteframe.order(Protocal.order);
+					incompleteframe.order(Protocol.order);
 					incompleteframe.writeShort(blen);
 					status = STATUS_C;
 					break;

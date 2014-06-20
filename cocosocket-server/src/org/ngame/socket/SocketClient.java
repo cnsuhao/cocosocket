@@ -10,11 +10,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpClientCodec;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
 import java.util.logging.Logger;
 import org.ngame.socket.framing.Framedata;
-import org.ngame.socket.protocal.Protocal;
+import org.ngame.socket.protocol.Protocol;
 
 /**
  * 客户端
@@ -27,9 +29,10 @@ public abstract class SocketClient extends SocketListener
 	private static final Logger LOG = Logger.getLogger(SocketClient.class.getName());
 	private InetSocketAddress address;
 	private NSocket conn;
-	private Protocal protocal;
+	private Protocol protocol;
 	private EventLoopGroup group;
 	protected static boolean linux;
+	protected boolean http;
 
 	static
 	{
@@ -39,16 +42,17 @@ public abstract class SocketClient extends SocketListener
 	/**
 	 *
 	 * @param address
-	 * @param protocal
+	 * @param protocol
 	 * @param group
+	 * @param http
 	 */
-	public SocketClient(InetSocketAddress address, Protocal protocal, EventLoopGroup group)
+	public SocketClient(InetSocketAddress address, Protocol protocol, EventLoopGroup group, boolean http)
 	{
 		if (address == null)
 		{
 			throw new IllegalArgumentException();
 		}
-		if (protocal == null)
+		if (protocol == null)
 		{
 			throw new IllegalArgumentException("解析器不能为空");
 		}
@@ -57,8 +61,9 @@ public abstract class SocketClient extends SocketListener
 			throw new IllegalArgumentException("group不能为空");
 		}
 		this.address = address;
-		this.protocal = protocal;
+		this.protocol = protocol;
 		this.group = group;
+		this.http = http;
 	}
 
 	/**
@@ -76,9 +81,9 @@ public abstract class SocketClient extends SocketListener
 	 *
 	 * @return
 	 */
-	public Protocal getProtocal()
+	public Protocol getProtocol()
 	{
-		return protocal;
+		return protocol;
 	}
 
 	/**
@@ -148,7 +153,7 @@ public abstract class SocketClient extends SocketListener
 	 * @param remote
 	 * @throws InterruptedException
 	 */
-	private ChannelFuture tryToConnect(InetSocketAddress remote) throws InterruptedException
+	private ChannelFuture tryToConnect(final InetSocketAddress remote) throws InterruptedException
 	{
 		final Class<? extends SocketChannel> c;
 		c = linux ? EpollSocketChannel.class : NioSocketChannel.class;
@@ -165,8 +170,16 @@ public abstract class SocketClient extends SocketListener
 					public void initChannel(SocketChannel ch) throws Exception
 					{
 						ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
-						NSocket socket = new NSocket(SocketClient.this, ch, protocal);
+						NSocket socket = new NSocket(SocketClient.this, ch, protocol);
 						SocketClient.this.conn = socket;
+						if (SocketClient.this.http)//如果是http，则先使用httpcodec
+						{
+							ch.pipeline().addLast(new HttpClientCodec());
+							socket.setHttp(true);
+							socket.setClient(true);
+							String uri = "http://" + remote.getAddress().getHostAddress() + ":" + remote.getPort() + "/";
+							socket.setURI(uri);
+						}
 						ch.pipeline().addLast(socket);
 					}
 			});
@@ -176,5 +189,15 @@ public abstract class SocketClient extends SocketListener
 	public NSocket connection()
 	{
 		return conn;
+	}
+
+	/**
+	 * 是否为http客户端
+	 *
+	 * @return
+	 */
+	public boolean isHttp()
+	{
+		return http;
 	}
 }

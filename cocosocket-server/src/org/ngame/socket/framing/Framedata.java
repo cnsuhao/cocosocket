@@ -5,7 +5,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ngame.socket.protocal.Protocal;
+import org.ngame.socket.protocol.Protocol;
 
 /**
  * 帧
@@ -35,7 +35,7 @@ public class Framedata
 	public Framedata(int l)
 	{
 		this.payload = PooledByteBufAllocator.DEFAULT.buffer(l);
-		this.payload.order(Protocal.order);
+		this.payload.order(Protocol.order);
 		this.payload.writeShort(0);
 	}
 

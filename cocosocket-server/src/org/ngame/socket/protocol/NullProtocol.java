@@ -1,7 +1,7 @@
 /**
  * 无自定义类型（不再处理分帧逻辑）
  */
-package org.ngame.socket.protocal;
+package org.ngame.socket.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -12,10 +12,10 @@ import org.ngame.socket.exeptions.LimitExedeedException;
  *
  * @author beykery
  */
-public class NullProtocal extends Protocal
+public class NullProtocol extends Protocol
 {
 
-	public NullProtocal()
+	public NullProtocol()
 	{
 	}
 

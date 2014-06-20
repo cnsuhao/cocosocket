@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ngame.socket.NSocket;
 import org.ngame.socket.SocketServer;
-import org.ngame.socket.protocal.LVProtocal;
+import org.ngame.socket.protocol.LVProtocol;
 
 /**
  *
@@ -23,7 +23,7 @@ public class TestServer extends SocketServer
 
     public TestServer(InetSocketAddress address)
     {
-        super(address);
+        super(address,true);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class TestServer extends SocketServer
 
     public static void main(String... args) throws InterruptedException
     {
-        TestServer server = new TestServer(new InetSocketAddress(2000));
-        server.setProtocal(LVProtocal.class);
+        TestServer server = new TestServer(new InetSocketAddress(80));
+        server.setProtocol(LVProtocol.class);
         server.start();
     }
 

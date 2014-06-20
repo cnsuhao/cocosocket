@@ -1,7 +1,7 @@
 /**
  * 协议
  */
-package org.ngame.socket.protocal;
+package org.ngame.socket.protocol;
 
 import io.netty.buffer.ByteBuf;
 import java.nio.ByteOrder;
@@ -14,7 +14,7 @@ import org.ngame.socket.exeptions.LimitExedeedException;
  *
  * @author beykery
  */
-public abstract class Protocal
+public abstract class Protocol
 {
 
 	protected NSocket context;

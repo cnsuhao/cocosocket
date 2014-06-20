@@ -16,12 +16,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.HttpServerCodec;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ngame.socket.protocal.NullProtocal;
-import org.ngame.socket.protocal.Protocal;
+import org.ngame.socket.protocol.NullProtocol;
+import org.ngame.socket.protocol.Protocol;
 
 /**
  *
@@ -39,8 +42,9 @@ public abstract class SocketServer extends SocketListener
 	protected EventLoopGroup workerGroup;
 	protected static int MAX_THREAD_SELECTOR = 2;
 	protected static int MAX_THREAD_IO = Runtime.getRuntime().availableProcessors() * 2;
-	protected Class<? extends Protocal> pClass = NullProtocal.class;
+	protected Class<? extends Protocol> pClass = NullProtocol.class;
 	protected static boolean linux;
+	protected final boolean http;
 
 	static
 	{
@@ -55,19 +59,27 @@ public abstract class SocketServer extends SocketListener
 		}
 	}
 
-	public SocketServer() throws UnknownHostException
+	/**
+	 * 服务器
+	 *
+	 * @param http
+	 * @throws UnknownHostException
+	 */
+	public SocketServer(boolean http) throws UnknownHostException
 	{
-		this(null);
+		this(null, http);
 	}
 
 	/**
 	 * 构造
 	 *
 	 * @param address
+	 * @param http
 	 */
-	public SocketServer(InetSocketAddress address)
+	public SocketServer(InetSocketAddress address, boolean http)
 	{
 		super();
+		this.http = http;
 		if (address == null)
 		{
 			/**
@@ -104,7 +116,7 @@ public abstract class SocketServer extends SocketListener
 	 *
 	 * @param pClass
 	 */
-	public void setProtocal(Class<? extends Protocal> pClass)
+	public void setProtocol(Class<? extends Protocol> pClass)
 	{
 		this.pClass = pClass;
 	}
@@ -114,7 +126,7 @@ public abstract class SocketServer extends SocketListener
 	 *
 	 * @return
 	 */
-	public Class<? extends Protocal> getProtocal()
+	public Class<? extends Protocol> getProtocol()
 	{
 		return pClass;
 	}
@@ -158,9 +170,15 @@ public abstract class SocketServer extends SocketListener
 						if (cur_connection.incrementAndGet() < max_connection)
 						{
 							ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
-							final Protocal p = pClass.newInstance();
+							final Protocol p = pClass.newInstance();
 							final NSocket s = new NSocket(SocketServer.this, ch, p);
 							p.setContext(s);
+							if (SocketServer.this.http)//如果是http协议，则先解析http
+							{
+								ch.pipeline().addLast(new HttpRequestDecoder());
+								ch.pipeline().addLast(new HttpResponseEncoder());
+								s.setHttp(true);
+							}
 							ch.pipeline().addLast(s);
 						} else
 						{

@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import org.ngame.socket.NSocket;
 import org.ngame.socket.SocketClient;
 import org.ngame.socket.framing.Framedata;
-import org.ngame.socket.protocal.LVProtocal;
-import org.ngame.socket.protocal.Protocal;
+import org.ngame.socket.protocol.LVProtocol;
+import org.ngame.socket.protocol.Protocol;
 
 /**
  *
@@ -24,9 +24,9 @@ public class TestClient extends SocketClient
 
     private static final Logger LOG = Logger.getLogger(TestClient.class.getName());
 
-    public TestClient(InetSocketAddress address, Protocal protocal)
+    public TestClient(InetSocketAddress address, Protocol protocol)
     {
-        super(address, protocal, new NioEventLoopGroup(1));
+        super(address, protocol, new NioEventLoopGroup(1),true);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class TestClient extends SocketClient
      */
     public static void main(String... args)
     {
-        TestClient tc = new TestClient(new InetSocketAddress(2000), new LVProtocal());
+        TestClient tc = new TestClient(new InetSocketAddress(80), new LVProtocol());
         tc.connect();
     }
 

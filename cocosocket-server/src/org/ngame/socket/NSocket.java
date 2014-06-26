@@ -10,11 +10,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.DefaultHttpRequest;
-import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponse;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -69,11 +70,11 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 		ByteBuf bb = null;
 		if (http)//如果是http协议，则取出httprequest并分析
 		{
-			if (msg instanceof DefaultHttpRequest)
-			{
-				DefaultHttpResponse res = new DefaultHttpResponse(HTTP_1_1, OK);
-				this.channel.writeAndFlush(res);
-			} else if (msg instanceof DefaultFullHttpRequest)//server
+//			if (msg instanceof DefaultHttpRequest)
+//			{
+//               System.out.println("binnnn");
+//			} else 
+			if (msg instanceof DefaultFullHttpRequest)//server
 			{
 				DefaultFullHttpRequest req = (DefaultFullHttpRequest) msg;
 				this.keepAlive = isKeepAlive(req);
@@ -169,10 +170,13 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 		{
 			if (!client)//服务器回送
 			{
-				return this.context.writeAndFlush(data);
+				HttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, OK, data);
+				res.headers().set(CONTENT_LENGTH, data.readableBytes());
+				return this.context.writeAndFlush(res);
 			} else//客户端的request请求
 			{
 				DefaultFullHttpRequest request = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.POST, uri, data);
+				request.headers().set(CONTENT_LENGTH, data.readableBytes());
 				return this.channel.writeAndFlush(request);
 			}
 		} else
@@ -432,6 +436,16 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 	public void setClient(boolean client)
 	{
 		this.client = client;
+	}
+
+	/**
+	 * 是否为客户端
+	 *
+	 * @return
+	 */
+	public boolean isClient()
+	{
+		return client;
 	}
 
 	/**

@@ -12,7 +12,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
 import java.util.logging.Logger;
 import org.ngame.socket.framing.Framedata;
@@ -176,10 +175,10 @@ public abstract class SocketClient extends SocketListener
 						{
 							ch.pipeline().addLast(new HttpClientCodec());
 							socket.setHttp(true);
-							socket.setClient(true);
 							String uri = "http://" + remote.getAddress().getHostAddress() + ":" + remote.getPort() + "/";
 							socket.setURI(uri);
 						}
+						socket.setClient(true);
 						ch.pipeline().addLast(socket);
 					}
 			});

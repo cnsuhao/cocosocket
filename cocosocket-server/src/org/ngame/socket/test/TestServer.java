@@ -30,6 +30,7 @@ public class TestServer extends SocketServer
     public void onOpen(NSocket conn)
     {
         LOG.log(Level.WARNING, "链接到来：" + conn);
+		//conn.idle(2, 2, 2, TimeUnit.SECONDS);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class TestServer extends SocketServer
 
     public static void main(String... args) throws InterruptedException
     {
-        TestServer server = new TestServer(new InetSocketAddress(80));
+        TestServer server = new TestServer(new InetSocketAddress(3210));
         server.setProtocol(LVProtocol.class);
         server.start();
     }

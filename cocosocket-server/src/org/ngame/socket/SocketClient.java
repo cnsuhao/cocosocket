@@ -3,17 +3,23 @@ package org.ngame.socket;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.local.LocalAddress;
+import io.netty.channel.local.LocalChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
+
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.channels.NotYetConnectedException;
 import java.util.logging.Logger;
+
 import org.ngame.socket.framing.Framedata;
 import org.ngame.socket.protocol.Protocol;
 
@@ -198,5 +204,54 @@ public abstract class SocketClient extends SocketListener
 	public boolean isHttp()
 	{
 		return http;
+	}
+	
+	/**
+	 * 链接本地服务
+	 *
+	 * @param remote
+	 * @throws InterruptedException
+	 */
+	private ChannelFuture tryToConnectLocal(SocketAddress remote) throws InterruptedException
+	{
+		final Class<? extends Channel> c;
+		c = LocalChannel.class;
+		Bootstrap b = new Bootstrap();
+		b.group(group)
+			.channel(c)
+			.option(ChannelOption.TCP_NODELAY, true)
+			.option(ChannelOption.SO_LINGER, 0)
+			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 0)
+			.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+			.handler(new ChannelInitializer<LocalChannel>()
+				{
+					@Override
+					public void initChannel(LocalChannel ch) throws Exception
+					{
+						ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
+						NSocket socket = new NSocket(SocketClient.this, ch, protocol);
+						SocketClient.this.conn = socket;
+						ch.pipeline().addLast(socket);
+					}
+			});
+		return b.connect(remote).sync();
+	}
+	
+	/**
+	 * 连接本地
+	 *
+	 * @return
+	 */
+	public ChannelFuture connectLocal()
+	{
+		try
+		{
+			LocalAddress localAddress = new LocalAddress((address).getPort()+"");
+			return tryToConnectLocal(localAddress);
+		} catch (InterruptedException ex)
+		{
+			this.onError(conn, ex);
+		}
+		return null;
 	}
 }

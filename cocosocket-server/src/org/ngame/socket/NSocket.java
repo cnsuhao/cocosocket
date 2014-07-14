@@ -3,12 +3,7 @@
  */
 package org.ngame.socket;
 
-import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,19 +12,20 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
+import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
-
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
 import org.ngame.socket.framing.Framedata;
 import org.ngame.socket.protocol.Protocol;
 
@@ -42,7 +38,7 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 
 	private static final Logger LOG = Logger.getLogger(NSocket.class.getName());
 	private SocketListener listener;
-	private final Channel channel;
+	private final SocketChannel channel;
 	private boolean closeReason;//是否为服务器主动关闭
 	private final Protocol protocol;
 	private long sessionId;
@@ -61,7 +57,7 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 	 * @param ch
 	 * @param protocol
 	 */
-	public NSocket(SocketListener l, Channel ch, Protocol protocol)
+	public NSocket(SocketListener l, SocketChannel ch, Protocol protocol)
 	{
 		channel = ch;
 		this.listener = l;
@@ -291,21 +287,17 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 	@Override
 	public String toString()
 	{
-		if(channel instanceof SocketChannel){
-			SocketChannel sc = (SocketChannel)channel;
-			InetSocketAddress local = sc.localAddress();
-			InetSocketAddress remote = sc.remoteAddress();
-			return local.getAddress().getHostAddress() + ":" + local.getPort() + "=>" + remote.getAddress().getHostAddress() + ":" + remote.getPort();
-		}else{
-			return "本地服务连接";
-		}	}
+		InetSocketAddress local = channel.localAddress();
+		InetSocketAddress remote = channel.remoteAddress();
+		return local.getAddress().getHostAddress() + ":" + local.getPort() + "=>" + remote.getAddress().getHostAddress() + ":" + remote.getPort();
+	}
 
 	/**
 	 * 远程地址
 	 *
 	 * @return
 	 */
-	public SocketAddress remoteAddress()
+	public InetSocketAddress remoteAddress()
 	{
 		return channel.remoteAddress();
 	}
@@ -315,7 +307,7 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 	 *
 	 * @return
 	 */
-	public SocketAddress localAddress()
+	public InetSocketAddress localAddress()
 	{
 		return channel.localAddress();
 	}
@@ -335,7 +327,7 @@ public final class NSocket extends ChannelInboundHandlerAdapter
 	 *
 	 * @return
 	 */
-	public Channel channel()
+	public SocketChannel channel()
 	{
 		return channel;
 	}

@@ -12,10 +12,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.local.LocalAddress;
-import io.netty.channel.local.LocalChannel;
-import io.netty.channel.local.LocalEventLoopGroup;
-import io.netty.channel.local.LocalServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
@@ -23,12 +19,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpServerCodec;
-
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.ngame.socket.protocol.NullProtocol;
 import org.ngame.socket.protocol.Protocol;
 
@@ -51,7 +45,6 @@ public abstract class SocketServer extends SocketListener
 	protected Class<? extends Protocol> pClass = NullProtocol.class;
 	protected static boolean linux;
 	protected final boolean http;
-	private boolean local = false;
 
 	static
 	{
@@ -226,45 +219,4 @@ public abstract class SocketServer extends SocketListener
 	 */
 	protected abstract void preStop();
 
-	public void startLocal() throws InterruptedException
-	{
-		workerGroup = new LocalEventLoopGroup();
-		bossGroup =  new LocalEventLoopGroup();
-		final Class<? extends LocalServerChannel> c = LocalServerChannel.class;
-		ServerBootstrap b = new ServerBootstrap();
-		b.group(bossGroup,workerGroup).
-			channel(c).
-			option(ChannelOption.TCP_NODELAY, true).
-			option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 0).
-			option(ChannelOption.SO_LINGER, 0).
-			option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT).
-			childHandler(new ChannelInitializer<LocalChannel>()
-				{
-					@Override
-					public void initChannel(LocalChannel ch) throws Exception
-					{
-						if (cur_connection.incrementAndGet() < max_connection)
-						{
-							ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
-							final Protocol p = pClass.newInstance();
-							final NSocket s = new NSocket(SocketServer.this, ch, p);
-							p.setContext(s);
-							ch.pipeline().addLast(s);
-						} else
-						{
-							ch.close();
-							cur_connection.decrementAndGet();
-						}
-					}
-			});
-		LocalAddress localAddress = new LocalAddress(port+"");
-		System.out.println("启动本地服务："+localAddress);
-		final ChannelFuture f = b.bind(localAddress).sync();
-		this.serverChannel = f.channel();
-		local = true;
-	}
-	
-	public boolean isLocal() {
-		return local;
-	}
 }

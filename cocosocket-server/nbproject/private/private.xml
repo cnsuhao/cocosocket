@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/NServer.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/NClient.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/test/TestServer.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/SocketClient.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/protocol/Protocol.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/NListener.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/test/TestHttpClient.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/test/TestClient.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/test/WebSocketClient.java</file>
+            <file>file:/E:/projects/cocosocket/cocosocket-server/src/org/ngame/socket/test/WebSocketClientHandler.java</file>
+        </group>
     </open-files>
 </project-private>

@@ -5,7 +5,7 @@ package org.ngame.socket.protocol;
 
 import io.netty.buffer.ByteBuf;
 import java.nio.ByteOrder;
-import org.ngame.socket.NSocket;
+import org.ngame.socket.NClient;
 import org.ngame.socket.exeptions.InvalidDataException;
 import org.ngame.socket.exeptions.LimitExedeedException;
 
@@ -17,7 +17,7 @@ import org.ngame.socket.exeptions.LimitExedeedException;
 public abstract class Protocol
 {
 
-	protected NSocket context;
+	protected NClient context;
 	public static ByteOrder order = ByteOrder.BIG_ENDIAN;
 
 	static
@@ -36,7 +36,7 @@ public abstract class Protocol
 	 *
 	 * @param context
 	 */
-	public void setContext(NSocket context)
+	public void setContext(NClient context)
 	{
 		this.context = context;
 	}

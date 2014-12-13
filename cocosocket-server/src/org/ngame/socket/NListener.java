@@ -1,6 +1,5 @@
 package org.ngame.socket;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -11,27 +10,27 @@ import java.util.logging.Logger;
  *
  * @author beykery
  */
-public abstract class SocketListener
+public abstract class NListener
 {
 
-    private static final Logger LOG = Logger.getLogger(SocketListener.class.getName());
+    private static final Logger LOG = Logger.getLogger(NListener.class.getName());
     int max_connection = 10000;
     AtomicInteger cur_connection = new AtomicInteger(0);
 
-    public abstract void onOpen(NSocket conn);
+    public abstract void onOpen(NClient conn);
 
-    public abstract void onClose(NSocket conn, boolean local);
+    public abstract void onClose(NClient conn, boolean local);
 
-    public abstract void onMessage(NSocket conn, ByteBuf message);
+    public abstract void onMessage(NClient conn, Object message);
 
-    public abstract void onError(NSocket conn, Throwable ex);
+    public abstract void onError(NClient conn, Throwable ex);
 
-    public abstract void onIdle(NSocket conn, IdleStateEvent event);
+    public abstract void onIdle(NClient conn, IdleStateEvent event);
 
     /**
      * 初始化
      */
-    public SocketListener()
+    public NListener()
     {
         try
         {
@@ -48,7 +47,7 @@ public abstract class SocketListener
      * @param aThis
      * @param closeReason
      */
-    void socketClosed(NSocket so, boolean closeReason)
+    void socketClosed(NClient so, boolean closeReason)
     {
         cur_connection.decrementAndGet();
         this.onClose(so, closeReason);

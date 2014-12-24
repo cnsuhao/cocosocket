@@ -25,7 +25,7 @@ public class NullProtocol extends Protocol
 		if (buf.isReadable())
 		{
 			ByteBuf r = PooledByteBufAllocator.DEFAULT.buffer(buf.readableBytes() + 8);
-			r.order(order);
+			r = r.order(order);
 			r.writeBytes(buf);
 			return r;
 		}

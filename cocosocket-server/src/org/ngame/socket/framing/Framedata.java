@@ -35,7 +35,7 @@ public class Framedata
 	public Framedata(int l)
 	{
 		this.payload = PooledByteBufAllocator.DEFAULT.buffer(l);
-		this.payload.order(Protocol.order);
+		this.payload = this.payload.order(Protocol.order);
 		this.payload.writeShort(0);
 	}
 

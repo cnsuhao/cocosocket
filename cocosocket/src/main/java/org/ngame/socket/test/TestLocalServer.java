@@ -19,7 +19,7 @@ import org.ngame.socket.NClient;
 public class TestLocalServer extends LocalServer
 {
 
-	public TestLocalServer(InetSocketAddress addr) throws UnknownHostException
+	public TestLocalServer(InetSocketAddress addr)
 	{
 		super(addr);
 	}
@@ -62,7 +62,7 @@ public class TestLocalServer extends LocalServer
 
 	public static void main(String[] args) throws UnknownHostException, InterruptedException
 	{
-		InetSocketAddress addr=new InetSocketAddress(9999);
+		InetSocketAddress addr = new InetSocketAddress(9999);
 		TestLocalServer ls = new TestLocalServer(addr);
 		ls.start();
 		LocalClient lc = new LocalClient(9999, new NioEventLoopGroup())
@@ -72,7 +72,7 @@ public class TestLocalServer extends LocalServer
 			public void onOpen(NClient conn)
 			{
 				System.out.println("onopen:" + conn);
-				Object o=new Object();
+				Object o = new Object();
 				System.out.println(o);
 				this.sendFrame(o);
 			}
@@ -103,6 +103,6 @@ public class TestLocalServer extends LocalServer
 			}
 		};
 		lc.connect().sync();
-        lc.connection().idle(3, 0, 0, TimeUnit.SECONDS);
+		lc.connection().idle(3, 0, 0, TimeUnit.SECONDS);
 	}
 }

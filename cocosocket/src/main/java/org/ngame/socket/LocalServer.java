@@ -4,7 +4,6 @@
 package org.ngame.socket;
 
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 
 /**
  *
@@ -13,7 +12,7 @@ import java.net.UnknownHostException;
 public abstract class LocalServer extends NServer
 {
 
-	public LocalServer(InetSocketAddress addr) throws UnknownHostException
+	public LocalServer(InetSocketAddress addr)
 	{
 		super(addr, NETWORK_LOCAL);
 	}

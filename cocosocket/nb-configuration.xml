@@ -9,6 +9,8 @@ Without this configuration present, some functionality in the IDE may be limited
     <config-data xmlns="http://www.netbeans.org/ns/maven-config-data/1">
         <configurations>
             <configuration id="localServer" profiles=""/>
+            <configuration id="websocketServer" profiles=""/>
+            <configuration id="websocketClient" profiles=""/>
         </configurations>
     </config-data>
 </project-shared-configuration>

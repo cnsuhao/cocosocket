@@ -1,7 +1,6 @@
 package org.ngame.socket.test;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -12,74 +11,99 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class WebSocketClient
 {
 
-    static final String URL = "ws://127.0.0.1:9999";
+	static final String URL = "ws://10.18.121.202:8080";
+	static final Map<String, Channel> cs = new HashMap<>();
+	static EventLoopGroup group = new NioEventLoopGroup(8);
 
-    public static void main(String[] args) throws Exception
-    {
-        URI uri = new URI(URL);
-        EventLoopGroup group = new NioEventLoopGroup();
-        try
-        {
-            final WebSocketClientHandler handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()));
-            Bootstrap b = new Bootstrap();
-            b.group(group)
-                .channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<SocketChannel>()
-                    {
-                        @Override
-                        protected void initChannel(SocketChannel ch)
-                        {
-                            ChannelPipeline p = ch.pipeline();
-                            p.addLast(
-                                new HttpClientCodec(),
-                                new HttpObjectAggregator(8192),
-                                handler);
-                        }
-                });
+	/**
+	 * 连接
+	 *
+	 * @param id
+	 * @return
+	 * @throws URISyntaxException
+	 * @throws InterruptedException
+	 */
+	private static Channel getConnection(String id) throws URISyntaxException, InterruptedException
+	{
+		Channel c = cs.get(id);
+		if (c == null)
+		{
+			URI uri = new URI(URL);
+			final WebSocketClientHandler handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(uri, 
+					WebSocketVersion.V07, null, false, new DefaultHttpHeaders()));
+			Bootstrap b = new Bootstrap();
+			b.group(group)
+					.channel(NioSocketChannel.class)
+					.handler(new ChannelInitializer<SocketChannel>()
+							{
+								@Override
+								protected void initChannel(SocketChannel ch)
+								{
+									ChannelPipeline p = ch.pipeline();
+									p.addLast(
+											new HttpClientCodec(),
+											new HttpObjectAggregator(8192),
+											handler);
+								}
+					});
 
-            Channel ch = b.connect(uri.getHost(), uri.getPort()).sync().channel();
-            handler.handshakeFuture().sync();
-            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-            while (true)
-            {
-                String msg = console.readLine();
-                if (msg == null)
-                {
-                    break;
-                } else if ("bye".equals(msg.toLowerCase()))
-                {
-                    ch.writeAndFlush(new CloseWebSocketFrame());
-                    ch.closeFuture().sync();
-                    break;
-                } else if ("ping".equals(msg.toLowerCase()))
-                {
-                    WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]
-                    {
-                        8, 1, 8, 1
-                    }));
-                    ch.writeAndFlush(frame);
-                } else
-                {
-                    WebSocketFrame frame = new TextWebSocketFrame(msg);
-                    ch.writeAndFlush(frame);
-                }
-            }
-        } finally
-        {
-            group.shutdownGracefully();
-        }
-    }
+			c = b.connect(uri.getHost(), uri.getPort()).sync().channel();
+			handler.handshakeFuture().sync();
+			cs.put(id, c);
+		}
+		return c;
+	}
+
+	static String mysqlurl = "jdbc:mysql://10.18.103.140:3306/slamdunk?user=root&password=123456&useUnicode=true&characterEncoding=UTF8";
+
+	static Connection getMysqlConnection(String addr)
+	{
+		try
+		{
+
+			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("成功加载MySQL驱动程序");
+			Connection conn = DriverManager.getConnection(addr);
+			return conn;
+		} catch (Exception e)
+		{
+		}
+		return null;
+	}
+
+	public static void main(String[] args) throws Exception
+	{
+		Connection c = getMysqlConnection(mysqlurl);
+		Statement stmt = c.createStatement();
+		String sql = "select id,socketId,params from user_command_log_10";
+		ResultSet rs = stmt.executeQuery(sql);
+		int i = 0;
+		while (rs.next())
+		{
+			i++;
+			int id=rs.getInt(1);
+			String socketId = rs.getString(2);
+			String params = rs.getString(3);
+			System.out.println(id);
+			Channel channel=getConnection(socketId);
+			channel.writeAndFlush(new TextWebSocketFrame(params));
+		}
+		System.out.println(i);
+	}
+
 }

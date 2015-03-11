@@ -53,7 +53,7 @@ public final class NClient extends ChannelInboundHandlerAdapter
 	private final Channel channel;
 	private boolean closeReason;//是否为服务器主动关闭
 	private final Protocol protocol;
-	private long sessionId;
+	private String sessionId;
 	private Map<String, Object> sessions;
 	private ChannelHandlerContext context;
 	private String closeReasonString;//断开原因描述
@@ -265,12 +265,12 @@ public final class NClient extends ChannelInboundHandlerAdapter
 	 *
 	 * @return
 	 */
-	public long getSessionId()
+	public String getSessionId()
 	{
 		return sessionId;
 	}
 
-	public void setSessionId(long sessionId)
+	public void setSessionId(String sessionId)
 	{
 		this.sessionId = sessionId;
 	}
@@ -539,7 +539,7 @@ public final class NClient extends ChannelInboundHandlerAdapter
 		handshaker = wsFactory.newHandshaker(req);
 		if (handshaker == null)
 		{
-			WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
+			//WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
 		} else
 		{
 			handshaker.handshake(ctx.channel(), req);

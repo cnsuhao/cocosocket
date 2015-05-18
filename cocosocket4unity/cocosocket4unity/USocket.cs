@@ -58,6 +58,10 @@ namespace cocosocket4unity
 			clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
 			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
+			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, 3000);
+			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 3000);
+			LingerOption linger = new LingerOption(true,0);
+			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, linger);
 			clientSocket.BeginConnect(this.ip, this.port, connected, this);
 		}
 

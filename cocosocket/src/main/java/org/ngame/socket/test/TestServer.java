@@ -24,7 +24,7 @@ public class TestServer extends NServer
 
     public TestServer(InetSocketAddress address)
     {
-        super(address, NServer.NETWORK_WEBSOCKET);
+        super(address, NServer.NETWORK_SOCKET);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TestServer extends NServer
 
     public static void main(String... args) throws InterruptedException
     {
-        TestServer server = new TestServer(new InetSocketAddress(9999));
+        TestServer server = new TestServer(new InetSocketAddress(3210));
         server.setProtocol(LVProtocol.class);
         server.start();
     }

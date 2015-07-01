@@ -3,9 +3,7 @@ package org.ngame.socket.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.util.internal.PlatformDependent;
-import org.ngame.socket.exeptions.InvalidDataException;
 import org.ngame.socket.exeptions.LimitExedeedException;
-
 import java.nio.ByteOrder;
 import java.util.logging.Logger;
 
@@ -44,7 +42,7 @@ public class LVProtocol extends Protocol
 	}
 
 	@Override
-	public ByteBuf translateFrame(ByteBuf readBuffer) throws LimitExedeedException, InvalidDataException
+	public ByteBuf translateFrame(ByteBuf readBuffer) throws Exception
 	{
 		while (readBuffer.isReadable())
 		{

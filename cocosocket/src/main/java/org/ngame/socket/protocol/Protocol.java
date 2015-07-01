@@ -49,6 +49,6 @@ public abstract class Protocol
 	 * @throws LimitExedeedException
 	 * @throws InvalidDataException
 	 */
-	public abstract ByteBuf translateFrame(ByteBuf buf) throws LimitExedeedException, InvalidDataException;
+	public abstract ByteBuf translateFrame(ByteBuf buf) throws Exception;
 
 }

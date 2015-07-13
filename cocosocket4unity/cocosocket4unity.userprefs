@@ -1,14 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="cocosocket4unity\TestListner.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="cocosocket4unity\LVProtocal.cs">
     <Files>
-      <File FileName="cocosocket4unity\Main.cs" Line="21" Column="17" />
-      <File FileName="cocosocket4unity\LVProtocal.cs" Line="1" Column="1" />
+      <File FileName="cocosocket4unity\Main.cs" Line="13" Column="4" />
+      <File FileName="cocosocket4unity\LVProtocal.cs" Line="14" Column="4" />
       <File FileName="cocosocket4unity\Frame.cs" Line="1" Column="1" />
-      <File FileName="cocosocket4unity\USocket.cs" Line="161" Column="4" />
+      <File FileName="cocosocket4unity\USocket.cs" Line="1" Column="1" />
       <File FileName="cocosocket4unity\SocketListner.cs" Line="1" Column="1" />
       <File FileName="cocosocket4unity\Protocal.cs" Line="1" Column="1" />
-      <File FileName="cocosocket4unity\TestListner.cs" Line="33" Column="4" />
+      <File FileName="cocosocket4unity\TestListner.cs" Line="38" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

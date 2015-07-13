@@ -52,6 +52,9 @@
     <Compile Include="JsonWriter.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="ParserToken.cs" />
+    <Compile Include="Varint32HeaderProtocol.cs" />
+    <Compile Include="CodedInputStream.cs" />
+    <Compile Include="CodedOutputStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

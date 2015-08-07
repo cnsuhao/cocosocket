@@ -24,6 +24,7 @@ public class Varint32HeaderProtocol extends Protocol
   private int status;
   private int len;
   private ByteBuf incompleteframe;//尚未完成的帧
+  private int headerLen;//头部长度
 
   /**
    * 初始化头缓存
@@ -64,7 +65,7 @@ public class Varint32HeaderProtocol extends Protocol
               }
               len = length;
               status = STATUS_CONTENT;
-              int headerLen = CodedOutputStream.computeRawVarint32Size(len);
+              headerLen = CodedOutputStream.computeRawVarint32Size(len);
               incompleteframe = PooledByteBufAllocator.DEFAULT.buffer(len + headerLen);
               incompleteframe = incompleteframe.order(Protocol.order);
               CodedOutputStream headerOut = CodedOutputStream.newInstance(incompleteframe, headerLen);
@@ -90,5 +91,11 @@ public class Varint32HeaderProtocol extends Protocol
       }
     }
     return null;
+  }
+
+  @Override
+  public int headerLen()
+  {
+    return this.headerLen;
   }
 }

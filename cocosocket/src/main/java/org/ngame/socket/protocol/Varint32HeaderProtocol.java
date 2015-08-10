@@ -66,6 +66,7 @@ public class Varint32HeaderProtocol extends Protocol
               len = length;
               status = STATUS_CONTENT;
               headerLen = CodedOutputStream.computeRawVarint32Size(len);
+              System.out.println(":"+len+":"+headerLen);
               incompleteframe = PooledByteBufAllocator.DEFAULT.buffer(len + headerLen);
               incompleteframe = incompleteframe.order(Protocol.order);
               CodedOutputStream headerOut = CodedOutputStream.newInstance(incompleteframe, headerLen);

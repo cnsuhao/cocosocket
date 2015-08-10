@@ -10,7 +10,7 @@ namespace cocosocket4unity
 		private  const int STATUS_HEADER = 0;//读头
 		private  const int STATUS_CONTENT = 1;//读内容
 		
-		private  byte[] header;
+		private  sbyte[] header;
 		private int index;
 		private int status;
 		private int len;
@@ -19,7 +19,7 @@ namespace cocosocket4unity
 
 		public Varint32HeaderProtocol ()
 		{
-			header = new byte[5];
+			header = new sbyte[5];
 		}
 		/**
 		 * 分帧逻辑
@@ -38,7 +38,7 @@ namespace cocosocket4unity
 						{
 							break;
 						}
-						header[index] = src.ReadByte();
+						header[index] = (sbyte)src.ReadByte();
 						if (header[index] >= 0)
 						{
 							int length = 0;
@@ -49,6 +49,7 @@ namespace cocosocket4unity
 							}
 							len = length;
 						    headerLen = CodedOutputStream.computeRawVarint32Size(len);
+							Console.WriteLine (":"+len+":"+headerLen);
 							incompleteframe = new ByteBuf(len + headerLen);
 							CodedOutputStream headerOut = CodedOutputStream.newInstance(incompleteframe, headerLen);
 							headerOut.writeRawVarint32(len);

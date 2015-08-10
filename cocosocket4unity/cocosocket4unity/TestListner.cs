@@ -34,9 +34,9 @@ namespace cocosocket4unity
 			Console.WriteLine ("连接建立");
 			JsonData data = new JsonData ();
 			data ["cmd"] = 1;
-			data ["name"] = "你好";
-			data ["pwd"] = "ldfkjl";
-
+			data ["name"] = "你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好";
+			data ["pwd"] = "ldfkjl你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好";
+			data ["test"] = "asdlkj;fal;sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方";
 			Varint32Frame f = new Varint32Frame (512);
 			f.PutString (data.ToJson());
 			f.End ();

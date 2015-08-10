@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ngame.socket.NClient;
 import org.ngame.socket.NServer;
-import org.ngame.socket.protocol.LVProtocol;
 import org.ngame.socket.protocol.Varint32HeaderProtocol;
 
 /**

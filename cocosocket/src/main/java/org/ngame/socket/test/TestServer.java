@@ -59,6 +59,12 @@ public class TestServer extends NServer
       bb.readerIndex(0);
       conn.sendFrame(bb);
     }
+    try
+    {
+      Thread.sleep(500);
+    } catch (Exception e)
+    {
+    }
   }
 
   @Override

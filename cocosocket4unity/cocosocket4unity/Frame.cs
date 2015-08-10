@@ -5,8 +5,13 @@ namespace cocosocket4unity
 {
 	public class Frame
 	{
-		private ByteBuf payload;
-		private bool end;
+		protected ByteBuf payload;
+		protected bool end;
+
+		protected Frame ()
+		{
+		}
+
 		public Frame (int len)
 		{
 			this.payload = new ByteBuf (len);
@@ -79,21 +84,7 @@ namespace cocosocket4unity
 			}
 			return this;
 		}
-		/**
-		 * 浅拷贝
-		 **/ 
-		public Frame Duplicate()
-		{
-			Frame f = new Frame(payload.Capacity());
-			payload.MarkReaderIndex();
-			f.PutBytes(payload);
-			payload.ResetReaderIndex();
-			if (end)
-			{
-				f.End();
-			}
-			return f;
-		}
+
 		/**
 		 * 封包
 		 **/ 
@@ -122,10 +113,10 @@ namespace cocosocket4unity
 		{
 			if (e)
 			{
-				End();
+				this.End();
 			} else
 			{
-				end = e;
+				this.end = e;
 			}
 		}
 		/**

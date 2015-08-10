@@ -55,6 +55,7 @@
     <Compile Include="Varint32HeaderProtocol.cs" />
     <Compile Include="CodedInputStream.cs" />
     <Compile Include="CodedOutputStream.cs" />
+    <Compile Include="Varint32Frame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

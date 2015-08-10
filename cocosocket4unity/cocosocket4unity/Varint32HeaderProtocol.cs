@@ -15,6 +15,7 @@ namespace cocosocket4unity
 		private int status;
 		private int len;
 		private ByteBuf incompleteframe;//尚未完成的帧
+		private int headerLen;//头部长度
 
 		public Varint32HeaderProtocol ()
 		{
@@ -47,12 +48,12 @@ namespace cocosocket4unity
 							    return null;
 							}
 							len = length;
-							status = STATUS_CONTENT;
-							int headerLen = CodedOutputStream.computeRawVarint32Size(len);
+						    headerLen = CodedOutputStream.computeRawVarint32Size(len);
 							incompleteframe = new ByteBuf(len + headerLen);
 							CodedOutputStream headerOut = CodedOutputStream.newInstance(incompleteframe, headerLen);
 							headerOut.writeRawVarint32(len);
 							headerOut.flush();
+							status = STATUS_CONTENT;
 							break;
 						}
 					}
@@ -73,6 +74,14 @@ namespace cocosocket4unity
 				}
 			}
 			return null;
+		}
+		/**
+		 * 头部长度
+		 * 
+		 */ 
+		public int HeaderLen()
+		{
+			return this.headerLen;
 		}
 	}
 }

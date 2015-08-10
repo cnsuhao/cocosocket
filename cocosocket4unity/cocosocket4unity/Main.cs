@@ -15,9 +15,9 @@ namespace cocosocket4unity
 			SocketListner listner = new TestListner ();
 			USocket us = new USocket ();
 			us.setLister (listner);
-			Protocal p = new LVProtocal ();
+			Protocal p = new Varint32HeaderProtocol ();
 			us.setProtocal (p);
-			us.Connect ("localhost", 3210);
+			us.Connect ("localhost", 1106);
 			Console.Read();
 		}
 	}

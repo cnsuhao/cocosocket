@@ -12,7 +12,7 @@ namespace cocosocket4unity
 		public override  void OnMessage(USocket us,ByteBuf bb)
 		{
 			Console.WriteLine ("收到数据:");
-			bb.ReaderIndex (2);
+			bb.ReaderIndex (us.getProtocal().HeaderLen());
 			string s=bb.ReadUTF8 ();
 			Console.WriteLine (s);
 			bb.ReaderIndex (0);
@@ -37,7 +37,7 @@ namespace cocosocket4unity
 			data ["name"] = "你好";
 			data ["pwd"] = "ldfkjl";
 
-			Frame f = new Frame (512);
+			Varint32Frame f = new Varint32Frame (512);
 			f.PutString (data.ToJson());
 			f.End ();
 			us.Send (f);

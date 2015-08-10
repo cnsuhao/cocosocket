@@ -26,7 +26,6 @@ public class Varint32Framedata extends Framedata
 
   public Varint32Framedata()
   {
-    this(100);
   }
 
   @Override

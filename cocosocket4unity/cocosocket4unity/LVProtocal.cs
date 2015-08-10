@@ -47,6 +47,14 @@ namespace cocosocket4unity
 			}
 			return null;
 		}
+		/**
+		 * 头部长度
+		 * 
+		 */ 
+		public int HeaderLen()
+		{
+			return 2;
+		}
 	}
 }
 

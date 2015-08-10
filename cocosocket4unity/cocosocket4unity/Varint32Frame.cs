@@ -27,7 +27,7 @@ namespace cocosocket4unity
 		/**
 		 * 封包
 		 */ 
-		public new void End()
+		public override void End()
 		{
 			if (!this.end)
 			{

@@ -88,7 +88,7 @@ namespace cocosocket4unity
 		/**
 		 * 封包
 		 **/ 
-		public void End()
+		public virtual void End()
 		{
 			ByteBuf bb = payload;
 			int reader = bb.ReaderIndex();

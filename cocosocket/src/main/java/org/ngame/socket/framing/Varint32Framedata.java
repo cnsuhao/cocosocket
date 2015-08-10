@@ -24,7 +24,7 @@ public class Varint32Framedata extends Framedata
     this.payload = this.payload.order(Protocol.order);
   }
 
-  public Varint32Framedata()
+  protected Varint32Framedata()
   {
   }
 

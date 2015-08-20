@@ -19,6 +19,7 @@ public abstract class Protocol
 
   protected NClient context;
   public static ByteOrder order = ByteOrder.BIG_ENDIAN;
+  protected int maxFrameSize = Integer.MAX_VALUE;//最大帧长度
 
   static
   {
@@ -58,4 +59,13 @@ public abstract class Protocol
    */
   public abstract int headerLen();
 
+  public void setMaxFrameSize(int maxFrameSize)
+  {
+    this.maxFrameSize = maxFrameSize;
+  }
+
+  public int getMaxFrameSize()
+  {
+    return maxFrameSize;
+  }
 }

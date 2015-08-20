@@ -1,6 +1,9 @@
-﻿using System;
-using LitJson;
-
+﻿using LitJson;
+using ProtoBuf;
+using ProtoBuf.Serializers;
+using System.Collections.Generic;
+using System;
+using System.IO;
 namespace cocosocket4unity
 {
 	public class TestListner : SocketListner
@@ -13,10 +16,15 @@ namespace cocosocket4unity
 		{
 			Console.WriteLine ("收到数据:");
 			bb.ReaderIndex (us.getProtocal().HeaderLen());
-			string s=bb.ReadUTF8 ();
-			Console.WriteLine (s);
-			bb.ReaderIndex (0);
-			us.Send (bb);//原样返回给服务器，服务器是一个echo，也会原样返回
+
+            int cmd = bb.ReadShort();
+            MemoryStream stream = new MemoryStream(bb.GetRaw(),bb.ReaderIndex(),bb.ReadableBytes());
+            AuthResponse response= ProtoBuf.Serializer.Deserialize<AuthResponse>(stream);
+
+			Console.WriteLine (response.pid);
+            Console.WriteLine(response.info);
+            Console.WriteLine(response.success);
+
 		}
 		/**
 		 * 
@@ -32,14 +40,16 @@ namespace cocosocket4unity
 		public override  void OnOpen(USocket us)
 		{
 			Console.WriteLine ("连接建立");
-			JsonData data = new JsonData ();
-			data ["cmd"] = 1;
-			data ["name"] = "你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好";
-			data ["pwd"] = "ldfkjl你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好";
-			data ["test"] = "asdlkj;fal;sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方sdflads很合地方";
-			Varint32Frame f = new Varint32Frame (512);
-			f.PutString (data.ToJson());
-			f.End ();
+            AuthRequest request = new AuthRequest();
+            request.loginid = "lkjlkj;sdf你好";
+            request.serverid = 1;
+            MemoryStream  stream = new MemoryStream();
+            ProtoBuf.Serializer.Serialize<AuthRequest>(stream, request);
+           
+            Frame f = new Frame(512);
+            f.PutShort(6);
+            f.PutBytes(stream.ToArray());
+            f.End();
 			us.Send (f);
 		}
 		public override  void OnError(USocket us,string err)

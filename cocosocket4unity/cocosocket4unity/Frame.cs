@@ -42,6 +42,15 @@ namespace cocosocket4unity
 				payload.WriteBytes(src);
 			return this;
 		}
+        /**
+         * 写入一些字节
+         */ 
+        public Frame PutBytes(byte[] src)
+        {
+            if (!end)
+                payload.WriteBytes(src);
+            return this;
+        }
 
 		/**
 		 * 写入整形

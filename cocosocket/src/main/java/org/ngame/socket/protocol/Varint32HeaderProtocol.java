@@ -55,9 +55,9 @@ public class Varint32HeaderProtocol extends Protocol
               try
               {
                 length = CodedInputStream.newInstance(header, 0, index + 1).readRawVarint32();
-                if (length < 0)
+                if (length < 0 || length > maxFrameSize)
                 {
-                  throw new InvalidDataException("帧长度为负值：" + length);
+                  throw new InvalidDataException("帧长度非法：" + length);
                 }
               } catch (Exception e)
               {
@@ -66,7 +66,6 @@ public class Varint32HeaderProtocol extends Protocol
               len = length;
               status = STATUS_CONTENT;
               headerLen = CodedOutputStream.computeRawVarint32Size(len);
-              System.out.println(":"+len+":"+headerLen);
               incompleteframe = PooledByteBufAllocator.DEFAULT.buffer(len + headerLen);
               incompleteframe = incompleteframe.order(Protocol.order);
               CodedOutputStream headerOut = CodedOutputStream.newInstance(incompleteframe, headerLen);

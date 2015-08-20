@@ -22,23 +22,12 @@ public class LVProtocol extends Protocol
   private static final byte STATUS_H = 0;
   private static final byte STATUS_L = 1;
   private static final byte STATUS_C = 2;
-  private int maxFrameSize = Integer.MAX_VALUE;//最大帧长度
 
   /**
    * 构造
    */
   public LVProtocol()
   {
-  }
-
-  public void setMaxFrameSize(int maxFrameSize)
-  {
-    this.maxFrameSize = maxFrameSize;
-  }
-
-  public int getMaxFrameSize()
-  {
-    return maxFrameSize;
   }
 
   @Override

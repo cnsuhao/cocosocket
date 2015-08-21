@@ -83,6 +83,16 @@ public class Framedata
     return this;
   }
 
+  public Framedata putBytes(byte[] b, byte[] ks)
+  {
+    if (!end)
+    {
+      xor(b, ks);
+      payload.writeBytes(b);
+    }
+    return this;
+  }
+
   public Framedata putBytes(ByteBuf src)
   {
     if (!end)

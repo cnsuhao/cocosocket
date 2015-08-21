@@ -51,7 +51,18 @@ namespace cocosocket4unity
                 payload.WriteBytes(src);
             return this;
         }
-
+        /**
+         * 写入加密
+         */ 
+        public Frame PutBytes(byte[] src,byte[] ks)
+        {
+            if (!end) 
+            {
+                xor(src, ks);
+                payload.WriteBytes(src);
+            }
+            return this;
+        }
 		/**
 		 * 写入整形
 		 **/ 

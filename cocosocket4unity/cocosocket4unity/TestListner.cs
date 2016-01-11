@@ -22,11 +22,11 @@ namespace cocosocket4unity
             Type t=null;
             MemoryStream stream = new MemoryStream(bb.GetRaw(),bb.ReaderIndex(),bb.ReadableBytes());
             object response=ProtoBuf.Serializer.NonGeneric.Deserialize(t,stream);
-
+            /**
 			Console.WriteLine (response.pid);
             Console.WriteLine(response.info);
             Console.WriteLine(response.success);
-
+            */
 		}
 		/**
 		 * 

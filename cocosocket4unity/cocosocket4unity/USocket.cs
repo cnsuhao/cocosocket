@@ -15,7 +15,7 @@ namespace cocosocket4unity
 		private int port;
 		private int status;
         private bool asyc;//异步收取
-        private bool clientClose;//客户端主动关闭
+        private bool serverClose=true;//服务器主动关闭
 		public static int STATUS_INIT=0;
 		public static int STATUS_CONNECTING=1;
 		public static int STATUS_CONNECTED=2;
@@ -102,7 +102,7 @@ namespace cocosocket4unity
 				clientSocket.Shutdown(SocketShutdown.Both);
 				clientSocket.Close();
 				this.status = STATUS_CLOSED;
-                this.clientClose = true;
+                this.serverClose = false;
 			}
 		}
 		/**
@@ -189,7 +189,7 @@ namespace cocosocket4unity
                       else
                       {
                           this.status = STATUS_CLOSED;
-                          this.listner.OnClose(this, true);
+                          this.listner.OnClose(this, serverClose);
                       }
                     }
                     }
@@ -202,11 +202,11 @@ namespace cocosocket4unity
 				}else
 				{
 					this.status = STATUS_CLOSED;
-					this.listner.OnClose (this,true);
+                    this.listner.OnClose(this, serverClose);
 					break;
 				}
 			}
-            this.listner.OnClose(this, clientClose);
+            this.listner.OnClose(this, serverClose);
 		}	
 		/**
 		 * 异步收取信息
@@ -235,7 +235,7 @@ namespace cocosocket4unity
 			} else 
 			{
 				this.status = STATUS_CLOSED;
-				this.listner.OnClose (this,true);
+                this.listner.OnClose(this, serverClose);
 			}
 			}catch(Exception e)
 			{

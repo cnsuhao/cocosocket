@@ -14,6 +14,7 @@ namespace cocosocket4unity
 		private string ip;
 		private int port;
 		private int status;
+        private bool asyc;//异步收取
 		public static int STATUS_INIT=0;
 		public static int STATUS_CONNECTING=1;
 		public static int STATUS_CONNECTED=2;
@@ -56,6 +57,22 @@ namespace cocosocket4unity
 		{
 			return this.protocal;
 		}
+        public bool isAsyc()
+        {
+            return asyc;
+        }
+        public void setAsyc(bool a)
+        {
+            this.asyc = a;
+        }
+        public string getIp()
+        {
+            return this.ip;
+        }
+        public int getPort()
+        {
+            return this.port;
+        }
 		/**
 		 * 连接指定地址
 		 */ 
@@ -143,16 +160,43 @@ namespace cocosocket4unity
 			{
 				if(clientSocket.Poll(-1, SelectMode.SelectRead))
 				{
-					try
-					{
-						clientSocket.BeginReceive(buf.GetRaw(), 0, buf.GetRaw().Length, SocketFlags.None, new AsyncCallback(onRecieved), clientSocket);
-					}
-					catch (Exception e)
-					{
-						this.status = STATUS_CLOSED;
-						this.listner.OnError(this,e.Message);
-						break;
-					}
+                    try{
+                    if (asyc)//异步收取
+                    {
+                          clientSocket.BeginReceive(buf.GetRaw(), 0, buf.GetRaw().Length, SocketFlags.None, new AsyncCallback(onRecieved), clientSocket);
+                    }else //同步收取
+                    {
+                      int len= clientSocket.Receive(buf.GetRaw());
+                      if (len > 0)
+                      {
+                          buf.ReaderIndex(0);
+                          buf.WriterIndex(len);
+                          while (true)
+                          {
+                              ByteBuf frame = this.protocal.TranslateFrame(buf);
+                              if (frame != null)
+                              {
+                                  this.listner.OnMessage(this, frame);
+                              }
+                              else
+                              {
+                                  break;
+                              }
+                          }
+                      }
+                      else
+                      {
+                          this.status = STATUS_CLOSED;
+                          this.listner.OnClose(this, true);
+                      }
+                    }
+                    }
+                    catch (Exception e)
+                    {
+                        this.status = STATUS_CLOSED;
+                        this.listner.OnError(this, e.Message);
+                        break;
+                    }
 				}else
 				{
 					this.status = STATUS_CLOSED;

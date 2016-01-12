@@ -16,10 +16,10 @@ namespace cocosocket4unity
 		private int status;
         private bool asyc;//异步收取
         private bool serverClose=true;//服务器主动关闭
-		public static int STATUS_INIT=0;
-		public static int STATUS_CONNECTING=1;
-		public static int STATUS_CONNECTED=2;
-		public static int STATUS_CLOSED=3;
+		public const  int STATUS_INIT=0;
+        public const int STATUS_CONNECTING = 1;
+        public const int STATUS_CONNECTED = 2;
+        public const int STATUS_CLOSED = 3;
 		private ByteBuf buf;
 		/**
 		 * 构造（但不完善，需要设置监听器和协议解析器F）

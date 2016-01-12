@@ -58,6 +58,10 @@ namespace cocosocket4unity
 		{
 			return this.protocal;
 		}
+        public int getStatus()
+        {
+            return this.status;
+        }
         public bool isAsyc()
         {
             return asyc;

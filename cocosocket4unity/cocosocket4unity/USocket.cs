@@ -83,12 +83,9 @@ namespace cocosocket4unity
 			this.ip = ip;
 			this.port = port;
 			clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			//clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
-			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, 3000);
-			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 3000);
+            clientSocket.NoDelay = true;
 			LingerOption linger = new LingerOption(false,0);
-			clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, linger);
+            clientSocket.LingerState = linger;
 			clientSocket.BeginConnect(this.ip, this.port, connected, this);
 		}
 
@@ -115,7 +112,6 @@ namespace cocosocket4unity
 			this.clientSocket.EndConnect(asyncConnect);
 			this.status = STATUS_CONNECTED;
 			this.listner.OnOpen (this);
-			ByteBuf buf=new ByteBuf(4096);
 			Thread thread = new Thread(new ThreadStart(receive));
 			thread.IsBackground = true;
 			thread.Start();

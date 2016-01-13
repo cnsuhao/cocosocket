@@ -80,18 +80,18 @@ namespace cocosocket4unity
         }
 		/**
 		 * 连接指定地址
-		 */ 
-		public void Connect(string ip,int port)
-		{
-			this.status = STATUS_CONNECTING;
-			this.ip = ip;
-			this.port = port;
-			clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		 */
+        public void Connect(string ip, int port)
+        {
+            this.status = STATUS_CONNECTING;
+            this.ip = ip;
+            this.port = port;
+            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             clientSocket.NoDelay = true;
-			LingerOption linger = new LingerOption(false,0);
+            LingerOption linger = new LingerOption(false, 0);
             clientSocket.LingerState = linger;
-			clientSocket.BeginConnect(this.ip, this.port, connected, this);
-		}
+            clientSocket.BeginConnect(this.ip, this.port, connected, this);
+        }
 
 		/**
 		 * 关闭连接

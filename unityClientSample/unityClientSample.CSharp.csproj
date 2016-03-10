@@ -186,6 +186,16 @@
     <Compile Include="Assets\src\protobuf\WireType.cs" />
     <Compile Include="Assets\src\protocol\AuthRequest.cs" />
     <Compile Include="Assets\src\protocol\AuthResponse.cs" />
+    <Compile Include="Assets\src\protocol\CreatePlayerRequest.cs" />
+    <Compile Include="Assets\src\protocol\CreatePlayerResponse.cs" />
+    <Compile Include="Assets\src\protocol\Ping.cs" />
+    <Compile Include="Assets\src\protocol\Pong.cs" />
+    <Compile Include="Assets\src\protocol\RandomNickyNameRequest.cs" />
+    <Compile Include="Assets\src\protocol\RandomNickyNameResponse.cs" />
+    <Compile Include="Assets\src\protocol\RenameAndIconRequest.cs" />
+    <Compile Include="Assets\src\protocol\RenameAndIconResponse.cs" />
+    <Compile Include="Assets\src\protocol\ResRequest.cs" />
+    <Compile Include="Assets\src\protocol\ResResponse.cs" />
     <Compile Include="Assets\src\util\Callback.cs" />
     <Compile Include="Assets\src\util\EventTriggerListener.cs" />
     <Compile Include="Assets\src\util\Message.cs" />

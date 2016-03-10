@@ -76,7 +76,6 @@ public class SocketTest : MonoBehaviour
                 SocketListner listner = new MyListner();
                 Protocal p = new Varint32HeaderProtocol();
                 socket = new USocket(listner,p);
-               // socket.setAsyc(true);
                 socket.Connect(ip, port);
 			break;
 		case "send":
@@ -105,8 +104,16 @@ public class SocketTest : MonoBehaviour
     {
         MemoryStream stream = new MemoryStream();
         ProtoBuf.Serializer.NonGeneric.Serialize(stream, param);
-        byte[] bs = stream.ToArray();   
-        Varint32Frame f = new Varint32Frame(512);
+        byte[] bs = stream.ToArray();
+        Frame f = null;
+        if (socket.getProtocal().GetType() == typeof(Varint32HeaderProtocol))
+        {
+            f = new Varint32Frame(512);
+        }
+        else
+        {
+            f = new Frame(512);
+        }
         f.PutShort(MessageQueueHandler.GetProtocolCMD(param.GetType()));
         Debug.LogWarning("上行 cmd=" + MessageQueueHandler.GetProtocolCMD(param.GetType()) + ", type=" + param.GetType().ToString() + ", " + Time.fixedTime);
         Statics.SetXor(bs);

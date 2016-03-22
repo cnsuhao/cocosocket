@@ -2,6 +2,7 @@ package org.ngame.socket.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ResourceLeak;
 import io.netty.util.internal.PlatformDependent;
 import org.ngame.socket.exeptions.LimitExedeedException;
@@ -90,6 +91,9 @@ public class LVProtocol extends Protocol
   @Override
   public void release()
   {
-    this.incompleteframe.release();
+    if (incompleteframe != null && incompleteframe.refCnt() > 0)
+    {
+      ReferenceCountUtil.release(this.incompleteframe, incompleteframe.refCnt());
+    }
   }
 }

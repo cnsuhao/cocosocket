@@ -5,6 +5,7 @@ package org.ngame.socket.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.util.ReferenceCountUtil;
 import org.ngame.socket.exeptions.InvalidDataException;
 import org.ngame.socket.util.CodedInputStream;
 import org.ngame.socket.util.CodedOutputStream;
@@ -102,6 +103,9 @@ public class Varint32HeaderProtocol extends Protocol
   @Override
   public void release()
   {
-    this.incompleteframe.release();
+    if (incompleteframe != null && incompleteframe.refCnt() > 0)
+    {
+      ReferenceCountUtil.release(this.incompleteframe, incompleteframe.refCnt());
+    }
   }
 }

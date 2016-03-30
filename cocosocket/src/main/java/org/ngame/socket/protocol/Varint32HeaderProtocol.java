@@ -56,7 +56,7 @@ public class Varint32HeaderProtocol extends Protocol
               try
               {
                 length = CodedInputStream.newInstance(header, 0, index + 1).readRawVarint32();
-                if (length < 0 || length > maxFrameSize)
+                if (length <= 0 || length > maxFrameSize)
                 {
                   throw new InvalidDataException("帧长度非法：" + length);
                 }

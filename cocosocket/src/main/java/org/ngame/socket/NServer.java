@@ -215,7 +215,7 @@ public abstract class NServer extends NListener
                   }
                   s.setNetwork(NServer.this.network);
                   ch.pipeline().addLast(s);
-                  if (maxCount > 0)
+                  if (maxCount > 0 && interval > 0)
                   {
                     s.busy(maxCount, interval);
                   }

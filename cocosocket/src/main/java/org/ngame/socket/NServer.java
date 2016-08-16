@@ -12,6 +12,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.local.LocalAddress;
@@ -55,7 +56,7 @@ public abstract class NServer extends NListener
   protected static int MAX_THREAD_SELECTOR = 2;
   protected static int MAX_THREAD_IO = Runtime.getRuntime().availableProcessors() * 2;
   protected Class<? extends Protocol> pClass = NullProtocol.class;
-  protected static boolean linux;
+  protected static boolean epoll;
   protected final int network;
   protected static int maxCount;//最大消息数量
   protected static int interval;//秒
@@ -66,7 +67,7 @@ public abstract class NServer extends NListener
     {
       MAX_THREAD_SELECTOR = Integer.parseInt(System.getProperty("game.socket.server.thread.selector"));
       MAX_THREAD_IO = Integer.parseInt(System.getProperty("game.socket.server.thread.io"));
-      linux = System.getProperty("os.name", "win").contains("linux");
+      epoll = Epoll.isAvailable();
       maxCount = Integer.parseInt(System.getProperty("game.socket.server.busy.maxCount", "0"));
       interval = Integer.parseInt(System.getProperty("game.socket.server.busy.interval", "0"));
     } catch (Exception e)
@@ -168,15 +169,15 @@ public abstract class NServer extends NListener
    */
   public void start() throws InterruptedException
   {
-    bossGroup = this.bossGroup == null ? (linux ? new EpollEventLoopGroup(MAX_THREAD_SELECTOR) : new NioEventLoopGroup(MAX_THREAD_SELECTOR)) : bossGroup;
-    workerGroup = this.workerGroup == null ? (linux ? new EpollEventLoopGroup(MAX_THREAD_SELECTOR) : new NioEventLoopGroup(MAX_THREAD_IO)) : workerGroup;
+    bossGroup = this.bossGroup == null ? (epoll ? new EpollEventLoopGroup(MAX_THREAD_SELECTOR) : new NioEventLoopGroup(MAX_THREAD_SELECTOR)) : bossGroup;
+    workerGroup = this.workerGroup == null ? (epoll ? new EpollEventLoopGroup(MAX_THREAD_SELECTOR) : new NioEventLoopGroup(MAX_THREAD_IO)) : workerGroup;
     Class<? extends ServerChannel> c;
     if (network == NETWORK_LOCAL)
     {
       c = LocalServerChannel.class;
     } else
     {
-      c = linux ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
+      c = epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
     }
     ServerBootstrap b = new ServerBootstrap();
     b.group(bossGroup, workerGroup).
@@ -260,7 +261,16 @@ public abstract class NServer extends NListener
   {
     return cur_connection.get();
   }
+/**
+ * epoll
+ * @return 
+ */
+  public static boolean isEpoll()
+  {
+    return epoll;
+  }
 
+  
   /**
    * 停止服务器前需要做的事情
    */

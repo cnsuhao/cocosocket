@@ -10,6 +10,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.net.InetSocketAddress;
 import java.nio.channels.NotYetConnectedException;
 import java.util.logging.Logger;
@@ -24,7 +26,7 @@ import org.ngame.socket.protocol.Protocol;
 public abstract class SocketClient extends NListener
 {
 
-    private static final Logger LOG = Logger.getLogger(SocketClient.class.getName());
+    private static final InternalLogger LOG =InternalLoggerFactory.getInstance(SocketClient.class);
     private InetSocketAddress address;
     private NClient conn;
     private Protocol protocol;

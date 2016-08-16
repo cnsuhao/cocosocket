@@ -22,10 +22,10 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.management.RuntimeErrorException;
 import org.ngame.socket.protocol.NullProtocol;
 import org.ngame.socket.protocol.Protocol;
@@ -45,7 +45,7 @@ public abstract class NServer extends NListener
   public static final int NETWORK_HTTP = 2;
   public static final int NETWORK_LOCAL = 3;
 
-  private static final Logger LOG = Logger.getLogger(NServer.class.getName());
+  private static final InternalLogger LOG =InternalLoggerFactory.getInstance(NServer.class);
   protected static final int DEFAULT_PORT = 8888;
   protected int port = DEFAULT_PORT;
   protected InetSocketAddress address;
@@ -71,7 +71,7 @@ public abstract class NServer extends NListener
       interval = Integer.parseInt(System.getProperty("game.socket.server.busy.interval", "0"));
     } catch (Exception e)
     {
-      LOG.log(Level.WARNING, "服务器配置信息错误 " + e.getMessage());
+      LOG.warn("服务器配置信息错误 " + e.getMessage());
     }
   }
 
@@ -107,7 +107,7 @@ public abstract class NServer extends NListener
         port = Integer.parseInt(sport);
       } catch (Exception e)
       {
-        LOG.log(Level.WARNING, "服务器端口配置错误，将使用默认端口");
+        LOG.warn("服务器端口配置错误，将使用默认端口");
       }
       address = new InetSocketAddress(port);
     } else

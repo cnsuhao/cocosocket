@@ -482,9 +482,9 @@ public class Kcp
   public int Input(ByteBuf data)
   {
     int s_una = snd_una;
-    if (data.ReadableBytes() < IKCP_OVERHEAD)
+    if (data==null||data.ReadableBytes() < IKCP_OVERHEAD)
     {
-      return 0;
+      return -1;
     }
     int offset = 0;
     while (true)

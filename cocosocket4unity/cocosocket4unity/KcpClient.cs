@@ -12,15 +12,38 @@ namespace cocosocket4unity
    public class KcpClient : KcpOnUdp
     {
        private LinkedList<ByteBuf> sendList;
-       private bool running;
-       
+       protected volatile bool running;
+      /// <summary>
+      /// 初始化kcp
+      /// </summary>
+      /// <param name="port">监听端口</param>
        public KcpClient(int port):base(port)
        {
            this.sendList = new LinkedList<ByteBuf>();
        }
+       /// <summary>
+       /// 是否在运行状态
+       /// </summary>
+       /// <returns></returns>
+       public bool IsRunning()
+       {
+           return this.running;
+       }
+     /// <summary>
+     /// 停止udp
+     /// </summary>
        public void Stop()
        {
+           if(running)
+           { 
            running = false;
+           try 
+           {
+            this.client.Close(); 
+           }catch (Exception ex)
+           {
+           }
+           }
        }
        /// <summary>
        /// 开启线程开始工作
@@ -76,6 +99,21 @@ namespace cocosocket4unity
           Console.WriteLine("收到消息: "+s);
           //this.Send(bb);//回送
        }
+       /// <summary>
+       /// 异常
+       /// </summary>
+       /// <param name="ex"></param>
+       protected override void HandleException(Exception ex)
+       {
+           this.Stop();
+       }
+       /// <summary>
+       /// 超时
+       /// </summary>
+       protected override void HandleTimeout()
+       {
+           this.Stop();
+       }
        public void Send(ByteBuf content)
        {
            lock (this.sendList)
@@ -93,6 +131,7 @@ namespace cocosocket4unity
            KcpClient client = new KcpClient(2222);
            client.NoDelay(1, 10, 2, 1);//fast
            client.WndSize(64, 64);
+           client.Timeout(10*1000);
            client.Connect("10.18.121.15",2222);
            client.Start();
            Thread.Sleep(2000);

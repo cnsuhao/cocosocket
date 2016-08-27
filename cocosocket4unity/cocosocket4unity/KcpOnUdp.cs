@@ -22,6 +22,8 @@ namespace cocosocket4unity
       protected int rcvwnd = Kcp.IKCP_WND_RCV;
       protected int mtu = Kcp.IKCP_MTU_DEF;
       protected volatile bool needUpdate;
+      protected long timeout;//超时
+      protected DateTime lastTime;//上次检测时间
       public KcpOnUdp(int port)
       {
          client = new UdpClient(port); 
@@ -41,6 +43,13 @@ namespace cocosocket4unity
           this.client.Connect(serverAddr);
           client.BeginReceive(Received, client);
       }
+        /// <summary>
+        /// 超时设定
+        /// </summary>
+      public void Timeout(long timeout)
+      {
+          this.timeout = timeout;
+      }
       public override void output(ByteBuf msg, Kcp kcp, Object user) 
       {
           this.client.Send(msg.GetRaw(),msg.ReadableBytes());
@@ -48,6 +57,8 @@ namespace cocosocket4unity
       private void Received(IAsyncResult ar)
       {
           UdpClient client = (UdpClient)ar.AsyncState;
+          try
+          { 
           byte[] data=client.EndReceive(ar, ref this.serverAddr);
           lock(LOCK)
           {
@@ -55,6 +66,10 @@ namespace cocosocket4unity
             this.needUpdate = true;
           }
           client.BeginReceive(Received, ar.AsyncState);
+           }catch(Exception ex)
+           {
+               this.HandleException(ex);
+           }
       }
       /**
   * update one kcp
@@ -70,8 +85,13 @@ namespace cocosocket4unity
         while (this.received.Count>0)
         {
         byte[] dp = this.received.First.Value;
-        kcp.Input(new ByteBuf(dp));
+        int r=kcp.Input(new ByteBuf(dp));
         this.received.RemoveFirst();
+        if (r < 0)//error
+        {
+            this.HandleException(new Exception("kcp输入状态异常："+r));
+            return;
+        }
         }
       }
     //receive
@@ -82,6 +102,7 @@ namespace cocosocket4unity
       int n = kcp.Receive(bb);
       if (n > 0)
       {
+        this.lastTime = DateTime.Now;
         this.HandleReceive(bb);
       }
     }
@@ -93,11 +114,25 @@ namespace cocosocket4unity
       kcp.SetNextUpdate(kcp.Check(cur));
       this.needUpdate = false;
     }
+    //check timeout
+    if (this.timeout>0&&(DateTime.Now - this.lastTime).TotalMilliseconds > this.timeout)
+    {
+        this.HandleTimeout();
+    }
   }
         /**
          * 处理收到的消息
          */ 
   protected abstract void HandleReceive(ByteBuf bb);
+        /// <summary>
+        /// 处理异常
+        /// </summary>
+        /// <param name="ex"></param>
+  protected abstract void HandleException(Exception ex);
+        /// <summary>
+        /// 超时处理
+        /// </summary>
+  protected abstract void HandleTimeout();
       /**
        * fastest: ikcp_nodelay(kcp, 1, 20, 2, 1) nodelay: 0:disable(default),
        * 1:enable interval: internal update timer interval in millisec, default is

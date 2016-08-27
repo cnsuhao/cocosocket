@@ -21,6 +21,7 @@ namespace cocosocket4unity
       protected int sndwnd = Kcp.IKCP_WND_SND;
       protected int rcvwnd = Kcp.IKCP_WND_RCV;
       protected int mtu = Kcp.IKCP_MTU_DEF;
+      protected volatile bool needUpdate;
       public KcpOnUdp(int port)
       {
          client = new UdpClient(port); 
@@ -51,6 +52,7 @@ namespace cocosocket4unity
           lock(LOCK)
           {
             this.received.AddLast(data);
+            this.needUpdate = true;
           }
           client.BeginReceive(Received, ar.AsyncState);
       }
@@ -85,11 +87,11 @@ namespace cocosocket4unity
     }
     //update kcp status
     int cur = (int)DateTime.Now.Ticks;
-    if (kcp.IsNeedUpdate() || cur >= kcp.GetNextUpdate())
+    if (this.needUpdate|| cur >= kcp.GetNextUpdate())
     {
       kcp.Update(cur);
       kcp.SetNextUpdate(kcp.Check(cur));
-      kcp.SetNeedUpdate(false);
+      this.needUpdate = false;
     }
   }
         /**

@@ -78,7 +78,6 @@ public class Kcp
   private int logmask;
   private  Output output;
   private  Object user;
-  private bool needUpdate;
   private int nextUpdate;//the next update time.
 
   private static int _ibound_(int lower, int middle, int upper)
@@ -319,7 +318,6 @@ public class Kcp
       seg.frg = count - i - 1;
       snd_queue.Add(seg);
     }
-    needUpdate = true;
     return 0;
   }
 
@@ -613,7 +611,6 @@ public class Kcp
         }
       }
     }
-    needUpdate = true;
     return 0;
   }
 
@@ -1031,21 +1028,6 @@ public class Kcp
   public int WaitSnd()
   {
     return snd_buf.Count + snd_queue.Count;
-  }
-
-  /**
-   * update right now
-   *
-   * @return
-   */
-  public bool IsNeedUpdate()
-  {
-    return needUpdate;
-  }
-
-  public void SetNeedUpdate(bool needUpdate)
-  {
-    this.needUpdate = needUpdate;
   }
 
   public void SetNextUpdate(int nextUpdate)

@@ -13,6 +13,7 @@ namespace cocosocket4unity
     {
        private LinkedList<ByteBuf> sendList;
        private bool running;
+       
        public KcpClient(int port):base(port)
        {
            this.sendList = new LinkedList<ByteBuf>();
@@ -49,13 +50,17 @@ namespace cocosocket4unity
                        this.kcp.Send(bb);
                    }
                }
-               if (this.kcp.IsNeedUpdate())
+               if (this.needUpdate)
                {
                    continue;
                }
                DateTime end = DateTime.Now;
                while ((end - st).TotalMilliseconds < 10)
                {
+                   if (this.needUpdate) 
+                   {
+                       break;                         
+                   }
                    Thread.Yield();
                    end = DateTime.Now;
                }
@@ -76,6 +81,7 @@ namespace cocosocket4unity
            lock (this.sendList)
            {
                this.sendList.AddLast(content);
+               this.needUpdate = true;
            }
        }
        /// <summary>
@@ -89,8 +95,14 @@ namespace cocosocket4unity
            client.WndSize(64, 64);
            client.Connect("10.18.121.15",2222);
            client.Start();
+           Thread.Sleep(2000);
            String s = "hi,heoll world! 你好啊！！";
+           for (int i = 0; i < 10; i++)
+           {
+               s = s + s;
+           }
            ByteBuf bb = new ByteBuf(System.Text.Encoding.UTF8.GetBytes(s));
+           Console.WriteLine(bb.ReadableBytes());
            client.Send(bb);
            Console.Read();
        }

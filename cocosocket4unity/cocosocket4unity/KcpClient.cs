@@ -74,7 +74,7 @@ namespace cocosocket4unity
        {
           string s = System.Text.Encoding.UTF8.GetString(bb.GetRaw(),0,bb.ReadableBytes());
           Console.WriteLine("收到消息: "+s);
-          this.Send(bb);//回送
+          //this.Send(bb);//回送
        }
        public void Send(ByteBuf content)
        {
@@ -97,7 +97,7 @@ namespace cocosocket4unity
            client.Start();
            Thread.Sleep(2000);
            String s = "hi,heoll world! 你好啊！！";
-           for (int i = 0; i < 10; i++)
+           for (int i = 0; i < 2; i++)
            {
                s = s + s;
            }

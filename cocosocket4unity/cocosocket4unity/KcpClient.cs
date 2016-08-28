@@ -63,7 +63,6 @@ namespace cocosocket4unity
            while (running)
            {
                DateTime st = DateTime.Now;
-               this.Update();
                lock (this.sendList)
                {
                    while(this.sendList.Count>0)
@@ -73,6 +72,7 @@ namespace cocosocket4unity
                        this.kcp.Send(bb);
                    }
                }
+               this.Update();
                if (this.needUpdate)
                {
                    continue;

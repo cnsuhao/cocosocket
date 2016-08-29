@@ -26,9 +26,9 @@ namespace cocosocket4unity
       protected DateTime lastTime;//上次检测时间
       public KcpOnUdp(int port)
       {
-         client = new UdpClient(port); 
-         kcp = new Kcp(121106, this,null);
-         this.received = new LinkedList<byte[]>();
+              client = new UdpClient(port);
+              kcp = new Kcp(121106, this, null);
+              this.received = new LinkedList<byte[]>();
       }
       /// <summary>
       /// 连接到地址
@@ -40,8 +40,15 @@ namespace cocosocket4unity
           kcp.NoDelay(nodelay, interval, resend, nc);
           kcp.WndSize(sndwnd, rcvwnd);
           kcp.SetMtu(mtu);
-          this.client.Connect(serverAddr);
-          client.BeginReceive(Received, client);
+          try
+          {
+              this.client.Connect(serverAddr);
+              client.BeginReceive(Received, client);
+          }
+          catch (Exception ex)
+          {
+              this.HandleException(ex);
+          }
       }
         /// <summary>
         /// 超时设定
@@ -65,7 +72,7 @@ namespace cocosocket4unity
             this.received.AddLast(data);
             this.needUpdate = true;
           }
-          client.BeginReceive(Received, ar.AsyncState);
+            client.BeginReceive(Received, ar.AsyncState);
            }catch(Exception ex)
            {
                this.HandleException(ex);
@@ -115,9 +122,12 @@ namespace cocosocket4unity
       this.needUpdate = false;
     }
     //check timeout
-    if (this.timeout>0&&(DateTime.Now - this.lastTime).TotalMilliseconds > this.timeout)
+    if (this.timeout > 0 && lastTime!=DateTime.MinValue)
     {
+        double del=(DateTime.Now - this.lastTime).TotalMilliseconds;
+        if (del > this.timeout) { 
         this.HandleTimeout();
+        }
     }
   }
         /**

@@ -63,6 +63,7 @@ namespace cocosocket4unity
            while (running)
            {
                DateTime st = DateTime.Now;
+               this.Update(); 
                lock (this.sendList)
                {
                    while(this.sendList.Count>0)
@@ -72,7 +73,6 @@ namespace cocosocket4unity
                        this.kcp.Send(bb);
                    }
                }
-               this.Update();
                if (this.needUpdate)
                {
                    continue;
@@ -105,6 +105,7 @@ namespace cocosocket4unity
        /// <param name="ex"></param>
        protected override void HandleException(Exception ex)
        {
+           Console.WriteLine("异常: " + ex);
            this.Stop();
        }
        /// <summary>
@@ -112,6 +113,7 @@ namespace cocosocket4unity
        /// </summary>
        protected override void HandleTimeout()
        {
+           Console.WriteLine("超时: ");
            this.Stop();
        }
        public void Send(ByteBuf content)
@@ -128,7 +130,7 @@ namespace cocosocket4unity
        /// <param name="args"></param>
        public static void Main(string[] args)
        {
-           KcpClient client = new KcpClient(2222);
+           KcpClient client = new KcpClient(2223);
            client.NoDelay(1, 10, 2, 1);//fast
            client.WndSize(64, 64);
            client.Timeout(10*1000);

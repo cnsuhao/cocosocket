@@ -28,6 +28,7 @@ namespace cocosocket4unity
         {
            string content= System.Text.Encoding.UTF8.GetString(bb.GetRaw());
            Console.WriteLine("msg:"+content);
+           this.Send(bb.Copy());
         }
         /// <summary>
         /// 异常
@@ -35,6 +36,7 @@ namespace cocosocket4unity
         /// <param name="ex"></param>
                protected override void HandleException(Exception ex)
                {
+                  
                   this.Stop();
                }
         /// <summary>
@@ -51,8 +53,9 @@ namespace cocosocket4unity
 			client.NoDelay(1, 10, 2, 1);//fast
 			client.WndSize(64, 64);
 			client.Timeout(10*1000);
-            client.SetMtu(1000);
+            client.SetMtu(512);
             client.Connect("119.29.153.92", 2222);
+            //client.Connect("127.0.0.1", 2222);
 			client.Start();
 			Thread.Sleep(2000);
 			String s = "hi,heoll world! 你好啊！！";

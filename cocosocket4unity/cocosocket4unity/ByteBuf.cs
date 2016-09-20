@@ -36,6 +36,10 @@ namespace cocosocket4unity
             markReader = 0;
             markWriter = 0;
         }
+        private ByteBuf()
+        {
+ 
+        }
 		/**
 		 *  容量
 		 **/
@@ -83,6 +87,21 @@ namespace cocosocket4unity
 			item.markWriter = markWriter;
 			return item;
 		}
+        /// <summary>
+        /// 浅拷贝
+        /// </summary>
+        /// <returns></returns>
+        public ByteBuf Duplicate()
+        {
+            ByteBuf item = new ByteBuf();
+            item.readerIndex = readerIndex;
+            item.writerIndex = writerIndex;
+            item.markReader = markReader;
+            item.markWriter = markWriter;
+            item.data = data;
+            item.len = len;
+            return item;
+        }
 		/**
 		 * 获取一个字节
 		 **/ 

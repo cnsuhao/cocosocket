@@ -36,15 +36,14 @@ namespace cocosocket4unity
         /// <param name="ex"></param>
                protected override void HandleException(Exception ex)
                {
-                  
-                  this.Stop();
+                   base.HandleException(ex);
                }
         /// <summary>
         /// 超时
         /// </summary>
                protected override void HandleTimeout()
               {
-                   this.Stop();
+                  base.HandleTimeout();
               }
 
 		public static void Main(string[] args)

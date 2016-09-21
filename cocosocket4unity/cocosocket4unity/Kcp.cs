@@ -96,22 +96,25 @@ public class Kcp
   class Segment
   {
 
-     public int conv = 0;
-     public byte cmd = 0;
-     public int frg = 0;
-     public int wnd = 0;
-     public int ts = 0;
-     public int sn = 0;
-     public int una = 0;
-     public int resendts = 0;
-     public int rto = 0;
-     public int fastack = 0;
-     public int xmit = 0;
-     public ByteBuf data;
+    public int conv = 0;
+    public byte cmd = 0;
+    public int frg = 0;
+    public int wnd = 0;
+    public int ts = 0;
+    public int sn = 0;
+    public int una = 0;
+    public int resendts = 0;
+    public int rto = 0;
+    public int fastack = 0;
+    public int xmit = 0;
+    public ByteBuf data;
 
     public Segment(int size)
     {
-      this.data = new ByteBuf(size);
+      if (size > 0)
+      {
+        this.data = new ByteBuf(size);
+      }
     }
 
     /**
@@ -131,7 +134,7 @@ public class Kcp
       buf.WriteInt(ts);
       buf.WriteInt(sn);
       buf.WriteInt(una);
-      buf.WriteInt(data.ReadableBytes());
+      buf.WriteInt(data == null ? 0 : data.ReadableBytes());
       return buf.WriterIndex() - off;
     }
   }
@@ -153,10 +156,11 @@ public class Kcp
     mss = mtu - IKCP_OVERHEAD;
     rx_rto = IKCP_RTO_DEF;
     rx_minrto = IKCP_RTO_MIN;
-    this.interval = IKCP_INTERVAL;
+    interval = IKCP_INTERVAL;
     ts_flush = IKCP_INTERVAL;
     ssthresh = IKCP_THRESH_INIT;
     dead_link = IKCP_DEADLINK;
+    rcv_nxt = 0;
     buffer = new ByteBuf((mtu + IKCP_OVERHEAD) * 3);
     this.output = output;
     this.user = user;
@@ -174,7 +178,7 @@ public class Kcp
       return -1;
     }
     Segment seq = rcv_queue.First();
-    if ( seq.frg==0)
+    if (seq.frg == 0)
     {
       return seq.data.ReadableBytes();
     }
@@ -187,7 +191,7 @@ public class Kcp
     {
         Segment item = rcv_queue[i];
         length += item.data.ReadableBytes();
-        if ( item.frg==0)
+        if (item.frg == 0)
         {
             break;
         }
@@ -208,34 +212,33 @@ public class Kcp
       return -1;
     }
     int peekSize = PeekSize();
-    if (peekSize<0)
+    if (peekSize < 0)
     {
       return -2;
     }
-    bool fast_recover = rcv_queue.Count >= rcv_wnd;
+    bool recover = rcv_queue.Count >= rcv_wnd;
     // merge fragment.
-    int count = 0;
-    int n = 0;
-    for(int i=0;i<rcv_queue.Count;i++)
+    int c = 0;
+    int len = 0;
+    for (int i=0;i<rcv_queue.Count;i++ )
     {
       Segment seg=rcv_queue[i];
-      n += seg.data.ReadableBytes();
+      len += seg.data.ReadableBytes();
       buffer.WriteBytes(seg.data);
-      count++;
-      if (seg.frg==0)
+      c++;
+      if (seg.frg == 0)
       {
         break;
       }
     }
-    if ( count>0)
+    if(c>0)
+    rcv_queue.RemoveRange(0,c);
+    if (len != peekSize)
     {
-      for (int i = 0; i < count; i++)
-      {
-        rcv_queue.RemoveAt(0);
-      }
+      throw new Exception("数据异常.");
     }
     // move available data from rcv_buf -> rcv_queue
-    count = 0;
+    c = 0;
     for (int i = 0; i < rcv_buf.Count;i++ )
     {
         Segment seg = rcv_buf[i];
@@ -243,28 +246,23 @@ public class Kcp
         {
             rcv_queue.Add(seg);
             rcv_nxt++;
-            count++;
+            c++;
         }
         else
         {
             break;
         }
     }
-    if ( count>0)
-    {
-      for (int i = 0; i < count; i++)
-      {
-        rcv_buf.RemoveAt(0);
-      }
-    }
+    if(c>0)
+    rcv_buf.RemoveRange(0, c);
     // fast recover
-    if (rcv_queue.Count < rcv_wnd && fast_recover)
+    if (rcv_queue.Count < rcv_wnd && recover)
     {
       // ready to send back IKCP_CMD_WINS in ikcp_flush
       // tell remote my window size
       probe |= IKCP_ASK_TELL;
     }
-    return n;
+    return len;
   }
 
   /**
@@ -280,21 +278,22 @@ public class Kcp
       return -1;
     }
     int count;
-    if (buffer.ReadableBytes() < mss)
+    if (buffer.ReadableBytes() <= mss)
     {
       count = 1;
     } else
     {
       count = (buffer.ReadableBytes() + mss - 1) / mss;
     }
-    if (count>255)
+    if (count > 255)
     {
       return -2;
     }
-    if (count==0)
+    if (count == 0)
     {
       count = 1;
     }
+    //fragment
     for (int i = 0; i < count; i++)
     {
       int size = buffer.ReadableBytes() > mss ? mss : buffer.ReadableBytes();
@@ -305,29 +304,22 @@ public class Kcp
     }
     return 0;
   }
-		/// <summary>
-		/// 发送列表的长度
-		/// </summary>
-		/// <returns><c>true</c>, if busy was ised, <c>false</c> otherwise.</returns>
-		public int sendQueueSize()
-		{
-			return snd_queue.Count;
-		}
+
   /**
    * update ack.
    *
    * @param rtt
    */
-  private void update_ack(int rtt)
+  private void Update_ack(int rtt)
   {
-    if (rx_srtt==0)
+    if (rx_srtt == 0)
     {
       rx_srtt = rtt;
       rx_rttval = rtt / 2;
     } else
     {
       int delta = rtt - rx_srtt;
-      if (delta<0)
+      if (delta < 0)
       {
         delta = -delta;
       }
@@ -342,18 +334,18 @@ public class Kcp
     rx_rto = _ibound_(rx_minrto, rto, IKCP_RTO_MAX);
   }
 
-  private void shrink_buf()
+  private void Shrink_buf()
   {
     if (snd_buf.Count > 0)
     {
-      snd_una = snd_buf[0].sn;
+      snd_una = snd_buf.First().sn;
     } else
     {
       snd_una = snd_nxt;
     }
   }
 
-  private void parse_ack(int sn)
+  private void Parse_ack(int sn)
   {
     if (_itimediff(sn, snd_una) < 0 || _itimediff(sn, snd_nxt) >= 0)
     {
@@ -369,12 +361,12 @@ public class Kcp
       }
       if (_itimediff(sn, seg.sn) < 0)
       {
-          break;
+        break;
       }
     }
   }
 
-  private void parse_una(int una)
+  private void Parse_una(int una)
   {
     int c = 0;
     for (int i = 0; i < snd_buf.Count;i++ )
@@ -389,21 +381,17 @@ public class Kcp
             break;
         }
     }
-    if (c>0)
-    {
-      for (int i = 0; i < c; i++)
-      {
-          snd_buf.RemoveAt(0);
-      }
-    }
+    if(c>0)
+    snd_buf.RemoveRange(0,c);
   }
-  private void parse_fastack(int sn)
+
+  private void Parse_fastack(int sn)
   {
     if (_itimediff(sn, snd_una) < 0 || _itimediff(sn, snd_nxt) >= 0)
     {
       return;
     }
-    for (int i = 0; i < this.snd_buf.Count;i++ )
+    for (int i = 0; i < snd_buf.Count;i++ )
     {
         Segment seg = snd_buf[i];
         if (_itimediff(sn, seg.sn) < 0)
@@ -416,13 +404,20 @@ public class Kcp
         }
     }
   }
-  private void ack_push(int sn, int ts)
+
+  /**
+   * ack append
+   *
+   * @param sn
+   * @param ts
+   */
+  private void Ack_push(int sn, int ts)
   {
     acklist.Add(sn);
     acklist.Add(ts);
   }
 
-  private void parse_data(Segment newseg)
+  private void Parse_data(Segment newseg)
   {
     int sn = newseg.sn;
     if (_itimediff(sn, rcv_nxt + rcv_wnd) >= 0 || _itimediff(sn, rcv_nxt) < 0)
@@ -458,7 +453,7 @@ public class Kcp
     }
     // move available data from rcv_buf -> rcv_queue
     int c = 0;
-    for (int i = 0; i < rcv_buf.Count; i++)
+    for (int i = 0; i < rcv_buf.Count;i++ )
     {
         Segment seg = rcv_buf[i];
         if (seg.sn == rcv_nxt && rcv_queue.Count < rcv_wnd)
@@ -472,12 +467,9 @@ public class Kcp
             break;
         }
     }
-    if (0 < c)
+    if (c>0)
     {
-      for (int i = 0; i < c; i++)
-      {
-        rcv_buf.RemoveAt(0);
-      }
+        rcv_buf.RemoveRange(0, c);
     }
   }
 
@@ -492,15 +484,16 @@ public class Kcp
   {
     int una_temp = snd_una;
     int flag = 0, maxack = 0;
-    if (data==null||data.ReadableBytes() < IKCP_OVERHEAD)
+    if (data == null || data.ReadableBytes() < IKCP_OVERHEAD)
     {
       return -1;
     }
     while (true)
     {
+      bool readed = false;
       int ts;
       int sn;
-      int length;
+      int len;
       int una;
       int conv_;
       int wnd;
@@ -511,10 +504,9 @@ public class Kcp
         break;
       }
       conv_ = data.ReadInt();
-      if (conv != conv_)
+      if (this.conv != conv_)
       {
-        //return -1;
-          Console.WriteLine("error.");
+        return -1;
       }
       cmd = data.ReadByte();
       frg = data.ReadByte();
@@ -522,8 +514,8 @@ public class Kcp
       ts = data.ReadInt();
       sn = data.ReadInt();
       una = data.ReadInt();
-      length = data.ReadInt();
-      if (data.ReadableBytes() < length)
+      len = data.ReadInt();
+      if (data.ReadableBytes() < len)
       {
         return -2;
       }
@@ -538,51 +530,48 @@ public class Kcp
           return -3;
       }
       rmt_wnd = wnd & 0x0000ffff;
-      parse_una(una);
-      shrink_buf();
+      Parse_una(una);
+      Shrink_buf();
       switch (cmd)
       {
         case IKCP_CMD_ACK:
           if (_itimediff(current, ts) >= 0)
           {
-            update_ack(_itimediff(current, ts));
+            Update_ack(_itimediff(current, ts));
           }
-          parse_ack(sn);
-          shrink_buf();
+          Parse_ack(sn);
+          Shrink_buf();
           if (flag == 0)
           {
-              flag = 1;
-              maxack = sn;
-          }
-          else if (_itimediff(sn, maxack) > 0)
+            flag = 1;
+            maxack = sn;
+          } else if (_itimediff(sn, maxack) > 0)
           {
-              maxack = sn;
+            maxack = sn;
           }
           break;
         case IKCP_CMD_PUSH:
+          Console.WriteLine(sn);
           if (_itimediff(sn, rcv_nxt + rcv_wnd) < 0)
           {
-            ack_push(sn, ts);
-            if (_itimediff(sn, rcv_nxt) >= 0)
-            {
-              Segment seg = new Segment(length);
-              seg.conv = conv_;
-              seg.cmd = cmd;
-              seg.frg = frg & 0x000000ff;
-              seg.wnd = wnd;
-              seg.ts = ts;
-              seg.sn = sn;
-              seg.una = una;
-              if (length > 0)
+              Ack_push(sn, ts);
+              if (_itimediff(sn, rcv_nxt) >= 0)
               {
-                  seg.data.WriteBytes(data, length);
+                  Segment seg = new Segment(len);
+                  seg.conv = conv_;
+                  seg.cmd = cmd;
+                  seg.frg = frg & 0x000000ff;
+                  seg.wnd = wnd;
+                  seg.ts = ts;
+                  seg.sn = sn;
+                  seg.una = una;
+                  if (len > 0)
+                  {
+                      seg.data.WriteBytes(data, len);
+                      readed = true;
+                  }
+                  Parse_data(seg);
               }
-              else
-              {
-                  Console.WriteLine("error.");
-              }
-              parse_data(seg);
-            }
           }
           break;
         case IKCP_CMD_WASK:
@@ -590,44 +579,47 @@ public class Kcp
           // tell remote my window size
           probe |= IKCP_ASK_TELL;
           break;
-        // do nothing
         case IKCP_CMD_WINS:
+          // do nothing
           break;
         default:
           return -3;
       }
+      if (!readed)
+      {
+          data.SkipBytes(len);
+      }
     }
     if (flag != 0)
     {
-        parse_fastack(maxack);
+      Parse_fastack(maxack);
     }
     if (_itimediff(snd_una, una_temp) > 0)
     {
-        if (this.cwnd < this.rmt_wnd)
+      if (this.cwnd < this.rmt_wnd)
+      {
+        if (this.cwnd < this.ssthresh)
         {
-            if (this.cwnd < this.ssthresh)
-            {
-                this.cwnd++;
-                this.incr += mss;
-            }
-            else
-            {
-                if (this.incr < mss)
-                {
-                    this.incr = mss;
-                }
-                this.incr += (mss * mss) / this.incr + (mss / 16);
-                if ((this.cwnd + 1) * mss <= this.incr)
-                {
-                    this.cwnd++;
-                }
-            }
-            if (this.cwnd > this.rmt_wnd)
-            {
-                this.cwnd = this.rmt_wnd;
-                this.incr = this.rmt_wnd * mss;
-            }
+          this.cwnd++;
+          this.incr += mss;
+        } else
+        {
+          if (this.incr < mss)
+          {
+            this.incr = mss;
+          }
+          this.incr += (mss * mss) / this.incr + (mss / 16);
+          if ((this.cwnd + 1) * mss <= this.incr)
+          {
+            this.cwnd++;
+          }
         }
+        if (this.cwnd > this.rmt_wnd)
+        {
+          this.cwnd = this.rmt_wnd;
+          this.incr = this.rmt_wnd * mss;
+        }
+      }
     }
     return 0;
   }
@@ -644,12 +636,12 @@ public class Kcp
   /**
    * flush pending data
    */
-  private void flush()
+  private void Flush()
   {
     int cur = current;
     int change = 0;
     int lost = 0;
-    if (updated==0)
+    if (updated == 0)
     {
       return;
     }
@@ -675,30 +667,28 @@ public class Kcp
     // probe window size (if remote window size equals zero)
     if (rmt_wnd == 0)
     {
-        if (probe_wait == 0)
+      if (probe_wait == 0)
+      {
+        probe_wait = IKCP_PROBE_INIT;
+        ts_probe = current + probe_wait;
+      } else if (_itimediff(current, ts_probe) >= 0)
+      {
+        if (probe_wait < IKCP_PROBE_INIT)
         {
-            probe_wait = IKCP_PROBE_INIT;
-            ts_probe = current + probe_wait;
+          probe_wait = IKCP_PROBE_INIT;
         }
-        else if (_itimediff(current, ts_probe) >= 0)
+        probe_wait += probe_wait / 2;
+        if (probe_wait > IKCP_PROBE_LIMIT)
         {
-            if (probe_wait < IKCP_PROBE_INIT)
-            {
-                probe_wait = IKCP_PROBE_INIT;
-            }
-            probe_wait += probe_wait / 2;
-            if (probe_wait > IKCP_PROBE_LIMIT)
-            {
-                probe_wait = IKCP_PROBE_LIMIT;
-            }
-            ts_probe = current + probe_wait;
-            probe |= IKCP_ASK_SEND;
+          probe_wait = IKCP_PROBE_LIMIT;
         }
-    }
-    else
+        ts_probe = current + probe_wait;
+        probe |= IKCP_ASK_SEND;
+      }
+    } else
     {
-        ts_probe = 0;
-        probe_wait = 0;
+      ts_probe = 0;
+      probe_wait = 0;
     }
     // flush window probing commands
     if ((probe & IKCP_ASK_SEND) != 0)
@@ -707,7 +697,7 @@ public class Kcp
       if (buffer.ReadableBytes() + IKCP_OVERHEAD > mtu)
       {
         this.output.output(buffer, this, user);
-        buffer =  new ByteBuf((mtu + IKCP_OVERHEAD) * 3);
+        buffer = new ByteBuf((mtu + IKCP_OVERHEAD) * 3);
       }
       seg.Encode(buffer);
     }
@@ -725,18 +715,20 @@ public class Kcp
     probe = 0;
     // calculate window size
     int cwnd_temp = Math.Min(snd_wnd, rmt_wnd);
-    if (nocwnd==0)
+    if (nocwnd == 0)
     {
       cwnd_temp = Math.Min(cwnd, cwnd_temp);
     }
+    // move data from snd_queue to snd_buf
     c = 0;
-    for(int i=0;i<snd_queue.Count;i++)
+    for (int i=0;i<snd_queue.Count;i++)
     {
+      Segment item=snd_queue[i];
       if (_itimediff(snd_nxt, snd_una + cwnd_temp) >= 0)
       {
         break;
       }
-      Segment newseg = snd_queue[i];
+      Segment newseg = item;
       newseg.conv = conv;
       newseg.cmd = IKCP_CMD_PUSH;
       newseg.wnd = seg.wnd;
@@ -750,23 +742,19 @@ public class Kcp
       snd_buf.Add(newseg);
       c++;
     }
-    if (c>0)
+    if (c > 0)
     {
-      for (int i = 0; i < c; i++)
-      {
-        snd_queue.RemoveAt(0);
-      }
+     snd_queue.RemoveRange(0,c);
     }
     // calculate resent
     int resent = (fastresend > 0) ? fastresend : int.MaxValue;
     int rtomin = (nodelay == 0) ? (rx_rto >> 3) : 0;
     // flush data segments
-    for(int i=0;i<snd_buf.Count;i++)
+    for (int i=0;i<snd_buf.Count;i++)
     {
       Segment segment=snd_buf[i];
       bool needsend = false;
-      //int debug = _itimediff(cur, segment.resendts);
-      if (segment.xmit==0)
+      if (segment.xmit == 0)
       {
         needsend = true;
         segment.xmit++;
@@ -777,7 +765,7 @@ public class Kcp
         needsend = true;
         segment.xmit++;
         xmit++;
-        if (nodelay==0)
+        if (nodelay == 0)
         {
           segment.rto += rx_rto;
         } else
@@ -808,7 +796,7 @@ public class Kcp
         segment.Encode(buffer);
         if (segment.data.ReadableBytes() > 0)
         {
-            buffer.WriteBytes(segment.data.Duplicate());
+          buffer.WriteBytes(segment.data.Duplicate());
         }
         if (segment.xmit >= dead_link)
         {
@@ -860,7 +848,7 @@ public class Kcp
   public void Update(long current)
   {
     this.current = (int) current;
-    if (updated==0)
+    if (updated == 0)
     {
       updated = 1;
       ts_flush = this.current;
@@ -878,7 +866,7 @@ public class Kcp
       {
         ts_flush = this.current + interval;
       }
-      flush();
+      Flush();
     }
   }
 
@@ -896,7 +884,7 @@ public class Kcp
   public int Check(long current)
   {
     int cur = (int) current;
-    if (0 == updated)
+    if (updated == 0)
     {
       return cur;
     }
@@ -1055,6 +1043,11 @@ public class Kcp
   public int GetNextUpdate()
   {
     return nextUpdate;
+  }
+
+  public Object GetUser()
+  {
+    return user;
   }
 }
 

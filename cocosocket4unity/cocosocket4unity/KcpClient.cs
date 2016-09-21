@@ -44,6 +44,14 @@ namespace cocosocket4unity
            }
            }
        }
+       protected override void HandleException(Exception ex)
+       {
+           this.Stop();
+       }
+       protected override void HandleTimeout()
+       {
+           this.Stop();
+       }
        /// <summary>
        /// 开启线程开始工作
        /// </summary>

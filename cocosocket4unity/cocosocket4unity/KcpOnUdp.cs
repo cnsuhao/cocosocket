@@ -70,11 +70,9 @@ namespace cocosocket4unity
           try
           { 
           byte[] data=client.EndReceive(ar, ref this.serverAddr);
-          byte[] temp=new byte[data.Length];
-          Array.Copy(data, temp, data.Length);
           lock(LOCK)
           {
-            this.received.AddLast(new ByteBuf(temp));
+            this.received.AddLast(new ByteBuf(data));
             this.needUpdate = true;
           }
             client.BeginReceive(Received, ar.AsyncState);
@@ -106,13 +104,8 @@ namespace cocosocket4unity
         while (this.received.Count>0)
         {
         ByteBuf bb = this.received.First.Value;
-        int r=kcp.Input(bb);
+        kcp.Input(bb);
         this.received.RemoveFirst();
-        if (r < 0)//error
-        {
-            this.HandleException(new Exception("kcp输入状态异常："+r));
-            return;
-        }
         }
       }
     //receive

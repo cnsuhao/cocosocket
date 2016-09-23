@@ -75,6 +75,7 @@ public class Kcp
   private ByteBuf buffer;
   private int fastresend;
   private int nocwnd;
+  private bool stream;
   private int logmask;
   private  Output output;
   private  Object user;
@@ -277,6 +278,21 @@ public class Kcp
     {
       return -1;
     }
+    // append to previous segment in streaming mode (if possible)
+    if (this.stream && this.snd_queue.Count>0)
+    {
+        Segment seg = snd_queue.Last();
+        if (seg.data != null && seg.data.ReadableBytes() < mss)
+        {
+            int capacity = mss - seg.data.ReadableBytes();
+            int extend = (buffer.ReadableBytes() < capacity) ? buffer.ReadableBytes() : capacity;
+            seg.data.WriteBytes(buffer, extend);
+            if (buffer.ReadableBytes() == 0)
+            {
+                return 0;
+            }
+        }
+    }
     int count;
     if (buffer.ReadableBytes() <= mss)
     {
@@ -299,7 +315,7 @@ public class Kcp
       int size = buffer.ReadableBytes() > mss ? mss : buffer.ReadableBytes();
       Segment seg = new Segment(size);
       seg.data.WriteBytes(buffer, size);
-      seg.frg = count - i - 1;
+      seg.frg = this.stream?0:count - i - 1;
       snd_queue.Add(seg);
     }
     return 0;
@@ -1049,6 +1065,21 @@ public class Kcp
   {
     return user;
   }
+  public bool IsStream()
+  {
+      return stream;
+  }
+
+  public void SetStream(bool stream)
+  {
+      this.stream = stream;
+  }
+
+  public void SetMinRto(int min)
+  {
+      rx_minrto = min;
+  }
+
 }
 
 }

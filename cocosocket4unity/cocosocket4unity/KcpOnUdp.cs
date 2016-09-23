@@ -201,5 +201,20 @@ namespace cocosocket4unity
       {
           this.mtu = mtu;
       }
+      public bool IsStream()
+      {
+          return this.kcp.IsStream();
+      }
+
+      public void SetStream(bool stream)
+      {
+          this.kcp.SetStream(stream);
+      }
+
+      public void SetMinRto(int min)
+      {
+          this.kcp.SetMinRto(min);
+      }
+
     }
 }

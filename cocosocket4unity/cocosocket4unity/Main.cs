@@ -6,15 +6,25 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using protocol;
-//引用的
 using System.Reflection;
+using System.IO;
+
 namespace cocosocket4unity
 {
 	class MainClass
 	{
-		public static void Main1 (string[] args)
+		public static void Main0 (string[] args)
 		{
-            
+            TestRequest request = new TestRequest();
+            request.c = TestEnum.WHITE;
+            MemoryStream stream = new MemoryStream();
+            ProtoBuf.Serializer.NonGeneric.Serialize(stream, request);
+            byte[] bs = stream.ToArray();
+            Type type = typeof(TestRequest);
+            Stream s = stream;
+            request=  (TestRequest)ProtoBuf.Serializer.NonGeneric.Deserialize(type, s);
+            Console.WriteLine(request);
+            /**
             AuthRequest ar = new AuthRequest();
             string json = JsonMapper.ToJson(ar);
             Console.WriteLine(ar.GetType().Name+":"+json);
@@ -31,7 +41,7 @@ namespace cocosocket4unity
               Console.WriteLine(arr.value);
             }
             Console.Read();
-            
+            */
              /**
             long time_JAVA_Long = 1446050129676L;//java长整型日期，毫秒为单位             
             DateTime dt_1970 = new DateTime(1970, 1, 1, 0, 0, 0);              
@@ -41,6 +51,7 @@ namespace cocosocket4unity
             Console.WriteLine(string.Format("{0:G}", dt));
             Console.Read();
             */
+            /**
 			SocketListner listner = new TestListner ();
 			USocket us = new USocket ();
 			us.setLister (listner);
@@ -49,6 +60,7 @@ namespace cocosocket4unity
 			us.setProtocal (p);
 			us.Connect ("localhost", 4887);
 			Console.Read();
+             */
              
 		}
 	}
